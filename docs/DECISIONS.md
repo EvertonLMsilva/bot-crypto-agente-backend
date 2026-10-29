@@ -395,7 +395,7 @@ JUSTIFICATIVA:
 Conectar decisões e resultados auditáveis.
 
 IMPACTOS:
-Entrada, saída, stop, take profit, dimensionamento, custos e sentido das operações PENDING. Não inventar política definitiva.
+Histórico DOCS-002: entrada, saída, stop, take profit, dimensionamento, custos e sentido estavam PENDING. Atualização DOCS-004: spot simulado, próxima abertura, proteções e parâmetros iniciais agora APPROVED em DEC-021 a DEC-024. Ciclo completo da ordem, expiração/reagendamento, precisão e critérios finais de dimensionamento continuam pendentes. Não inventar regras restantes.
 
 SUBSTITUI:
 Não se aplica; complementa histórico sem substituir aprovação anterior.
@@ -416,7 +416,7 @@ JUSTIFICATIVA:
 Separar orçamento da priorização e análise.
 
 IMPACTOS:
-Política detalhada PENDING. Capital inicial de 10.000 UC, 20% por pedido, exposição total de 40% e faixas por pontuação permanecem PROPOSED, NÃO APROVADOS.
+Histórico DOCS-002: política detalhada estava PENDING; 10.000 UC, 20% por pedido, 40% de exposição e faixas por pontuação eram PROPOSED, NÃO APROVADOS. Atualização DOCS-004: capital de 10.000 UC, exposição individual de 20% do patrimônio e consolidada de 40% agora APPROVED em DEC-020, com limites de risco e perda diária. Faixas por pontuação continuam PROPOSED, não aprovadas. O limite individual é exposição, não aprovação automática de qualquer pedido de 20%.
 
 SUBSTITUI:
 Não se aplica; complementa histórico sem substituir aprovação anterior.
@@ -441,3 +441,161 @@ Não define serviços físicos, frameworks ou infraestrutura. Tecnologias e cont
 
 SUBSTITUI:
 Não se aplica; complementa histórico sem substituir aprovação anterior.
+
+## Consolidação DOCS-004
+Fonte: BOT-CRYPTO-DOCS-004, 2026-10-29. Não foi encontrada evidência local de execução da DOCS-003 (documentos, histórico Git ou alterações locais). Não se presume sua execução. DEC-017/DEC-018 receberam atualização rastreável sem apagar o status histórico dos parâmetros. Nenhuma decisão SUPERSEDED necessária.
+
+## DEC-020
+ID: DEC-020
+DATA: 2026-10-29
+TÍTULO: Capital centralizado e política financeira inicial
+STATUS: APPROVED
+
+CONTEXTO:
+A tarefa DOCS-004 aprova parâmetros antes pendentes, sem evidência local de DOCS-003.
+
+DECISÃO:
+Capital inicial fictício de 10.000 UC, orçamento centralizado e compartilhado, sem saldo permanente exclusivo por agente. Coordenador prioriza; Gestor autoriza ou rejeita.
+- Exposição individual máxima: 20% do patrimônio.
+- Exposição consolidada máxima: 40% do patrimônio.
+- Risco planejado máximo por operação: 1% do patrimônio.
+- Risco planejado total aberto: 2% do patrimônio.
+- Perda diária máxima de referência: 3%, sobre patrimônio registrado no início do dia simulado; ao atingir o limite, bloquear novas entradas.
+Limites percentuais recalculados sobre patrimônio conforme regras auditáveis, com a base diária fixa indicada acima. Risco planejado inclui custos previstos e distância até a proteção; não garante perda máxima. Gaps e deslizamentos podem produzir perdas superiores ao planejado. Dia financeiro UTC, virada 00:00 UTC. Controle diário considera redução patrimonial e perdas não realizadas, sem antecipar dados.
+Operações exclusivamente spot simuladas, sem alavancagem ou venda descoberta; operações reais proibidas.
+
+JUSTIFICATIVA:
+Fixar controles compartilhados antes do desenvolvimento.
+
+IMPACTOS:
+Complementa DEC-018; detalhamento do ciclo financeiro, redimensionamento/rejeição e reconciliação ainda pendente. Faixas por pontuação não aprovadas. Não autoriza agentes a alterar limites globais.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## DEC-021
+ID: DEC-021
+DATA: 2026-10-29
+TÍTULO: Execução na próxima abertura elegível
+STATUS: APPROVED
+
+CONTEXTO:
+Evitar execução retroativa e informação futura.
+
+DECISÃO:
+Sinais usam somente candles fechados. Nenhuma execução no candle que originou o sinal. Entrada na abertura do próximo candle elegível, com autorização financeira obrigatória anterior à execução. Custos/deslizamento simulados e contabilização do preço efetivamente simulado. Não conhecer preços futuros antecipadamente. Se autorização chegar após a abertura elegível, não executar retroativamente; regra definitiva de expiração ou reagendamento PENDING.
+
+JUSTIFICATIVA:
+Manter causalidade temporal e reprodução.
+
+IMPACTOS:
+Proteções intrabar OHLC com tratamento conservador/gaps conforme DEC-023. Não consultar antecipadamente máxima, mínima ou fechamento de candles futuros.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## DEC-022
+ID: DEC-022
+DATA: 2026-10-29
+TÍTULO: OPS-002: parâmetros operacionais iniciais
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-004 aprova configuração inicial versionada.
+
+DECISÃO:
+- Stop Loss: 2% abaixo da entrada.
+- Take Profit: 4% acima da entrada.
+- Taxa: 0,10% por execução.
+- Deslizamento: 0,05% por execução.
+- Máximo de uma posição simultânea por ativo.
+- Encerramento integral na primeira versão.
+- Saída por estratégia na próxima abertura elegível.
+- Saída por stop/take ativo segundo OHLC intrabar, conforme DEC-023.
+- Dia financeiro UTC, virada às 00:00 UTC.
+- Auditoria persistente e preservação de proteção durante promoção/rollback.
+Parâmetros de estratégia configuráveis e versionados. Agentes podem testar alterações em candidatas; promoção somente após cumprir integralmente LEARN-GATE. Não podem alterar limites financeiros globais ou critérios obrigatórios de promoção.
+
+JUSTIFICATIVA:
+Estabelecer uma configuração inicial reprodutível para simulação.
+
+IMPACTOS:
+Sem implementação. Precisão, arredondamento, ciclo de vida da ordem e demais pendências não são resolvidos implicitamente pelos parâmetros. DEC-016 preservada integralmente.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## DEC-023
+ID: DEC-023
+DATA: 2026-10-29
+TÍTULO: Saída conservadora por OHLC e gaps
+STATUS: APPROVED
+
+CONTEXTO:
+OHLC não revela a sequência intrabar quando stop e take são atingidos.
+
+DECISÃO:
+1. Avaliar gaps na abertura do candle.
+2. Se uma posição comprada abrir abaixo do stop, usar abertura desfavorável com deslizamento aplicável.
+3. Se abrir acima do take, não conceder ganho além do alvo sem regra de execução aprovada.
+4. Se apenas stop for atingido intrabar, processar stop.
+5. Se apenas take for atingido intrabar, processar take.
+6. Se ambos forem atingidos e sequência desconhecida, processar stop primeiro.
+7. Não encerrar posição duas vezes.
+8. Aplicar custos efetivos simulados na apuração.
+9. Registrar razão da saída.
+10. Proibir uso antecipado de máxima, mínima ou fechamento de candles futuros.
+Saída estratégica só na próxima abertura elegível. Mudanças de proteção após fechamento não se aplicam retroativamente.
+
+JUSTIFICATIVA:
+Resolver ambiguidades de modo conservador e rastreável.
+
+IMPACTOS:
+Preço efetivamente simulado deve constar na contabilidade. Regras adicionais de prioridade entre eventos coincidentes não definidas nesta tarefa não devem ser inventadas.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## DEC-024
+ID: DEC-024
+DATA: 2026-10-29
+TÍTULO: Proteção de posições durante evolução
+STATUS: APPROVED
+
+CONTEXTO:
+Evolução não pode abandonar posições ou ampliar risco autorizado.
+
+DECISÃO:
+Toda posição mantém vínculo com estratégia/versão de origem e stop obrigatório. Pode apertar proteção conforme regra autorizada; não ampliar risco além do autorizado. Promoção não modifica retroativamente posições abertas; rollback não as abandona. Histórico de versões/decisões preservado; nenhuma alteração descumpre limites financeiros.
+
+JUSTIFICATIVA:
+Manter proteção e responsabilidade por versão durante evolução.
+
+IMPACTOS:
+DEC-016 e LEARN-GATE integralmente preservados. Regra concreta para apertar proteção e critérios quantitativos de rollback por degradação continuam pendentes, sem licença para relaxar risco.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## DEC-025
+ID: DEC-025
+DATA: 2026-10-29
+TÍTULO: Contabilidade e auditoria financeira persistente
+STATUS: APPROVED
+
+CONTEXTO:
+Resultados financeiros e aprendizado precisam de trilha reproduzível.
+
+DECISÃO:
+Controlar caixa disponível/reservado, posições abertas, patrimônio total, resultado realizado/não realizado, exposição consolidada, risco planejado, perdas diárias, taxas/deslizamentos e justificativas de autorizações/rejeições. Marcação a mercado usa preços conhecidos no instante; perda diária considera redução patrimonial e perdas não realizadas.
+Cada operação rastreia agente/ativo, estratégia/versão, oportunidade original, nota enviada ao Coordenador, dados/contexto, decisão de orçamento, capital/risco autorizados, entrada/saída, custos, stop/take, resultado e eventos usados no aprendizado.
+Histórico persistente, auditável e idempotente. Correções preservam originais por eventos de ajuste/compensação. Sem duplicação de reservas, execuções, taxas ou liquidações. Separar resultados da carteira simulada de avaliações hipotéticas de sinais não executados. Reinício preserva histórico e estado persistido; repetir cenário/parâmetros/sequência produz os mesmos resultados. Resultados alimentam somente o especialista responsável.
+
+JUSTIFICATIVA:
+Permitir reconciliação, auditoria e avaliação individual sem duplicações.
+
+IMPACTOS:
+Tecnologia de persistência, precisão, arredondamento, reconciliação, falhas/recuperação e detalhamento das avaliações hipotéticas PENDING. Critérios de aceite ligados em REQUIREMENTS.md.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores com autorização da DOCS-004.

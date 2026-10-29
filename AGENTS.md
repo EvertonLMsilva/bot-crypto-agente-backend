@@ -49,3 +49,12 @@ Não atualizar documentos sem relação com a tarefa apenas para modificar datas
 - Reversão auditável preserva histórico e trata posições simuladas abertas com segurança; perda isolada não provoca mudança automática.
 - MVP usa capital fictício e dados/acontecimentos simulados reproduzíveis. Não usar dinheiro real ou provedores pagos sem autorização específica. Fontes reais são evolução posterior.
 - Após mudanças aprovadas, atualizar documentação conforme o protocolo contínuo e o impacto da tarefa.
+
+## Política financeira e operacional consolidada (DOCS-004)
+- MVP exclusivamente spot simulado, sem alavancagem, venda descoberta ou operação real.
+- Aplicar orçamento centralizado/compartilhado sem saldo permanente por agente, limites de exposição/risco e perda diária aprovados em DEC-020. Risco planejado não garante perda máxima; considerar custos e gaps.
+- Exigir autorização financeira anterior à execução e sinais baseados somente em candles fechados. Entradas e saídas estratégicas na próxima abertura elegível, sem execução retroativa; autorização atrasada requer regra ainda pendente (DEC-021).
+- Aplicar OPS-002 (DEC-022) e política conservadora OHLC/gaps (DEC-023). Sem informação futura, custos omitidos, liquidações duplicadas ou alterações retroativas de proteção.
+- Toda posição tem stop e vínculo à estratégia/versão de origem. Promoção e rollback preservam proteção/histórico; não ampliar risco autorizado (DEC-024). DEC-016 permanece integralmente vigente.
+- Persistir trilha financeira auditável e idempotente; preservar originais por ajuste/compensação. Separar carteira simulada e avaliações hipotéticas (DEC-025).
+- Consultar os aceites e as pendências em REQUIREMENTS.md antes de implementar; não resolver regras ausentes por suposição nem relaxar limites/gates.

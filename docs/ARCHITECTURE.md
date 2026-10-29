@@ -58,11 +58,22 @@ Especialistas combinam técnica e contexto: tendência/preço, volume/volatilida
 DEC-014: Coordenador independente na sala de análise organiza oportunidades por nota padronizada 0–100 com critérios comuns e ordenação determinística. Preserva notas/análises, não recalcula indicadores nem muda conclusões, executa ou reserva capital. Fórmula, classificação, geração, validade/expiração, limiares e desempates PENDING; 40/35/25 não aprovado.
 
 ## 7. Gerenciamento financeiro e execução simulada
-DEC-018: gestor controla capital fictício, disponibilidade, limites, pedidos priorizados, autorizações/rejeições e reservas/liberações auditáveis, impedindo uso duplicado. Coordenador não o substitui. Política detalhada PENDING; 10.000 UC, 20%, 40% e faixas por nota não aprovados.
-DEC-017: após permissão, simulação acompanha operação e encerra conforme regras a definir, registra resultados e alimenta avaliação/evolução individual. Entrada, saída, stop, take profit, custos, dimensionamento e sentido PENDING. Nenhuma operação real no MVP.
+DEC-018/DEC-020: Gestor recebe oportunidades priorizadas, controla orçamento centralizado compartilhado de 10.000 UC, sem saldo permanente por agente. Autoriza/rejeita e registra disponibilidade, limites, reservas/liberações sem duplicação. Exposição individual máxima 20% e consolidada 40% do patrimônio; risco planejado por operação 1% e total aberto 2%. Recalcular percentuais sobre patrimônio conforme regras auditáveis. Perda diária de referência 3% usa patrimônio do início do dia UTC, virada 00:00, e considera redução patrimonial/perdas não realizadas; ao atingir o limite, bloquear novas entradas. Risco inclui custos previstos e distância à proteção, sem garantir perda máxima: gaps/deslizamentos podem exceder planejamento. Faixas por pontuação não aprovadas.
+
+DEC-021/DEC-022: somente spot simulado, sem alavancagem/venda descoberta/operação real. Sinais em candles fechados; entrada na próxima abertura elegível, com autorização financeira anterior. Não executar retroativamente no candle de origem ou após perder abertura; expiração/reagendamento PENDING. Registrar preço efetivamente simulado. OPS-002: stop inicial 2% abaixo, take 4% acima; taxa 0,10% e deslizamento 0,05% por execução; uma posição por ativo, saída integral. Saída estratégica na próxima abertura elegível; stop/take ativos via OHLC.
+
+DEC-023: avaliar gaps na abertura. Abaixo do stop de comprada, usar abertura desfavorável com deslizamento; acima do take, não conceder além do alvo sem regra aprovada. Só stop ou só take atingido: processar respectivo; ambos com sequência desconhecida: stop primeiro. Registrar razão/custos e impedir encerramento duplo. Não antecipar máxima/mínima/fechamento futuros; mudanças de proteção não retroagem.
+
+DEC-024: stop obrigatório e vínculo com versão de origem; apertar proteção só conforme regra autorizada, sem ampliar risco. Promoção não muda retroativamente posições; rollback não abandona posições e preserva proteção/histórico. Parâmetros versionados e candidatas sujeitos integralmente a DEC-016; sem alteração autônoma de limites globais/gates.
+
+Pendências: ciclo completo de ordem, abertura perdida, reservas expiradas, indisponibilidade de dados, redimensionamento/rejeição, precisão/reconciliação e recuperação. Não escolher contratos ou tecnologias nesta consolidação.
 
 ## 8. Persistência e auditoria
-Memória persistente individual e rastreabilidade aprovadas: análises originais, fontes/timestamps, contexto disponível, estratégias/versionamento, propostas, decisões, reservas, operações/resultados e validação/promoção/reversão. Banco, retenção e esquemas PENDING. Nenhuma persistência de aplicação implementada.
+DEC-025: histórico e estado financeiros persistentes, auditáveis e idempotentes. Controlar caixa disponível/reservado, posições, patrimônio, realizado/não realizado, exposição, risco planejado, perda diária, taxas/deslizamentos e justificativas de autorizações/rejeições. Marcação a mercado usa preços conhecidos no instante, sem antecipação.
+
+Cada operação preserva agente/ativo, estratégia/versão, oportunidade original, nota ao Coordenador, dados/contexto, orçamento, capital/risco autorizados, entrada/saída, custos, stop/take, resultado e eventos usados no aprendizado. Resultados alimentam só o especialista responsável; separar carteira de avaliações hipotéticas não executadas.
+
+Correções por eventos de ajuste/compensação preservam originais; não duplicar reservas, execuções, taxas ou liquidações. Reinício preserva histórico/estado; mesmo cenário/parâmetros/sequência reproduz resultados. Banco, contratos, precisão, arredondamento, reconciliação, recuperação e avaliações hipotéticas detalhadas PENDING. Nenhum mecanismo implementado.
 
 ## 9. Segurança
 Agentes não alteram código, segurança, limites financeiros, contratos, critérios obrigatórios ou autorizações. Candidatas não interferem em operações oficiais enquanto avaliadas. Gates não provam eficácia real. Operações reais e provedores pagos exigem autorização específica; não integram o MVP atual. Autenticação, credenciais e controles técnicos PENDING; nenhum implementado.
