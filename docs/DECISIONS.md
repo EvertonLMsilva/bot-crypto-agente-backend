@@ -599,3 +599,127 @@ Tecnologia de persistência, precisão, arredondamento, reconciliação, falhas/
 
 SUBSTITUI:
 Não se aplica; detalha decisões anteriores com autorização da DOCS-004.
+
+## Consolidação DOCS-005
+Fonte: tarefa BOT-CRYPTO-DOCS-005, 2026-10-29, aprovações SIGNAL-001 a SIGNAL-004. DEC-001 a DEC-025 preservadas integralmente como histórico. Pendências históricas de fórmula/desempate em DEC-014 e expiração em DEC-021 passam a ter as definições funcionais abaixo; calibração e contingências restantes não são aprovadas implicitamente. DEC-016 e DEC-020 a DEC-025 não foram alteradas. Não há implementação.
+
+## DEC-026
+ID: DEC-026
+DATA: 2026-10-29
+TÍTULO: SIGNAL-001: seleção adaptativa de estratégias por ativo
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-005 consolida aprovação funcional de SIGNAL-001.
+
+DECISÃO:
+Especialista usa exclusivamente estratégias, memória e resultados do próprio ativo, com múltiplas estratégias e seleção adaptativa conforme regime/contexto. Política de seleção e combinação versionada. Estratégias e candidatas independentes entre ativos: resultados de BTC não alteram automaticamente ETH, nem o inverso. Central fornece contexto, sem ordens ou substituição do especialista. Coordenador prioriza oportunidades sem recalcular análise ou pontuação. Evolução da política adaptativa somente após validação integral pelo LEARN-GATE de DEC-016.
+Famílias iniciais PROPOSED: tendência, rompimento, reversão à média; contexto econômico/geopolítico como camada transversal. Não são algoritmos completos aprovados.
+
+JUSTIFICATIVA:
+Permitir adaptação por ativo mantendo limites entre papéis.
+
+IMPACTOS:
+Seleção/combinação funcional aprovada; estratégias concretas, indicadores e parametrizações PENDING. Não aprova composição definitiva de ativos ou tecnologias.
+
+SUBSTITUI:
+Não se aplica; complementa e detalha decisões anteriores, preservando histórico.
+
+## DEC-027
+ID: DEC-027
+DATA: 2026-10-29
+TÍTULO: SIGNAL-002: regimes, pontuação global e elegibilidade
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-005 aprova estrutura global, sem aprovar calibração interna.
+
+DECISÃO:
+Classificação inicial APPROVED:
+- Regimes principais: UPTREND, DOWNTREND, SIDEWAYS, UNKNOWN quando dados insuficientes ou classificação inválida.
+- Dimensões complementares: volatilidade normal/elevada; contexto favorável/desfavorável/neutro/incerto.
+Classificação determinística, usando apenas informações disponíveis no instante simulado.
+
+Componentes normalizados 0–100 e pesos globais:
+- T: evidência técnica, 35%.
+- R: adequação ao regime, 25%.
+- C: contexto econômico/notícias, 15%.
+- H: desempenho histórico validado, 15%.
+- A: concordância independente, 10%.
+S = round(0.35*T + 0.25*R + 0.15*C + 0.15*H + 0.10*A)
+Limiar inicial para ENTRY_CANDIDATE: S >= 70.
+Score não é probabilidade de lucro, autorização financeira, garantia de execução ou medida suficiente de risco. Pesos globais e limiar não podem ser modificados autonomamente.
+
+Elegibilidade obrigatória: dados válidos, cronológicos e atuais; sem futuro; regime conhecido/válido; evidência de ao menos uma estratégia elegível; sem posição aberta conflitante ou duplicação de sinal; pontuação mínima. Autorização financeira separada antes de executar.
+
+Heurísticas ainda PROPOSED, não aprovadas: EMA 20/50, ADX 14/possível limiar 20, ATR 14 normalizado, percentil 75/janela de volatilidade, mínimo de 150 candles. Cálculo exato de T/R/C/H/A, dependências quantitativas entre estratégias e H com histórico insuficiente PENDING. Não impor H neutro de 50 sem aprovação. Baseline inicial identificado UNVALIDATED.
+
+JUSTIFICATIVA:
+Padronizar comparabilidade sem confundir nota e risco ou execução.
+
+IMPACTOS:
+Antiga fórmula 40/35/25 continua não aprovada e não é a nova fórmula. Algoritmos de regime, atualidade dos dados, normalizações, arredondamento exato e histórico insuficiente ainda exigem especificação; não inventar detalhes.
+
+SUBSTITUI:
+Não se aplica; complementa e detalha decisões anteriores, preservando histórico.
+
+## DEC-028
+ID: DEC-028
+DATA: 2026-10-29
+TÍTULO: SIGNAL-003: ciclos de aprendizado e decisões operacionais
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-005 aprova organização funcional do aprendizado e tipos de decisão.
+
+DECISÃO:
+Uma política ativa oficial por especialista; até três candidatas por ciclo e por agente. Avaliar candidatas isoladamente, sem consumir capital da carteira oficial. Candidatas/ativa usam condições comparáveis e dados cronológicos. Baseline pode iniciar operações simuladas identificado UNVALIDATED; histórico insuficiente não prova desempenho. Toda promoção posterior exige integralmente DEC-016. Estratégias/políticas versionadas; preservar histórico, resultados e evidências. Mudanças não retroagem sobre operações anteriores. Promoção/rollback preservam proteção de posições abertas. Agentes não alteram código, limites globais, segurança ou critérios obrigatórios.
+
+Tipos aprovados:
+- ENTRY_CANDIDATE: potencial compra spot elegível, score >=70 e demais critérios; encaminhar ao Coordenador.
+- EXIT_REQUEST: pedido estratégico de encerrar posição existente, próxima abertura elegível; independe da fila de novas compras.
+- HOLD: manutenção de posição aberta.
+- WAIT: sem nova posição ou oportunidade válida.
+- RISK_ALERT: evento informativo adicional, pode acompanhar outra decisão; não autoriza operação sozinho.
+Uma decisão operacional oficial por ativo e candle fechado, com alertas adicionais permitidos. Proteções stop/take existentes operam independentemente da fila de oportunidades, conforme OPS-002. Registrar divergências entre estratégias.
+
+JUSTIFICATIVA:
+Permitir simulação inicial e evolução controlada sem contaminar carteira ou histórico.
+
+IMPACTOS:
+DEC-016 preservada integralmente: 60 operações distintas concluídas, pelo menos três períodos com mínimo dez cada e demais critérios já aprovados. Não reduzir drawdown, integridade ou comparação exigidos. Frequência dos ciclos, mutações, métricas, sobreajuste, monitoramento e rollback detalhado PENDING.
+
+SUBSTITUI:
+Não se aplica; complementa e detalha decisões anteriores, preservando histórico.
+
+## DEC-029
+ID: DEC-029
+DATA: 2026-10-29
+TÍTULO: SIGNAL-004: validade, priorização e idempotência dos sinais
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-005 resolve validade de oportunidades e desempate funcional.
+
+DECISÃO:
+ENTRY_CANDIDATE vale somente até a próxima abertura elegível, com autorização financeira válida anterior à execução. Perdeu abertura: expirar, sem execução retroativa ou transferência da mesma autorização para nova oportunidade. Expiração/cancelamento libera reserva idempotentemente. Nova oportunidade exige nova análise com dados válidos. Relógio da simulação, não animação/tempo real; pausa não expira sinal por tempo real.
+
+Coordenador desempata nesta ordem:
+1. Maior pontuação válida.
+2. Data/hora simulada mais antiga do sinal.
+3. Rodízio determinístico entre ativos em empate completo.
+4. Identificador estável final.
+Persistir estado necessário do rodízio. Oportunidades do mesmo ciclo têm ordem reproduzível, independente da chegada casual/assíncrona. Coordenador não muda pontuações ou resultados de estratégias.
+
+EXIT_REQUEST: próxima abertura elegível; se perdida, sem retroatividade e com reavaliação obrigatória. HOLD e WAIT valem no ciclo corrente; WAIT sem reserva. RISK_ALERT é persistido com situação rastreável, sem criar ordem automaticamente.
+
+Identidade estável por sinal/ciclo; reprocessamento não duplica oportunidades, reservas ou operações. Dados ausentes/inválidos bloqueiam novas entradas; posições abertas não podem perder proteção por indisponibilidade. Contingências não definidas continuam PENDING. Rejeição por falta de capital não prova erro de estratégia; resultados hipotéticos separados da carteira.
+
+JUSTIFICATIVA:
+Fixar validade temporal, ordenação e ausência de efeitos duplicados.
+
+IMPACTOS:
+Complementa DEC-021 sem editar sua versão histórica: expiração antes pendente agora aprovada, sem reagendamento automático do mesmo sinal/autorização. Ciclo completo da ordem, contingências, recuperação e detalhes contábeis seguem PENDING. Limites financeiros e DEC-016 não alterados.
+
+SUBSTITUI:
+Não se aplica; complementa e detalha decisões anteriores, preservando histórico.

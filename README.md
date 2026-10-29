@@ -10,8 +10,11 @@ O Analista Central de Inteligência organiza e contextualiza dados e acontecimen
 
 Repositório: [EvertonLMsilva/bot-crypto-agente](https://github.com/EvertonLMsilva/bot-crypto-agente).
 
+## Sinais e aprendizado aprovados
+Especialistas selecionam múltiplas estratégias conforme regime/contexto, com política versionada. Fórmula global 0–100: T 35%, R 25%, C 15%, H 15%, A 10%; ENTRY_CANDIDATE exige nota >=70 e demais critérios, com autorização financeira separada. Nota não representa probabilidade de lucro. Uma política ativa e até três candidatas por ciclo/agente, sem capital oficial; baseline inicial UNVALIDATED e promoções sujeitas ao LEARN-GATE. Tipos: ENTRY_CANDIDATE, EXIT_REQUEST, HOLD, WAIT e RISK_ALERT. Abertura de entrada perdida expira o sinal, libera reserva idempotentemente e exige nova análise/autorização; saída perdida exige reavaliação. Ordenação por nota, tempo simulado, rodízio e ID estável. Indicadores, algoritmos e calibração interna permanecem pendentes em [requisitos](docs/REQUIREMENTS.md).
+
 ## Estado atual
-Planejamento do MVP-001, requisitos em consolidação. DOCS-001 criou a base; DOCS-002 sincronizou decisões; GIT-001 publicou a documentação inicial; DOCS-004 consolidou política financeira e operacional. Nenhuma evidência local de DOCS-003. Inspeção atual: somente oito documentos, sem implementação. Git em master, HEAD f034f9d010e573659aa80ba0720080bcb70b7088, com alterações documentais DOCS-004 ainda não commitadas. Não existe aplicação executável. Aprovações não comprovam capacidades implementadas.
+Planejamento do MVP-001, requisitos em consolidação. DOCS-001/002 criaram a base; GIT-001 publicou o primeiro commit; DOCS-004 consolidou finanças/operações e GIT-002 publicou esse conteúdo em 4bba447862703bba1d99570a738621c269139c3e. DOCS-005 registra SIGNAL-001 a SIGNAL-004 e deixa alterações documentais locais não commitadas. Sem evidência local de DOCS-003. Inspeção: oito documentos, master no HEAD 4bba447862703bba1d99570a738621c269139c3e, nenhuma aplicação implementada. Aprovações não comprovam capacidades executáveis.
 
 ## Visual e tecnologias
 Referência aprovada: um andar, análise/coordenação e orçamento no centro, mesas ao redor e expansão lateral. Visual final dos personagens/salas pendente. Three.js: PROPOSED. Frontend definitivo, backend, persistência, IA e infraestrutura não escolhidos. Dados e notícias reais somente em fase posterior, preservando contratos dos especialistas. MVP sem dependência de APIs externas pagas.
@@ -26,4 +29,4 @@ Referência aprovada: um andar, análise/coordenação e orçamento no centro, m
 - [Checkpoint do desenvolvimento](docs/DEVELOPMENT_STATE.md)
 
 ## Retomar
-Ler contexto, decisões e checkpoint; consultar demais documentos conforme o escopo. Próximo passo: finalizar sinais, pontuação e estratégias iniciais. Esta tarefa não autoriza desenvolvimento, instalações, integrações ou commits. Não há comandos de execução ou testes de aplicação disponíveis.
+Ler contexto, decisões e checkpoint; consultar demais documentos conforme o escopo. Próximo passo: revisar requisitos restantes do MVP, especialmente calibração, aprendizado quantitativo, escopo e contingências. Esta tarefa não autoriza desenvolvimento, instalações, integrações ou commits. Não há comandos de execução ou testes de aplicação disponíveis.
