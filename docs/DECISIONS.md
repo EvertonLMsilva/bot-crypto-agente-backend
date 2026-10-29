@@ -723,3 +723,154 @@ Complementa DEC-021 sem editar sua versão histórica: expiração antes pendent
 
 SUBSTITUI:
 Não se aplica; complementa e detalha decisões anteriores, preservando histórico.
+
+## Consolidação DOCS-006 — LEARN-004
+Fonte: BOT-CRYPTO-DOCS-006, 2026-10-29. DEC-001 a DEC-029 preservadas integralmente. As métricas, validação, pesquisa, drawdown e monitoramento antes registrados genericamente como pendentes passam a ter as definições abaixo; detalhes residuais continuam PENDING. DEC-016 não foi editada nem relaxada. Nenhuma implementação.
+
+## DEC-030
+ID: DEC-030
+DATA: 2026-10-29
+TÍTULO: LEARN-004: retorno líquido patrimonial
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-006 detalha métrica oficial de comparação sem substituir o LEARN-GATE.
+
+DECISÃO:
+Retorno líquido percentual sobre patrimônio simulado, por período:
+R_p = 100 * (E_final - E_inicial) / E_inicial
+Melhoria média:
+Delta = mean(R_candidata,p - R_ativa,p)
+Usar inicialmente três períodos cronológicos de mesma duração e condições equivalentes. Exigir Delta >= 1 ponto percentual, resultado líquido positivo após custos e superioridade da candidata em pelo menos dois dos três períodos, além de TODOS os critérios de DEC-016. Custos, taxas, deslizamento e patrimônio marcado a mercado comparáveis. Métrica de retorno não substitui risco ou integridade.
+
+JUSTIFICATIVA:
+Comparar desempenho líquido patrimonial sob condições equivalentes.
+
+IMPACTOS:
+Detalha DEC-016 sem alterar sua redação ou limites. Casos matemáticos excepcionais ainda não definidos continuam pendentes; não inventar tratamento.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## DEC-031
+ID: DEC-031
+DATA: 2026-10-29
+TÍTULO: LEARN-004: validação cronológica independente
+STATUS: APPROVED
+
+CONTEXTO:
+A validação deve separar ajuste de evidência final reservada.
+
+DECISÃO:
+Inicialmente três períodos cronológicos, sem sobreposição, de mesma duração e contabilmente independentes. Cada carteira começa com 10.000 UC e sem posições abertas; ativa/candidata recebem os mesmos dados, acontecimentos, condições financeiras e custos. Incluir regimes de alta, baixa e lateralização e eventos contextuais.
+Sequência: dados de desenvolvimento/ajuste -> congelamento da candidata e parâmetros -> dados reservados de validação final. Não usar validação antecipadamente no ajuste. Pode aquecer indicadores com dados anteriores à janela, sem contabilizar operações fora da avaliação.
+Nas fronteiras: posições abertas integram patrimônio marcado a mercado, com provisão estimada de custos de encerramento; não contam como operações concluídas; não forçar fechamento fictício pelo fim da janela; não transportar posições automaticamente entre carteiras independentes. Preservar número e identificadores distintos das operações encerradas.
+Mínimo permanece 60 operações distintas encerradas no conjunto válido, pelo menos 10 por período e demais critérios DEC-016.
+
+JUSTIFICATIVA:
+Evitar contaminação temporal e distorções de patrimônio/amostra nas janelas.
+
+IMPACTOS:
+Duração concreta, cenários, aquecimento numérico e recuperação de avaliações interrompidas PENDING. As carteiras independentes de avaliação não movimentam capital oficial.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## DEC-032
+ID: DEC-032
+DATA: 2026-10-29
+TÍTULO: LEARN-004: geração controlada e proteção contra sobreajuste
+STATUS: APPROVED
+
+CONTEXTO:
+Ciclos de candidatas precisam de limites e histórico de pesquisa.
+
+DECISÃO:
+Uma política ativa oficial por especialista; até três candidatas por ciclo/agente, derivadas de versão identificada, por busca local controlada. Alterações somente em parâmetros/seleção autorizados. Registrar hipótese, parâmetros, versões, sementes e histórico de TODAS as tentativas, incluindo número acumulado entre ciclos. Escolher no máximo uma desafiante por ciclo para validação final reservada. Candidatas não movimentam capital oficial.
+Não alterar código/contratos, pesos globais do score, limiar 70, limites financeiros ou critérios LEARN-GATE. Toda promoção exige DEC-016 integral.
+Não selecionar parâmetros com dados de validação final, escolher retrospectivamente períodos favoráveis ou reutilizar oportunisticamente períodos finais após conhecer resultados. Não contar operações repetidas como independentes; registrar concentração por período/regime; comparar nas mesmas condições. Invalidar avaliações contaminadas ou com look-ahead. Usar INSUFFICIENT_EVIDENCE quando faltarem dados válidos. Mínimos numéricos não equivalem a comprovação estatística.
+
+JUSTIFICATIVA:
+Controlar pesquisa e impedir que tentativas ocultas contaminem a evidência.
+
+IMPACTOS:
+Intervalos concretos mutáveis, algoritmos de mutação/geração, frequência operacional dos ciclos e métodos estatísticos complementares PENDING; não aprovar esses detalhes implicitamente.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## DEC-033
+ID: DEC-033
+DATA: 2026-10-29
+TÍTULO: LEARN-004: drawdown pelo pior período
+STATUS: APPROVED
+
+CONTEXTO:
+A comparação de risco deve considerar curva patrimonial e pior janela.
+
+DECISÃO:
+Para cada instante:
+P_t = maior patrimônio observado desde o início do período.
+DD_t = 100 * (P_t - E_t) / P_t
+E_t = patrimônio líquido simulado com posições abertas marcadas a mercado e custos pertinentes.
+MDD_p = max(DD_t) do período.
+MDD_final = max(MDD_1, MDD_2, MDD_3).
+Aplicar simultaneamente:
+- MDD_final da candidata <= 10%.
+- MDD_final da candidata <= MDD_final da ativa + 2 pontos percentuais.
+Ativa/candidata usam a mesma metodologia; não substituir pior período por drawdown médio. Curva calculada com dados conhecidos em cada instante, sem antecipação temporal.
+
+JUSTIFICATIVA:
+Fixar cálculo compatível com limites já aprovados em DEC-016.
+
+IMPACTOS:
+Não altera limites de risco ou perda diária da carteira oficial. Precisão/arredondamento e casos excepcionais continuam PENDING.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## DEC-034
+ID: DEC-034
+DATA: 2026-10-29
+TÍTULO: LEARN-004: monitoramento pós-promoção e suspensão imediata
+STATUS: APPROVED
+
+CONTEXTO:
+Promoção precisa de referência histórica e mecanismos distintos de proteção.
+
+DECISÃO:
+Após PROMOTE, nova versão gera decisões oficiais do especialista. Anterior permanece como referência identificada e pode ser avaliada em paralelo sem consumir capital oficial; preservar histórico/evidências.
+Degradação comprovada para rollback: duas janelas consecutivas, sem sobreposição, com mesma duração de avaliação; pelo menos 20 operações distintas encerradas da versão promovida em CADA janela. Retorno líquido da promovida inferior ao da anterior em pelo menos 1 ponto percentual em CADA janela; comparar condições, dados, custos e capital inicial equivalentes, registrando métricas, períodos e justificativa. Amostra insuficiente não comprova degradação com resultados isolados.
+Violações críticas de segurança, autorização, integridade ou limites exigem suspensão imediata de NOVAS ENTRADAS, sem aguardar janelas. Suspensão imediata e rollback por degradação são mecanismos distintos.
+
+JUSTIFICATIVA:
+Separar evidência de degradação de proteção imediata contra violações.
+
+IMPACTOS:
+Duração concreta de janelas, tratamento de casos excepcionais e recuperação permanecem PENDING. Suspensão não autoriza abandono de posições ou remoção de proteção.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## DEC-035
+ID: DEC-035
+DATA: 2026-10-29
+TÍTULO: LEARN-004: rollback seguro para novas decisões
+STATUS: APPROVED
+
+CONTEXTO:
+Reversão não pode apagar histórico, abandonar posições ou remover bloqueios.
+
+DECISÃO:
+Registrar motivo/evidências, sem apagar versão promovida ou histórico nem alterar decisões retroativamente. Reversão aplica-se a novas decisões. Posições existentes mantêm stop, take profit e estratégia/versão de origem; não abandoná-las.
+Usar versão anterior somente se continuar íntegra/elegível; sem versão segura, manter novas entradas suspensas. Rollback não revoga bloqueios financeiros nem modifica limites globais.
+Preservar estados PROMOTE, REJECT, INSUFFICIENT_EVIDENCE e ROLLBACK. Promoção/reversão continuam exclusivamente simuladas e sujeitas a DEC-016 e limites financeiros.
+
+JUSTIFICATIVA:
+Manter rastreabilidade e proteção das posições durante reversão.
+
+IMPACTOS:
+A aprovação deste mecanismo não define tecnologias, contratos técnicos ou recuperação detalhada de falhas.
+
+SUBSTITUI:
+Não se aplica; detalha decisões anteriores sem apagar seu histórico.

@@ -66,3 +66,11 @@ Não atualizar documentos sem relação com a tarefa apenas para modificar datas
 - Uma decisão oficial por ativo/candle fechado, com alertas adicionais; sinais/ciclos têm identidade estável. Persistir rodízio e preservar idempotência na ordenação, reserva e liberação.
 - Candidatas não consomem capital oficial. Não transferir autorização de oportunidade expirada; nova oportunidade exige nova análise e autorização própria.
 - EXIT_REQUEST e proteções existentes não dependem da fila de novas compras; dados indisponíveis não autorizam remover proteção. Detalhes de contingência não definidos continuam pendentes.
+
+## Validação e reversão controladas (DOCS-006 / LEARN-004)
+- Aplicar retorno líquido patrimonial, janelas independentes e drawdown pelo pior período conforme DEC-030/DEC-031/DEC-033, sempre com custos e dados conhecidos no instante. Não substituir pior drawdown por média.
+- Congelar candidata/parâmetros antes da validação final reservada; não ajustar pela validação, escolher retrospectivamente janelas favoráveis ou reutilizá-las oportunisticamente após resultados. Registrar todas as tentativas/sementes e total acumulado; não duplicar evidência.
+- Busca local apenas em parâmetros/seleção autorizados, até três candidatas e no máximo uma desafiante final por ciclo/agente; sem capital oficial ou mudança de código/contratos/score/limites/gates (DEC-032).
+- Nas fronteiras, marcar posições a mercado e provisionar custos de encerramento; posições abertas não são operações concluídas. Não fabricar fechamento pelo fim da janela ou transportar posição entre carteiras independentes.
+- Separar suspensão imediata de novas entradas por violação crítica e rollback por degradação comprovada segundo DEC-034. Não aguardar janelas para suspender violações críticas.
+- Rollback só afeta novas decisões; preservar stop, take e versão de origem das posições. Usar anterior apenas íntegra/elegível; sem versão segura, manter suspensão e bloqueios financeiros. Registrar motivo/evidências sem apagar histórico (DEC-035).
