@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: FOUNDATION_AND_DETERMINISTIC_CANDLES
-PHASE: MVP-001-A — fundação e candles determinísticos
-MVP: FOUNDATION_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
-IMPLEMENTATION: MVP_001_A_IMPLEMENTED_ONLY
+CURRENT_PHASE: CLOSED_CANDLE_INDICATORS
+PHASE: MVP-001-B — indicadores estatísticos sobre candles fechados
+MVP: FOUNDATION_AND_INDICATORS_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
+IMPLEMENTATION: MVP_001_A_AND_B_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -43,7 +43,7 @@ OPS-003.4: APPROVED_SPEC
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
 TECHNICAL_ARCHITECTURE: MINIMAL_ARCH_001_APPROVED; REMAINING_CONTRACTS_PENDING
-ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_ONLY_IMPLEMENTED
+ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_AND_INDICATORS_IMPLEMENTED
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
@@ -51,21 +51,26 @@ COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_30_TESTS_2_SUITES
-COVERAGE_LINES: 95.6_PERCENT_GLOBAL; 100_PERCENT_SIMULATION_COMPONENTS
+TESTS: PASS_82_TESTS_8_SUITES; 52_NEW_AND_30_PRESERVED
+COVERAGE_LINES: 97.96_PERCENT_GLOBAL; 100_PERCENT_NEW_INDICATORS
 BUILD: PASS
-SMOKE: PASS_3_CLOSED_CANDLES_PER_ASSET; EXIT_0
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_B
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: MVP-001-B
+NEXT: MVP-001-C
 ARCH_001: APPROVED_DEC_063
-REQ_093_100: APPROVED_SPEC; NOT_IMPLEMENTED
+REQ_093_100: APPROVED_SPEC; REQ_095_MATH_IMPLEMENTED_ONLY; REMAINING_NOT_IMPLEMENTED
+REQ_091_095: INDICATOR_MATH_IMPLEMENTED; OPERATIONAL_150H_WARMUP_AND_DEPENDENT_INTEGRATION_PENDING
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
-BOT-CRYPTO-MVP-001-A — IMPLEMENTATION / FOUNDATION_AND_DETERMINISTIC_CANDLES.
-STATUS: DONE — fundação NestJS/TypeScript sem HTTP, relógio UTC5min e candles BTC/ETH determinísticos implementados. DEC-063 registra ARCH-001 aprovada pelo proprietário nesta tarefa. Testes focados escritos antes dos componentes;30 aprovados/2 suítes, cobertura de linhas95,6% global/100% nos componentes de simulação; build/smoke aprovados. Apenas o incremento A foi entregue. Sem operação financeira, indicadores, cenários oficiais, banco, aprendizado ou3D; sem commit/push. Próximo MVP-001-B, sem avanço automático.
+BOT-CRYPTO-MVP-001-B — IMPLEMENTATION / TDD / CLOSED_CANDLE_INDICATORS.
+STATUS: DONE — EMA9/20/21/50, RSI14, ATR14, ADX/+DI/-DI14 e Bollinger20/2 implementados conforme DEC-053/REQ-091/REQ-095. Preflight conferiu raiz backend, master/1b73021100b59b84f4f86e22d0ad28dc2bc3b96c, staging/worktree limpos, Node v24.18.0/npm11.16.0;30 testes anteriores aprovados antes da edição. Testes novos escritos e executados antes dos módulos: RED por módulos ausentes; depois52 novos aprovados/6 suítes e suíte completa82/8. Cobertura nova100% de linhas, branches, statements e funções; global97,96% de linhas,98,34% statements,98,16% branches. npm run build aprovado. Sem novas dependências ou decisões; REQUIREMENTS e demais arquivos fora da allowlist preservados. Entrega matemática parcial de REQ-091/REQ-095 não equivale a integração operacional, warmup150h ou comprovação REQ-100.
+
+Contrato e índices registrados em ARCHITECTURE: instante UTC explícito, rejeição de futuro/formação/lacunas/mistura de ativos/OHLCV inválido; séries com null no histórico insuficiente; erros RangeError explícitos, sem NaN/Infinity ou números substitutos. Referências independentes incluem RSI Wilder, ATR com gaps de preço, ADX misto por frações exatas e variância populacional. Prefixos, ausência de relógio real/aleatoriedade, determinismo e entradas congeladas verificados. ATR0 não habilita divisores dependentes. Cálculo Number somente estatístico, separado de dinheiro/ledger.
+
+Criados exclusivamente os8 arquivos src/indicators/{types,validation,ema,rsi,atr,adx,bollinger,index}.ts e6 testes test/indicators/{ema,rsi,atr,adx,bollinger,validation}.spec.ts. Modificados somente ARCHITECTURE e este checkpoint. git diff --check aprovado; staging vazio, HEAD/branch preservados; sem commit/push. Pendentes: MVP-001-C e integrações posteriores, agregação horária, warmup150h, regimes/estratégias/scores/sinais, seis cenários oficiais, operações financeiras/orçamento/ledger/SQLite e aprendizado; frontend não alterado. Nenhum início de MVP-001-C.
 
 ## Histórico preservado
 - DOCS-001: oito documentos criados a partir de raiz vazia, sem Git/implementação; seis decisões aprovadas e Three.js proposto; layout central, expansão lateral e imagem de referência documentados. Nenhuma instrução preexistente local/ancestral encontrada naquela inspeção.
@@ -152,10 +157,10 @@ Futuro diagnóstico por ativo/família/regime/cenário/janela: candles válidos,
 - DEC-062: stop2%/take4% do preço efetivo de entrada fixos toda posição; sem trailing, breakeven ou ajuste automático. Saídas estratégicas mantidas, gaps/ambiguidades conforme DEC-023/REQ-098. Origem/proteções auditáveis, não alteradas por promoção/rollback/notícia/regime; inconsistência exige recuperação/revisão. Apertar proteção em DEC-024 é extensão não habilitada no MVP.
 
 ## Pendências residuais e prontidão
-REQ-043 APPROVED como especificação funcional. REQ-044 PENDING apenas porque o detalhamento das avaliações hipotéticas de oportunidades não executadas não foi aprovado por esta tarefa; isolamento shadow e recuperação/reconciliação funcional estão aprovados. REQ-031 mantém contratos técnicos de integração; ARCH-001 mínima aprovada em DEC-063: TypeScript/Node24/NestJS/Jest, SQLite e decimal financeiro previstos; React/Vite/Three.js posteriores. Contratos técnicos de persistência/atomicidade/recuperação permanecem para incrementos pertinentes; somente fundação entregue.
+REQ-043 APPROVED como especificação funcional. REQ-044 PENDING apenas porque o detalhamento das avaliações hipotéticas de oportunidades não executadas não foi aprovado por esta tarefa; isolamento shadow e recuperação/reconciliação funcional estão aprovados. REQ-031 mantém contratos técnicos de integração; ARCH-001 mínima aprovada em DEC-063: TypeScript/Node24/NestJS/Jest, SQLite e decimal financeiro previstos; React/Vite/Three.js posteriores. Contratos técnicos de persistência/atomicidade/recuperação permanecem para incrementos pertinentes; fundação e indicadores entregues em MVP-001-A/B.
 Intervalos/algoritmos de geração/mutação, ciclos, estatística complementar e recuperação excepcional LEARN continuam pendentes para quando necessários. Evidências experimentais, incluindo REQ-100, permanecem NOT_EXECUTED/PENDING_VERIFICATION. Não iniciar novo ciclo de especificação sem bloqueio concreto. Essas pendências serão tratadas quando necessárias nos incrementos posteriores. Three.js integra a stack aprovada para fase posterior, sem implementação.
 
-## Componentes entregues e verificações reais
+## Componentes entregues e verificações reais — MVP-001-A histórico
 - Fundação: package.json/lock, TypeScript strict, Jest e scripts build/test:coverage/smoke; AppModule e SimulationModule configuráveis em contexto NestJS standalone sem HTTP.
 - Relógio: timestamp inicial explícito UTC/alinhado, passos exatos300.000ms, snapshots/intervalos imutáveis, calendário e limites validados; sem Date.now() nas decisões.
 - Candles: seed explícita, estados independentes BTC/ETH, OHLC válido/positivo e volume não negativo,8 casas canônicas com bigint escalado; somente intervalos fechados, sem preview ou regime. Replay desde configuração inicial e passos; sem persistência/retomada durável.
@@ -164,22 +169,22 @@ Intervalos/algoritmos de geração/mutação, ciclos, estatística complementar 
 - npm run build: PASS após fixação das dependências finais. npm run smoke: PASS/exit0, seed bot-crypto-mvp-001-a-v1, início2026-01-01T00:00:00.000Z,3 intervalos/6 candles até00:15UTC, contexto encerrado. Sem gravação de operação financeira/rede de aplicação.
 - Primeira verificação detectou incompatibilidade ESM NestJS12/Jest; corrigida dentro da allowlist fixando NestJS11.1.15. Verificação final aprovada, sem alterar instalações globais.
 
-## Limitações e componentes não implementados
+## Limitações e componentes não implementados — MVP-001-A histórico
 Gerador inicial é fixture de infraestrutura, não implementa/valida seis cenários oficiais, warmup150h, agregação horária ou eventos contextuais. PRNG simples e determinístico, sem alegação de realismo de mercado ou uso criptográfico. Não há indicadores, scores/sinais, ordens/orçamento/proteções executáveis, SQLite/ledger, biblioteca decimal financeira, aprendizado/LEARN-GATE implementado, frontend ou3D. Cálculo bigint dos preços sintéticos não é contabilidade financeira. Simulação financeira e evidência REQ-100: NOT_EXECUTED/PENDING_VERIFICATION. Gates e requisitos permanecem intactos.
 
-## Tarefa em andamento e próxima tarefa
+## Tarefa em andamento e próxima tarefa — MVP-001-A histórico
 MVP-001-A concluída e validada. Próximo incremento MVP-001-B mediante tarefa própria; não iniciado automaticamente. Pendências LEARN/OPS e evidências experimentais mantidas para quando necessárias. Não abrir especificação adicional sem bloqueio concreto. Nenhum commit/push autorizado nesta tarefa.
 
-## Arquivos desta tarefa
+## Arquivos desta tarefa — MVP-001-A histórico
 Criados: package.json, package-lock.json, tsconfig.json, jest.config.cjs, .gitignore, src/main.ts, src/app.module.ts, src/simulation/clock.ts, src/simulation/candle.ts, src/simulation/seeded-generator.ts, test/simulation/clock.spec.ts e test/simulation/seeded-generator.spec.ts.
 Modificados: docs/DECISIONS.md, docs/ARCHITECTURE.md e docs/DEVELOPMENT_STATE.md. Todos os demais arquivos rastreados preservados. node_modules/dist são artefatos locais ignorados da instalação/build autorizados; nenhum arquivo versionável adicional.
 
-## Git real e publicação
+## Git real e publicação — MVP-001-A histórico
 BASELINE_BRANCH: master
 BASELINE_HEAD: 4424b4654a0dd531e699776d35d13f60f1d78e0a
 Baseline/branch preservadas, alterações deste incremento somente locais. Staging vazio. Nenhum fetch/pull, commit ou push nesta tarefa.
 
-## Validação final
+## Validação final — MVP-001-A histórico
 DEC-001 a DEC-062 preservadas integralmente; DEC-063 única/sequencial. Requisitos, limites financeiros, fórmulas/gates e V1/V2/V3 não alterados. Somente os12 arquivos novos e3 documentos autorizados; artefatos de dependências/build ignorados. git diff --check: PASS; staging vazio. Build/testes/smoke conforme resultados acima, sem simulação financeira ou alegação de rentabilidade.
 IMPLEMENTATION: MVP_001_A_IMPLEMENTED_ONLY. TESTS: PASS_30. SIMULATION: SYNTHETIC_CANDLES_ONLY. FINANCIAL_SIMULATION: NOT_EXECUTED. REQ-100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION. NEXT: MVP-001-B. COMMIT: NONE. PUSH: NONE.
 

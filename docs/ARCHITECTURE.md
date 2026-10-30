@@ -1,6 +1,6 @@
 # Arquitetura conceitual
 
-Divisão de responsabilidades APPROVED (DEC-019); arquitetura mínima ARCH-001 aprovada em DEC-063. MVP-001-A implementa somente fundação NestJS standalone, relógio e candles sintéticos. TypeScript/Node24/NestJS/Jest aprovados; contratos e componentes restantes não implementados. Blocos não implicam microsserviços. Referências: [decisões](DECISIONS.md), [requisitos](REQUIREMENTS.md).
+Divisão de responsabilidades APPROVED (DEC-019); arquitetura mínima ARCH-001 aprovada em DEC-063. MVP-001-A entrega fundação NestJS standalone, relógio e candles sintéticos; MVP-001-B acrescenta indicadores estatísticos fechados. TypeScript/Node24/NestJS/Jest aprovados; contratos e componentes restantes não implementados. Blocos não implicam microsserviços. Referências: [decisões](DECISIONS.md), [requisitos](REQUIREMENTS.md).
 
 ## Fluxo aprovado
 ```text
@@ -40,7 +40,7 @@ DEC-040: um andar, cinco personagens, mesas BTC/ETH, salas centrais da Central e
 
 ## 2. Backend e serviços
 Separar fontes/dados, inteligência contextual, estratégias individuais, priorização, gestão financeira, simulação operacional, aprendizado, visualização e persistência/auditoria. A separação conceitual não escolhe serviços físicos ou tecnologias.
-STATUS: fundação mínima TypeScript/Node24/NestJS standalone implementada em MVP-001-A; contratos técnicos dos componentes restantes pendentes, sem servidor HTTP.
+STATUS: fundação mínima TypeScript/Node24/NestJS standalone implementada em MVP-001-A e cálculos puros de indicadores em MVP-001-B; contratos técnicos dos componentes restantes pendentes, sem servidor HTTP.
 
 ## 3. Mecanismo dos agentes
 DEC-009/DEC-015/DEC-026: especialistas exclusivos por ativo, estratégias/memória/candidatas independentes. Seleção/combinação adaptativa conforme regime/contexto, política versionada e evolução só após DEC-016. Famílias iniciais e parâmetros aprovados em DEC-039/DEC-041 a DEC-050; bordas e ativação/bootstrap de H aprovados em DEC-051 a DEC-053; detalhes técnicos remanescentes PENDING.
@@ -139,7 +139,7 @@ STATUS: PENDING — aguardando definição arquitetural.
 Hardware, desempenho, observabilidade, custos e implantação ainda a definir. Não há frameworks ou provedores aprovados por este desenho.
 
 ## Fluxos complementares aprovados — DOCS-008
-Especificações APPROVED; implementação NOT_STARTED. Referência normativa completa: [DEC-051 a DEC-058](DECISIONS.md#dec-051), vinculadas a REQ-093 a REQ-100. Nenhuma tecnologia, biblioteca decimal ou contrato técnico escolhido.
+Especificações APPROVED; matemática dos indicadores REQ-095 entregue em MVP-001-B, demais fluxos não implementados. Referência normativa completa: [DEC-051 a DEC-058](DECISIONS.md#dec-051), vinculadas a REQ-093 a REQ-100. Stack mínima posterior em DEC-063; biblioteca decimal e contratos restantes pendentes.
 
 ### H, bootstrap e contingência de validação
 DEC-051 separa validação (UNVALIDATED, EVALUATING, INSUFFICIENT_EVIDENCE, REJECTED, VALIDATED) de autorização operacional (SHADOW, ELIGIBLE_FOR_PROMOTION, ACTIVE, NEW_ENTRIES_SUSPENDED, RETIRED). H é da política versionada do ativo, BTC/ETH independentes. Certificado histórico não autoriza H operacional. Configuração experimental muda somente H; candidata e referência congeladas, três NOVAS janelas independentes de30 dias, dados inéditos, custos/limites e LEARN-GATE integral. Só promoção controlada habilita H positivo para novas decisões; não reutilizar os períodos da certificação original nem retroagir. Preservar posições/versão de origem, auditoria, suspensão crítica e rollback.
@@ -211,7 +211,7 @@ Promoção, rollback, notícia e mudança de regime não alteram proteções exi
 
 Etapa funcional OPS-003 encerrada. Próxima ARCH-001 — arquitetura mínima executável; depois MVP-001 — implementação incremental. Pendências LEARN e evidências experimentais serão tratadas quando necessárias; sem novos ciclos de especificação sem bloqueio concreto. DEC-016/LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100 e V1/V2/V3 preservados. Não há execução financeira ou simulação nesta tarefa.
 
-## Fundação executável — MVP-001-A / DEC-063
+## Fundação executável — MVP-001-A / DEC-063 (registro histórico)
 Stack mínima aprovada: TypeScript, Node.js24 LTS, NestJS modular sem HTTP e Jest. SQLite local e biblioteca decimal financeira previstos para etapas posteriores; React/Vite/Three.js também posteriores. Arquivos package.json/package-lock.json fixam versões compatíveis; dependências só locais e gratuitas.
 
 AppModule importa SimulationModule configurável, ambos definidos em src/app.module.ts dentro da allowlist. Factories fornecem SimulationClock e SeededGenerator, sem I/O financeiro. src/main.ts inicializa contexto standalone, produz amostra fechada e executa app.close() em finally, inclusive se a geração falhar. Sem listener, scheduler de tempo real, rede de mercado ou persistência.
@@ -225,3 +225,12 @@ Gerador sintético v1: FNV-1a deriva estados xorshift32 separados por ativo. Con
 Limitação explícita: não implementa os seis cenários oficiais, eventos contextuais, warmup150h, agregação1h, indicadores, scores, orçamento, ordens, proteções executáveis, SQLite/ledger, aprendizado ou escritório3D. As regras funcionais anteriores continuam especificações, não capacidades entregues por este incremento; não houve simulação financeira ou prova de viabilidade REQ-100.
 
 Comandos locais: npm install (dependências locais); npm run test:coverage; npm run build; npm run smoke (após build). Smoke usa seed bot-crypto-mvp-001-a-v1 e início2026-01-01T00:00:00.000Z; publica3 candles fechados por ativo até00:15UTC e encerra. Execução standalone segue [documentação oficial NestJS](https://docs.nestjs.com/application-context). Resultados reais e limitações no checkpoint; próximo incremento MVP-001-B.
+
+## Indicadores estatísticos — MVP-001-B / DEC-053
+Implementados em src/indicators, exportados por index.ts, sem ligação automática ao ciclo da aplicação: ema(candles, asOf, period), rsi/atr/adx/bollinger(candles, asOf). Consomem Candle existente de um único ativo. asOf é a fronteira UTC explícita do relógio da simulação (por exemplo snapshot.currentTime), jamais o tempo real; candles cujo fechamento excede esse instante são rejeitados integralmente. validateHistory reaproveita a validação temporal de SimulationClock, exige intervalos contínuos de5min, ordem cronológica, BTC ou ETH exclusivo e OHLCV canônico com8 casas; consistência OHLC é comparada exatamente em bigint antes da conversão estatística. Não ordena, preenche ou ignora candles inválidos.
+
+Cada série mantém comprimento/indexação da entrada; null indica histórico insuficiente. Dados inválidos, ausentes, futuros/em formação ou resultado aritmético não finito causam RangeError, sem fallback numérico. ADX retorna plusDI/minusDI/dx a partir de14 e adx:null até26. EMA9/20/21/50 começa em8/19/20/49 com SMA e fator2/(N+1); RSI14/ATR14/DI14 em14; ADX14 em27 pela média DX[14..27]; Bollinger20/2 em19 com desvio populacional. Wilder, TR[1..14], empate DM e bordas RSI/DI/DX seguem DEC-053. ATR0 é medição válida, sem autorizar divisão por zero em futuros consumidores.
+
+Funções puras e causais, sem estado compartilhado ou mutação das entradas. Number é usado exclusivamente para estatística aproximada; não implementa precisão financeira de REQ-096, dinheiro, taxas ou ledger. Primeiros índices matemáticos não substituem aquecimento operacional150h, que continua pendente, assim como agregação1h, regimes, estratégias, scores/sinais, orçamento, execução financeira, SQLite e aprendizado. Nenhuma integração com frontend.
+
+Verificação real:52 testes novos em6 suítes; suíte completa82/8, preservando30 anteriores. Cobertura nova100% de linhas/branches/statements/funções em src/indicators; global97,96% de linhas. Referências numéricas independentes, prefixos causais, fronteiras UTC, integridade, isolamento/determinismo e entradas congeladas testados. Build aprovado; resultados finais no checkpoint. Próximo incremento MVP-001-C, sem início automático.
