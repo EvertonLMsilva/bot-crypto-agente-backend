@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: DECISION_ENVELOPE_AND_MEMORY_AUDIT
-PHASE: MVP-001-D1 — proposta de entrada/WAIT e auditoria em memória
-MVP: FOUNDATION_THROUGH_D1_DECISION_CONTRACT_IMPLEMENTED; FINANCIAL_OPERATIONS_NOT_IMPLEMENTED
-IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_AND_D1_IMPLEMENTED_ONLY
+CURRENT_PHASE: DETERMINISTIC_COORDINATION_WITH_EXPLICIT_ROTATION
+PHASE: MVP-001-D2 — ordenação de propostas e rodízio explícito
+MVP: FOUNDATION_THROUGH_D2_COORDINATION_IMPLEMENTED; FINANCIAL_OPERATIONS_NOT_IMPLEMENTED
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_AND_D2_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -47,18 +47,18 @@ ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_HOURLY_TECHNICAL_A
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
-COORDINATOR: CONCEPT_APPROVED
+COORDINATOR: PURE_BATCH_ORDERING_IMPLEMENTED; AUTONOMOUS_QUEUE_AND_PERSISTENCE_NOT_IMPLEMENTED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_265_TESTS_22_SUITES; 13_NEW_AND_252_PRESERVED
-COVERAGE_LINES: 98.99_PERCENT_GLOBAL; 100_PERCENT_NEW_OPERATIONS
+TESTS: PASS_287_TESTS_25_SUITES; 22_NEW_AND_265_PRESERVED
+COVERAGE_LINES: 99.11_PERCENT_GLOBAL; 100_PERCENT_NEW_COORDINATION
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D1
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D2
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: SUGGESTED_DETERMINISTIC_COORDINATION_WITH_EXPLICIT_ROTATION_STATE; REQUIRES_EXPLICIT_TASK
+NEXT: SUGGESTED_BUDGET_AND_AUTHORIZATION_AFTER_FINANCIAL_INTEGRATION; REQUIRES_EXPLICIT_TASK
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
@@ -66,10 +66,25 @@ REQ_061_080: ANALYSIS_AND_ENTRY_PROPOSAL_WAIT_ENVELOPE_IMPLEMENTED; NO_FINANCIAL
 REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
 SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
 OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
+COORDINATION_D2: VALIDATED_D1_BATCH_PRIORITY_DUPLICATES_AND_EXPLICIT_ROTATION_IMPLEMENTED; NO_FINANCIAL_EFFECTS
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D2 — IMPLEMENTATION / TDD.
+STATUS: DONE. Preflight: raiz backend, master/0a162ba3b888ab83d998d67d235e9e4eb50c2356, staging/worktree limpos, Node v24.18.0/npm11.16.0. Consultadas instruções, decisões/requisitos e contratos autorizados. Sem alteração dos componentes anteriores.
+
+Criados somente src/coordination/{types,priority,coordinate,index}.ts e test/coordination/{priority,coordinate,state}.spec.ts. coordinateEntryBatch recebe envelopes D1, fronteira UTC5min e nextTieAsset explícito. Valida identidade, posição, origem, representação exata e correspondência entre candidato/representante/avaliações/descartadas. Não recalcula análise. Ordena scoreRounded/instante/preferência de ativo/ID, sem usar scoreRaw. Cada grupo com empate real alterna preferência uma vez; grupos seguem score/tempo, WAIT não participa. Devolve nextState, sem estado global.
+
+Duplicatas idênticas são contadas/ignoradas; mesmo ID divergente e duas decisões oficiais do mesmo ativo/ciclo causam RangeError. Cópia JSON canônica profunda torna saída independente/imutável; preserva envelopes, timestamps e validade originais. Auditoria inclui estados anterior/posterior, ranking/origem/critério, empates e duplicatas. financialAuthorization NOT_EVALUATED e execution NOT_EXECUTED. WAIT/EXIT_EVALUATION_PENDING preservados, sem concluir HOLD.
+
+TDD: três suítes RED por módulos/contratos ausentes antes da implementação;22 novos GREEN/3 suítes. Completa287/25 e cobertura287/25 PASS, preservando265 anteriores. Linhas novas100%, branches96,60%; linhas globais99,11%. Build PASS; git diff --check e verificação explícita dos untracked/allowlist PASS. Fixtures D1 reais para score80/75, desempate por tempo/rodízio/ID, bruto diferente ignorado na prioridade, múltiplos empates, reprocessamento/chegada invertida, duplicatas válidas divergentes, inconsistências, UTC/futuro, congelamento/JSON e não mutação dos inputs. Benchmarks não executados; nenhuma nova alegação de capacidade/rentabilidade.
+
+Somente ARCHITECTURE e este checkpoint modificados, além dos sete arquivos novos autorizados. A/B/C1/C2/C3/D1, decisões/requisitos, dependências/configurações e frontend preservados. Branch/HEAD preservados; staging vazio, sem commit/push. Ordenação de sinais antigos não estende validade nem certifica execução; revalidação/expiração ficam para o motor operacional. Sem fila persistente, Coordenador autônomo ou idempotência financeira durável.
+
+Pendentes: integração financeira/orçamento/autorizações, reservas/ordens/execução/proteções, saídas estratégicas, persistência/ledger/recuperação, aprendizagem e comprovação REQ-100 NOT_EXECUTED/PENDING_VERIFICATION. Próxima etapa sugerida: orçamento/autorizações após integração financeira, somente mediante tarefa explícita.
+
+## MVP-001-D1 — registro histórico
 BOT-CRYPTO-MVP-001-D1 — IMPLEMENTATION / TDD.
 STATUS: DONE. Preflight: raiz backend, master/8bcec6024d7e877e10b205c8320e64c3708cc335, staging/worktree limpos, Node v24.18.0/npm11.16.0. Lidas instruções e seções autorizadas. C3/FIX-001 compõe a baseline com252 testes; checkpoint histórico C3 abaixo conserva resultados anteriores ao fix.
 
