@@ -1246,3 +1246,348 @@ Não se aplica; detalha configuração antes pendente sem apagar histórico.
 8. Verificação quantitativa de oportunidades possíveis com H=0, sem relaxar limiar 70.
 
 As descrições aprovadas de F e gatilhos são preservadas literalmente no conteúdo funcional; composição/indexação e convenções de borda não explicitadas exigem especificação antes de implementar, sem criar fórmulas de fallback ou saturação por conta própria. Nenhuma dessas pendências foi resolvida nesta consolidação.
+
+## Consolidação DOCS-008 — 2026-10-30
+
+Fonte: BOT-CRYPTO-DOCS-008; baseline master/e44ea76cbf855cd07d55c5a500916237da170ea5, árvore limpa e staging vazio. DEC-001 a DEC-050 e suas referências preservadas integralmente. As pendências registradas na DOCS-007-R2 acima descrevem o estado histórico; DEC-051 a DEC-058 aprovam agora as oito especificações correspondentes. APPROVED significa especificação aprovada, não implementação nem certificação. Evidência operacional/empírica REQ-100: NOT_EXECUTED/PENDING_VERIFICATION.
+
+## DEC-051
+ID: DEC-051
+DATA: 2026-10-30
+TÍTULO: REQ-093 — Ativação segura de H
+STATUS: APPROVED
+
+CONTEXTO:
+Separar certificação histórica de autorização de novas decisões oficiais.
+
+DECISÃO:
+- Separar estado de validação e autorização operacional.
+- Estados de validação: UNVALIDATED, EVALUATING, INSUFFICIENT_EVIDENCE, REJECTED, VALIDATED.
+- Estados operacionais: SHADOW, ELIGIBLE_FOR_PROMOTION, ACTIVE, NEW_ENTRIES_SUSPENDED, RETIRED.
+- H pertence à política versionada de cada ativo; BTC e ETH independentes.
+- H histórico certificado não ativa automaticamente H operacional.
+- Criar configuração experimental versionada que altera somente H.
+- Validar a nova configuração contra referência congelada, em três novas janelas independentes de 30 dias.
+- Aplicar LEARN-GATE integral, dados novos, custos e limites preservados.
+- Somente promoção controlada autoriza H positivo nas novas decisões oficiais.
+- Preservar posições, versões de origem, auditoria, suspensão crítica e rollback.
+- Não reutilizar períodos que produziram a certificação original nem validar retroativamente.
+
+JUSTIFICATIVA:
+Separar certificação histórica de autorização de novas decisões oficiais. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-093: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-093; DEC-016, DEC-034, DEC-035, DEC-041, DEC-048, DEC-049; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-052
+ID: DEC-052
+DATA: 2026-10-30
+TÍTULO: REQ-094 — Bootstrap P0
+STATUS: APPROVED
+
+CONTEXTO:
+Definir referência inicial por ativo sem inventar histórico validado.
+
+DECISÃO:
+- Criar BTC-P0 e ETH-P0 como referências iniciais distintas.
+- Configuração fixa, estado UNVALIDATED, H=0.
+- Permitir apenas operações simuladas sob controles existentes.
+- P0 pode ser referência sem possuir certificado histórico.
+- Durante os 90 dias de desenvolvimento, permitir proposta de P1 somente dentro dos parâmetros mutáveis autorizados; intervalos ainda não definidos permanecem pendentes.
+- Congelar P0 e P1 antes da validação reservada.
+- Comparar P1 contra sua própria P0 em três janelas independentes de 30 dias, com carteiras de 10.000 UC.
+- Mesmos cenários, condições, preços, eventos e custos; carteiras e resultados separados.
+- Aplicar integralmente os critérios LEARN-004/DEC-016.
+- Não inventar histórico da primeira referência nem ativar H positivo automaticamente.
+- Se P0 não negociar, retorno e drawdown serão zero; preservar o limite relativo de drawdown, sem exceção artificial.
+
+JUSTIFICATIVA:
+Definir referência inicial por ativo sem inventar histórico validado. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-094: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-094; DEC-016, DEC-028, DEC-032, DEC-038, DEC-049; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-053
+ID: DEC-053
+DATA: 2026-10-30
+TÍTULO: REQ-095 — Indicadores matemáticos
+STATUS: APPROVED
+
+CONTEXTO:
+Fixar convenções matemáticas antes da implementação.
+
+DECISÃO:
+Fixar indexação a partir de t=0 para o primeiro candle fechado:
+
+- EMA9: índice 8.
+- EMA20: índice 19.
+- EMA21: índice 20.
+- EMA50: índice 49.
+- Bollinger20: índice 19.
+- RSI14, ATR14, +DI/−DI14: índice 14.
+- ADX14: índice 27.
+
+Convenções:
+
+- EMA: semente SMA(N), depois fator 2/(N+1).
+- RSI, ATR e ADX/DI: suavização de Wilder.
+- Primeiro ATR: média TR[1..14].
+- Primeiro ADX: média DX[14..27].
+- Empate de movimento direcional: +DM=0 e −DM=0.
+- Ganhos positivos e perdas zero: RSI=100.
+- Ganhos zero e perdas positivas: RSI=0.
+- Ganhos e perdas zero: RSI=50.
+- Soma direcional zero: DI/DX zero, sem divisão inválida.
+- Bollinger20/2: desvio-padrão populacional.
+- ATR zero, denominadores inválidos, dados ausentes ou OHLC inconsistente bloqueiam avaliações dependentes.
+- Sem candles sintéticos, consulta futura ou continuidade artificial através de lacunas.
+- Recuperar estado íntegro persistido ou reconstruir a partir de histórico contínuo válido com aquecimento de 150 horas.
+
+Formalizar F por clip(x,0,1):
+
+- Tendência: (EMA9−EMA21)/(0,5×ATR14).
+- Rompimento: (Close−máxima dos 20 candles anteriores)/(0,5×ATR14).
+- Reversão: (35−menor RSI dos três candles anteriores)/15.
+
+Preservar gatilhos obrigatórios de SIGNAL-005.3.
+
+JUSTIFICATIVA:
+Fixar convenções matemáticas antes da implementação. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-095: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-095; DEC-039, DEC-042, DEC-043, DEC-050; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-054
+ID: DEC-054
+DATA: 2026-10-30
+TÍTULO: REQ-096 — Precisão financeira
+STATUS: APPROVED
+
+CONTEXTO:
+Distinguir precisão e arredondamento financeiros do half-up dos scores.
+
+DECISÃO:
+- Decimal exato para a contabilidade oficial.
+- Oito casas decimais para UC, quantidades e preços de execução.
+- Precisão interna superior, sem arredondamento prematuro.
+- Arredondar quantidade comprada e recebimentos para baixo.
+- Arredondar custos, taxas e valores comprometidos para cima.
+- Limites máximos permitidos arredondados conservadoramente para baixo.
+- Compra com slippage incorporado ao preço: nunca descontá-lo novamente.
+- Score e H preservam half-up; não confundir com regras de arredondamento financeiro.
+- Serializar valores financeiros em strings decimais canônicas.
+- Rejeitar NaN, infinito, formatos ambíguos e valores inválidos.
+- Reservas não alteram patrimônio por si só.
+- Preservar reconciliação, livro-razão, idempotência e auditoria.
+- Risco planejado considera custo de entrada e recebimento líquido estimado no stop.
+- Preservar exposição, perda diária e todos os limites DEC-020/OPS-002.
+- Transições completas de reserva, redimensionamento e contingência não autorizadas continuam como pendências residuais OPS-003.
+
+JUSTIFICATIVA:
+Distinguir precisão e arredondamento financeiros do half-up dos scores. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-096: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-096; DEC-020 a DEC-025, DEC-047, DEC-049, DEC-050; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-055
+ID: DEC-055
+DATA: 2026-10-30
+TÍTULO: REQ-097 — Eventos contextuais
+STATUS: APPROVED
+
+CONTEXTO:
+Resolver identidade, revisão e conflitos sem antecipar contexto.
+
+DECISÃO:
+- Eventos imutáveis com event_id, event_group_id, revision, fonte, disponibilidade UTC e sequência determinística.
+- Um grupo gera no máximo uma contribuição contextual ativa por ativo e instante.
+- Correções e retratações precisam de vínculo verificável com a informação anterior.
+- Rumores não geram bônus positivo; preservar penalidade U aprovada.
+- Confirmação substitui o estado de rumor dali em diante, sem retroatividade.
+- Republicações não duplicam impacto nem reiniciam validade.
+- Conflito não resolvido sobre o mesmo acontecimento: sem contribuição direcional daquele grupo, com UNCERTAIN auditável.
+- Eventos independentes de sinais opostos são contabilizados separadamente.
+- Conflito semântico não equivale automaticamente a falha técnica.
+- Fluxo obrigatório tecnicamente inválido bloqueia novas entradas.
+- BTC e ETH interpretam impactos separadamente.
+- Congelar snapshots contextuais; não usar eventos disponibilizados depois da fronteira de leitura.
+- Preservar fórmula C e prazos 6h/24h/72h aprovados.
+
+JUSTIFICATIVA:
+Resolver identidade, revisão e conflitos sem antecipar contexto. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-097: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-097; DEC-011, DEC-012, DEC-045; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-056
+ID: DEC-056
+DATA: 2026-10-30
+TÍTULO: REQ-098 — Ordem temporal de execução
+STATUS: APPROVED
+
+CONTEXTO:
+Fixar a causalidade entre fechamento, autorização, abertura e proteção.
+
+DECISÃO:
+Estabelecer o ciclo lógico de 5 minutos:
+
+1. Fechar e persistir candle anterior.
+2. Calcular sinais e autorizações somente com dados disponíveis.
+3. Congelar autorizações e reservas anteriores à nova abertura.
+4. Processar abertura com seu preço conhecido.
+5. Priorizar gaps e proteções da posição existente.
+6. Processar EXIT_REQUEST pendente se a posição continuar aberta.
+7. Revalidar e executar entradas previamente autorizadas, quando elegíveis.
+8. Avaliar proteção intrabar pelo OHLC completo quando disponível.
+9. Persistir efeitos, auditoria e estado de forma idempotente.
+
+Preservar:
+
+- Stop primeiro se stop e take forem atingidos sem sequência conhecida.
+- Gap desfavorável usa abertura compatível e slippage.
+- Gap favorável acima do take não concede ganho além do alvo.
+- Saída estratégica na próxima abertura elegível.
+- Abertura perdida: ENTRY expira e libera reserva uma vez; EXIT requer reavaliação.
+- Sem redimensionamento automático nesta especificação.
+- Sem reentrada do mesmo ativo na mesma fronteira em que saiu.
+- Dados inválidos não geram preços ou fills inventados.
+- Proteções persistem durante falhas, embora preço garantido não seja presumido sem dados.
+- Virada 00:00 UTC: patrimônio inicial diário com efeitos conhecidos do fechamento anterior.
+- Recuperação após interrupção sem dupla reserva, taxa, execução ou liquidação.
+- Não antecipar High/Low/Close do candle em formação.
+- Visualização 3D não controla a sequência financeira.
+
+JUSTIFICATIVA:
+Fixar a causalidade entre fechamento, autorização, abertura e proteção. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-098: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-098; DEC-020 a DEC-025, DEC-029, DEC-050; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-057
+ID: DEC-057
+DATA: 2026-10-30
+TÍTULO: REQ-099 — Evidência insuficiente
+STATUS: APPROVED
+
+CONTEXTO:
+Tratar insuficiência de amostra sem tentativas oportunistas.
+
+DECISÃO:
+- Se a primeira validação terminar com INSUFFICIENT_EVIDENCE exclusivamente por falta de amostra, permitir no máximo uma avaliação adicional da mesma versão.
+- Exigir contingência registrada antes de conhecer os resultados finais.
+- Usar três novas janelas completas de 30 dias.
+- Cada janela contém os seis cenários de cinco dias, com novas trajetórias/sementes.
+- Carteiras independentes de 10.000 UC.
+- Manter candidata, referência, H, parâmetros, custos e regras congelados.
+- Não somar operações ou resultados das duas rodadas.
+- Nova rodada exige por si só >=60 operações distintas e >=10 por janela, além de todo LEARN-GATE.
+- Não permitir nova tentativa oportunista se houver violação de risco, reprovação determinante de desempenho ou contaminação de dados.
+- Uma segunda insuficiência encerra a avaliação daquela versão.
+- Novo ciclo futuro exige nova versão legítima e dados reservados inéditos.
+- Preservar registro de todas as tentativas, evitando renomear configuração idêntica para zerar contador.
+- Extensão adicional de 90 dias é condicional, não alteração retroativa do baseline de 240 dias.
+
+JUSTIFICATIVA:
+Tratar insuficiência de amostra sem tentativas oportunistas. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-099: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-099; DEC-016, DEC-031, DEC-032, DEC-038; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## DEC-058
+ID: DEC-058
+DATA: 2026-10-30
+TÍTULO: REQ-100 — Viabilidade com H=0
+STATUS: APPROVED
+
+CONTEXTO:
+Aprovar protocolo verificável sem alegar oportunidades ou rentabilidade observadas.
+
+DECISÃO:
+Aprovar protocolo de verificação em três fases:
+
+1. Análise algébrica com H=0.
+2. Diagnóstico operacional determinístico nos dados de desenvolvimento, quando existir simulador.
+3. Aplicação posterior do LEARN-GATE em dados reservados, com política congelada.
+
+Registrar:
+
+- Fórmula global aprovada, mantendo H=0, pesos 35/25/15/15/10 e S>=70.
+- Half-up permite S=70 a partir do score bruto 69,50.
+- Contexto neutro C=50 e A=50 podem tornar algumas combinações inelegíveis por score.
+- Para C=50, R=100 e A=50, T mínimo aproximado 91,43.
+- Para C=50, R=90 e A=50, T mínimo aproximado 98,58.
+- Para C=50, R=80 e A=50, atingir 70 é impossível mesmo com T=100.
+- Para C=50, R=80 e A=100, T mínimo aproximado 91,43.
+- Para C=50, R=60 e A=100, atingir 70 é impossível mesmo com T=100.
+- A=100 continua condicionado à concordância qualificada, não é variável livre do agente.
+- Possibilidade algébrica NÃO demonstra frequência efetiva de entradas.
+
+Definir diagnóstico futuro por ativo, família, regime, cenário e janela:
+
+- Candles válidos.
+- Regimes elegíveis.
+- Gatilhos válidos.
+- Sinais com score >=70.
+- Autorizações financeiras.
+- Entradas executadas.
+- Operações distintas concluídas.
+- Rejeições e motivos.
+- Reprodutibilidade e ausência de look-ahead.
+
+Sem inventar estatísticas, operações executadas, simulações, certificação ou rentabilidade.
+
+A REQ-100 pode ter status APPROVED quanto ao protocolo, mas comprovação operacional e empírica deve permanecer explicitamente NOT_EXECUTED/PENDING_VERIFICATION nos documentos de estado e roadmap.
+
+JUSTIFICATIVA:
+Aprovar protocolo verificável sem alegar oportunidades ou rentabilidade observadas. Preservar causalidade, rastreabilidade e os controles aprovados.
+
+IMPACTOS:
+REQ-100: APPROVED quanto à especificação; implementação NOT_STARTED. Verificações experimentais NOT_EXECUTED/PENDING_VERIFICATION. Não altera gates ou limites financeiros; contratos técnicos, algoritmos de mutação e pendências residuais OPS-003/LEARN/ARCH-001 continuam PENDING.
+
+REFERÊNCIAS:
+REQ-100; DEC-016, DEC-041, DEC-043 a DEC-046; LEARN-004, SIGNAL-001 a SIGNAL-005, OPS-002 e MVP-SCOPE-001 a 006.
+
+SUBSTITUI:
+Não se aplica; detalha pendência anterior, preservando as decisões existentes.

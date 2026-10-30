@@ -1,6 +1,6 @@
 # Checkpoint operacional
 
-LAST_UPDATED: 2026-10-29
+LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence
 CURRENT_PHASE: PLANNING
@@ -14,7 +14,7 @@ NEXT_CANDLE_EXECUTION: APPROVED
 CONSERVATIVE_INTRABAR_STOP_TAKE: APPROVED
 OPS-002: APPROVED
 PERSISTENT_AUDIT: APPROVED
-SIGNAL_POLICY: FUNCTIONAL_RULES_APPROVED; EDGE_INTEGRATION_PENDING
+SIGNAL_POLICY: FUNCTIONAL_RULES_AND_EDGES_APPROVED; TECHNICAL_INTEGRATION_PENDING
 SIGNAL-001: APPROVED
 SIGNAL-002: APPROVED
 SIGNAL-003: APPROVED
@@ -24,7 +24,7 @@ SIGNAL-005.1-005.10: APPROVED_FUNCTIONAL_RULES
 MVP-SCOPE-001-006: APPROVED_FUNCTIONAL_SCOPE
 VALIDATION_MIXED_WINDOWS: APPROVED
 H_OPERATIONAL_INITIAL: ZERO_UNTIL_VALIDATION_AND_AUTHORIZATION
-H_POSITIVE_ACTIVATION: PENDING
+H_POSITIVE_ACTIVATION: APPROVED_SPEC; NOT_IMPLEMENTED
 LEARNING_QUANTITATIVE_DETAILS: APPROVED_POLICIES; RESIDUAL_DETAILS_PENDING
 LEARN-004: APPROVED
 LEARN_RETURN_METRIC: APPROVED
@@ -34,7 +34,7 @@ LEARN_DRAWDOWN_POLICY: APPROVED
 LEARN_POST_PROMOTION_MONITORING: APPROVED
 LEARN_ROLLBACK_POLICY: APPROVED
 LEARN_STATISTICAL_DETAILS: PARTIALLY_PENDING
-SIGNAL_CALIBRATION: INITIAL_RULES_APPROVED; EDGE_DETAILS_PENDING
+SIGNAL_CALIBRATION: FORMULAS_AND_EDGES_APPROVED; EXPERIMENTAL_EVIDENCE_PENDING
 OPS_RELIABILITY: PENDING
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
@@ -48,11 +48,13 @@ LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: INITIAL_SPOT_SIMULATION_APPROVED; OPERATIONAL_DETAILS_PENDING
 TESTS: NOT_EXECUTED
-NEXT: SPECIFY_REMAINING_PENDING_ITEMS_REQ_093_TO_100
+NEXT: PLAN_RESIDUAL_LEARN_OPS_003_ARCH_001
+REQ_093_100: APPROVED_SPEC; NOT_IMPLEMENTED
+REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
-BOT-CRYPTO-DOCS-007-R2 — DOCUMENTATION_ONLY.
-STATUS: DONE — escopo funcional, SIGNAL-005.1–005.10 e janelas corrigidas documentados. Sem implementação, simulação, build, testes de código, commit ou push.
+BOT-CRYPTO-DOCS-008 — DOCUMENTATION_ONLY.
+STATUS: DONE — DEC-051 a DEC-058 e REQ-093 a REQ-100 consolidadas como especificações aprovadas. Sem implementação, simulação, build, testes de código, commit ou push. Aprovação do protocolo REQ-100 não comprova frequência operacional ou rentabilidade.
 
 ## Histórico preservado
 - DOCS-001: oito documentos criados a partir de raiz vazia, sem Git/implementação; seis decisões aprovadas e Three.js proposto; layout central, expansão lateral e imagem de referência documentados. Nenhuma instrução preexistente local/ancestral encontrada naquela inspeção.
@@ -68,8 +70,12 @@ STATUS: DONE — escopo funcional, SIGNAL-005.1–005.10 e janelas corrigidas do
 - DOCS-007 anterior: não aplicada na baseline; sem registros, alterações locais ou documentação parcial encontrados no preflight.
 - DOCS-007-R2: DEC-036 a DEC-050, REQ-079 a REQ-100 (14 novos aprovados e oito pendentes), 13 requisitos anteriores reconciliados. AGENTS.md somente lido e preservado; histórico decisório anterior intacto.
 
+- DOCS-007-FIX-001: classificação incorreta de cenários/durações como PENDING removida de ARCHITECTURE.md; configuração aprovada referenciada à DEC-038.
+- GIT-005: commit local e44ea76cbf855cd07d55c5a500916237da170ea5, pai 0feccd4b35cd12422c6dca24e7723b0edb3b1ace, mensagem `docs: consolidate MVP scope and SIGNAL-005 specification`; sete documentos. Tarefa COMMIT_ONLY, sem push nela. DOCS-007-R2/FIX-001 integram esta baseline.
+- DOCS-008: DEC-051 a DEC-058 acrescentadas, preservando integralmente DEC-001 a DEC-050. REQ-093 a REQ-100 existentes passam de PENDING para APPROVED quanto à especificação; dependências/IDs preservados. Sem implementação ou evidência experimental produzida.
+
 ## Inspeção atual
-Raiz oficial, master e HEAD autorizado 0feccd4b35cd12422c6dca24e7723b0edb3b1ace confirmados. Antes da DOCS-007-R2, árvore/staging limpos, sem conflitos, oito documentos e nenhuma implementação. Sem DOCS-007 anterior aplicada ou parcial; nenhuma mudança preexistente a sobrescrever. Origin correto e histórico local GIT-001 a GIT-004 conferidos; nenhuma consulta remota/API nesta tarefa. AGENTS.md READ_ONLY. Aprovação funcional/documentação não comprova implementação, testes ou resultados da simulação.
+Raiz oficial D:\04-Projetos\30-bot-crypto-agence, branch master e HEAD e44ea76cbf855cd07d55c5a500916237da170ea5 confirmados antes das edições. Árvore limpa, staging vazio, DEC-050 última decisão e REQ-093 a REQ-100 PENDING no preflight. Oito documentos, sem código de implementação. Origin correto; nenhuma consulta ao servidor, fetch/pull ou API nesta tarefa. AGENTS.md somente leitura e íntegro. Após DOCS-008: sete documentos alterados localmente, staging vazio; nenhum commit/push.
 
 ## Aprovações consolidadas
 - Capital 10.000 UC centralizado compartilhado, sem saldo permanente por agente; exposição individual 20% e consolidada 40%; risco planejado 1% por operação e 2% aberto.
@@ -99,22 +105,30 @@ Raiz oficial, master e HEAD autorizado 0feccd4b35cd12422c6dca24e7723b0edb3b1ace 
 - Exatamente cinco agentes: Central, BTC, ETH, Coordenador e Gestor. Simulador/execução/auditoria são componentes; SOL futuro. Responsabilidades e independência por ativo preservadas.
 - Operações em5min fechados; regime/contexto técnico em1h (12 candles válidos). UTC24/7, eventos reproduzíveis, sem rótulo verdadeiro do gerador para agentes ou informação futura.
 - Seis cenários, aquecimento150 horários, desenvolvimento90 dias, validação3x30 e monitoramento2x30; 240 dias mais aquecimento. Cada V1/V2/V3 contém os seis cenários por5 dias, ordens exatas em DEC-038/REQ-082; sementes/trajetórias distintas, sem fabricar operações. Carteiras independentes10.000 UC, sem transportar estado/capital/posições; preservado mínimo60 concluídas distintas/10 por janela ou INSUFFICIENT_EVIDENCE.
-- Três famílias iniciais tendência/rompimento/reversão (DEC-039). Regimes EMA20/50, ADX/DI14, ATR14 e volatilidade nearest rank75; T/R/C/A, seleção e métodos/saídas definidos em DEC-042 a DEC-050, sem completar bordas pendentes.
-- S = round_half_up(0.35*T + 0.25*R + 0.15*C + 0.15*H + 0.10*A), limiar70, pesos inalterados. H operacional inicial0 em UNVALIDATED/insuficiência; H pertence à política versionada. H calculado50–90 após gate não autoriza ativação automática; precisa nova configuração/validação independente e estados/bootstrap ainda pendentes.
+- Três famílias iniciais tendência/rompimento/reversão (DEC-039). Regimes EMA20/50, ADX/DI14, ATR14 e volatilidade nearest rank75; T/R/C/A, seleção e métodos/saídas definidos em DEC-042 a DEC-050, com indexação/bordas e F formalizados na DEC-053.
+- S = round_half_up(0.35*T + 0.25*R + 0.15*C + 0.15*H + 0.10*A), limiar70, pesos inalterados. H operacional inicial0 em UNVALIDATED/insuficiência; H pertence à política versionada. H calculado50–90 após gate não autoriza ativação automática; precisa nova configuração/validação independente e estados/bootstrap aprovados em DEC-051/DEC-052, sem implementação.
 - Seleção interna por S arredondado/bruto/T/R/ID canônico, sem somar scores; Coordenador mantém nota/tempo/rodízio/ID. Saídas por origem geram EXIT_REQUEST próxima abertura; proteção OPS-002/gaps prevalecem; sem duplicações ou liquidação automática por regime/notícia isolada.
 - Escritório web de um andar, cinco personagens, mesas especialistas, Central/Gestor/Coordenador/telão, câmera orbit/zoom/pan e controles iniciar/pausar/avançar5min/velocidade/reinício confirmado. Animações não interferem na lógica; expansão lateral futura; nenhuma engine ou stack escolhida.
 
-## Oito pendências explícitas — PENDING
-1. REQ-093: máquina de estados para validação experimental e ativação operacional de H positivo.
-2. REQ-094: bootstrap/referência da primeira política validada.
-3. REQ-095: indexação/bordas ATR/ADX/DI/RSI, incluindo médias nulas e composição/bordas não explicitadas, sem defaults inventados.
-4. REQ-096: precisão decimal, serialização/arredondamento de execução com OPS-003.
-5. REQ-097: precedência de eventos contextuais simultâneos/contraditórios.
-6. REQ-098: ordem temporal exata de proteção, abertura, saída estratégica e falha de dados.
-7. REQ-099: avaliação adicional quando INSUFFICIENT_EVIDENCE.
-8. REQ-100: verificação quantitativa de oportunidades H=0 mantendo limiar70; nenhuma simulação realizada.
+## Oito especificações aprovadas — DOCS-008
+1. REQ-093 / DEC-051: validação e autorização operacional separadas; H por política/ativo, sem ativação automática por certificado. Configuração muda só H; três novas janelas30 dias, referência congelada, dados inéditos e gate integral antes da promoção para novas decisões. Preservar posições/origem/suspensão/rollback.
+2. REQ-094 / DEC-052: BTC-P0 e ETH-P0 fixas UNVALIDATED/H=0, referências sem certificado; P1 em desenvolvimento90 dias apenas nos parâmetros autorizados. Congelar P0/P1, comparar em3x30 com carteiras independentes10.000 UC, custos/dados equivalentes e gate integral. P0 sem negociar: retorno/drawdown0, sem exceção relativa.
+3. REQ-095 / DEC-053: indexação t=0, bordas Wilder/EMA/Bollinger, médias nulas RSI e F=clip(x,0,1) aprovados. Dados inválidos bloqueiam dependentes; sem futuro/lacunas artificiais; recuperar estado íntegro ou reconstruir histórico contínuo com150h.
+4. REQ-096 / DEC-054: decimal exato8 casas, precisão interna superior; quantidade comprada/recebimentos para baixo, custos/comprometidos para cima, máximos para baixo; strings canônicas, rejeição de inválidos e slippage sem dupla cobrança. Half-up de score/H separado; reservas não mudam patrimônio.
+5. REQ-097 / DEC-055: eventos imutáveis agrupados/revisados, uma contribuição ativa por grupo/ativo; revisão verificável/prospectiva, conflito UNCERTAIN sem direção, sem duplicação; U e C/6h/24h/72h preservados. Snapshot causal, feed obrigatório inválido bloqueia entrada.
+6. REQ-098 / DEC-056: nove etapas temporais de5min, autorização/reserva antes da abertura, proteção/gap antes de EXIT/entrada; intrabar só quandoOHLC completo disponível; persistência idempotente. Sem reentrada na fronteira da saída, redimensionamento automático ou fill inventado; proteção persiste durante falha. Virada00UTC usa efeitos conhecidos do fechamento anterior.
+7. REQ-099 / DEC-057: única rodada adicional só por insuficiência exclusiva de amostra e contingência pré-registrada; novas3x30 com seis cenários5 dias/ordens DEC-038, carteiras10.000 UC e configurações congeladas. Sem somar rodadas;>=60 distintas/10 por janela e gate integral na nova. Segunda insuficiência encerra versão; sem oportunismo/renomeação idêntica. +90 dias condicional, baseline240 intacto.
+8. REQ-100 / DEC-058: protocolo em três fases aprovado: álgebraH0; futuro diagnóstico determinístico no desenvolvimento quando houver simulador; LEARN-GATE posterior em reserva com política congelada.
 
-Também permanecem detalhes residuais LEARN (intervalos/geração/ciclos/estatística/recuperação), confiabilidade/contabilidade OPS-003 e arquitetura técnica ARCH-001. Essas pendências não foram promovidas a aprovações. Three.js continua PROPOSED.
+### REQ-100: aprovação não é comprovação
+PROTOCOL: APPROVED_SPEC.
+OPERATIONAL_DIAGNOSTIC: NOT_EXECUTED/PENDING_VERIFICATION.
+EMPIRICAL_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION.
+Com H0, pesos35/25/15/15/10 e S>=70, half-up aceita bruto69,50. Com C50: R100/A50 requer T aproximadamente91,43; R90/A50,98,58 conservador; R80/A50 impossível; R80/A100 aproximadamente91,43; R60/A100 impossível. A100 exige concordância qualificada. Conferência algébrica não demonstra frequência de entradas.
+Futuro diagnóstico por ativo/família/regime/cenário/janela: candles válidos, regimes elegíveis, gatilhos válidos, sinais>=70, autorizações, entradas, operações distintas concluídas, rejeições/motivos, reprodutibilidade e ausência de look-ahead. Sem resultados, certificação ou rentabilidade inventados.
+
+## Pendências residuais reais — PENDING
+Intervalos e algoritmos de geração/mutação, frequência de ciclos, estatística complementar e recuperação excepcional LEARN; transições completas de reservas, redimensionamento e contingências residuais OPS-003; contratos técnicos, confiabilidade, segurança, tecnologias e hardware ARCH-001. Implementação não iniciada; verificações operacionais/experimentais não executadas. Three.js permanece PROPOSED; nenhuma engine, stack, banco, biblioteca decimal ou serviço escolhido. As oito especificações acima não permanecem genericamente indefinidas.
 
 ## Tarefa em andamento e próxima tarefa
 Nenhuma execução após esta consolidação. Próxima tarefa de planejamento deve fechar pendências explicitamente autorizadas; eventual publicação exige tarefa separada depois da revisão. Não há autorização de implementação ou simulação nesta tarefa. Roadmap permanece PROPOSED, sem fases implementadas.
@@ -136,12 +150,12 @@ Sete documentos atualizados; AGENTS.md somente leitura, sem alteração. Nenhum 
 REPOSITORY: https://github.com/EvertonLMsilva/bot-crypto-agente
 ORIGIN: https://github.com/EvertonLMsilva/bot-crypto-agente.git
 BRANCH: master
-HEAD: 0feccd4b35cd12422c6dca24e7723b0edb3b1ace
+HEAD: e44ea76cbf855cd07d55c5a500916237da170ea5
 UPSTREAM: origin/master
-LOCAL_REMOTE_TRACKING_HEAD: 0feccd4b35cd12422c6dca24e7723b0edb3b1ace
-LAST_CONFIRMED_REMOTE_COMMIT: 0feccd4b35cd12422c6dca24e7723b0edb3b1ace (GIT-004 / baseline autorizada confirmada localmente)
-Nenhuma consulta remota, fetch ou API externa nesta tarefa. Referência origin/master é evidência local, não nova confirmação do servidor. DOCS-006 publicada na GIT-004. DOCS-007-R2 somente na árvore de trabalho, staging vazio, sem commit/publicação. HEAD, rastreamento e configuração preservados, sem commit/push.
+LOCAL_REMOTE_TRACKING_HEAD: e44ea76cbf855cd07d55c5a500916237da170ea5
+LAST_CONFIRMED_REMOTE_COMMIT: 0feccd4b35cd12422c6dca24e7723b0edb3b1ace (histórico GIT-004)
+Baseline observada localmente; origin/master é referência local, sem nova confirmação do servidor. GIT-005 criou o commit e44ea76 local sem push naquela tarefa. Publicação posterior não consultada nem inferida nesta DOCS-008. DOCS-008 apenas na árvore de trabalho; staging vazio, sem commit/push, configuração e histórico Git preservados.
 
 ## Validação documental
-Preflight confirmou baseline limpa e ausência da DOCS-007 anterior. IDs e links internos, fórmulas/parâmetros, matriz R e três ordens de validação conferidos. Histórico DEC-001 a DEC-035 preservado integralmente, incluindo DEC-016/LEARN-004/OPS-002; limites financeiros inalterados. Sete documentos editados; AGENTS.md idêntico ao HEAD. Diff restrito à allowlist, sem erro de whitespace. Pendências H/bordas/precedências/viabilidade explícitas, sem inventar aprovações.
-IMPLEMENTATION: NOT_STARTED. Simulações/build/testes de código: NOT_EXECUTED. Nenhum resultado financeiro, contagem real de oportunidades ou capacidade implementada alegado. COMMIT: NONE. PUSH: NONE.
+Preflight confirmou baseline autorizada limpa. DEC-051 a DEC-058 e REQ-093 a REQ-100 conferidos quanto a sequência, unicidade e referências; decisões DEC-001 a DEC-050 preservadas integralmente. Fórmulas, limites, ordens V1/V2/V3 e gates DEC-016/LEARN-004/SIGNAL/OPS-002 mantidos. Álgebra H0 conferida documentalmente, sem diagnóstico ou simulação. Links locais, escopo dos sete documentos, integridade de AGENTS.md, staging vazio e git diff --check conferidos.
+IMPLEMENTATION: NOT_STARTED. Diagnósticos/simulações/build/testes de código: NOT_EXECUTED. REQ-100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION. COMMIT: NONE. PUSH: NONE.
