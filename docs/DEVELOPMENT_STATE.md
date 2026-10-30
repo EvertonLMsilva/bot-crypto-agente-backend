@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: TECHNICAL_FAMILIES_AND_EVIDENCE
-PHASE: MVP-001-C2 — famílias técnicas e evidência T
-MVP: FOUNDATION_INDICATORS_REGIMES_TECHNICAL_FAMILIES_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
-IMPLEMENTATION: MVP_001_A_B_C1_AND_C2_IMPLEMENTED_ONLY
+CURRENT_PHASE: EXACT_SIGNAL_COMPOSITION_AND_SELECTION
+PHASE: MVP-001-C3 — contexto, composição exata e seleção pura
+MVP: FOUNDATION_INDICATORS_REGIMES_TECHNICAL_FAMILIES_SIGNAL_COMPOSITION_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
+IMPLEMENTATION: MVP_001_A_B_C1_C2_AND_C3_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -14,7 +14,7 @@ NEXT_CANDLE_EXECUTION: APPROVED
 CONSERVATIVE_INTRABAR_STOP_TAKE: APPROVED
 OPS-002: APPROVED
 PERSISTENT_AUDIT: APPROVED
-SIGNAL_POLICY: FUNCTIONAL_RULES_AND_EDGES_APPROVED; TECHNICAL_INTEGRATION_PENDING
+SIGNAL_POLICY: FUNCTIONAL_RULES_APPROVED; PURE_COMPOSITION_IMPLEMENTED; OPERATIONAL_INTEGRATION_PENDING
 SIGNAL-001: APPROVED
 SIGNAL-002: APPROVED
 SIGNAL-003: APPROVED
@@ -43,7 +43,7 @@ OPS-003.4: APPROVED_SPEC
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
 TECHNICAL_ARCHITECTURE: MINIMAL_ARCH_001_APPROVED; REMAINING_CONTRACTS_PENDING
-ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_HOURLY_AND_TECHNICAL_FUNCTIONS_IMPLEMENTED
+ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_HOURLY_TECHNICAL_AND_SIGNAL_FUNCTIONS_IMPLEMENTED
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
@@ -51,23 +51,38 @@ COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_196_TESTS_15_SUITES; 49_NEW_AND_147_PRESERVED
-COVERAGE_LINES: 98.97_PERCENT_GLOBAL; 99.26_PERCENT_NEW_STRATEGIES
+TESTS: PASS_245_TESTS_20_SUITES; 49_NEW_AND_196_PRESERVED
+COVERAGE_LINES: 98.95_PERCENT_GLOBAL; 98.91_PERCENT_NEW_SIGNALS
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C2
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C3
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: MVP-001-C3
+NEXT: REMAINING_INCREMENT_REQUIRES_EXPLICIT_TASK
 ARCH_001: APPROVED_DEC_063
-REQ_093_100: APPROVED_SPEC; REQ_095_MATH_IMPLEMENTED_ONLY; REMAINING_NOT_IMPLEMENTED
+REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
-REQ_061_080: HOURLY_AGGREGATION_REGIMES_AND_VOLATILITY_IMPLEMENTED; NO_SIGNALS_OR_AUTHORIZATION
-REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; NO_GLOBAL_SCORE_OR_ORDERS
+REQ_061_080: HOURLY_AGGREGATION_REGIMES_AND_VOLATILITY_IMPLEMENTED; NO_OPERATIONAL_SIGNALS_OR_AUTHORIZATION
+REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
+SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; NO_OPERATIONAL_ENTRY_CANDIDATE_OR_ORDERS
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-C3 — IMPLEMENTATION / TDD.
+STATUS: DONE. Preflight: raiz backend, master/d82664545390b102c6f79b00e9ea4a7d6dc56902, worktree/staging limpos, Node v24.18.0/npm11.16.0. Instruções e seções autorizadas consultadas; decisões, requisitos, C1/C2, indicadores e dependências preservados.
+
+Criados somente sete módulos src/signals/{types,context,exact-technical-score,regime-fit,score,select,index}.ts e cinco testes autorizados. evaluateSignalCandidates chama C2 uma vez, calcula T/C/S em frações bigint serializáveis, aplica as oito células R, concordância qualificada por T>=60 e H0 obrigatório. Half-up somente no S final e desempate por S arredondado/bruto/T/R/ID. Retorna três avaliações congeladas, representante ou null, descartadas e razões; política P0 UNVALIDATED com versões explícitas, sem histórico/H fornecido. Contexto valida identidade, UTC, sequência e revisão; conflitos UNCERTAIN não viram falha técnica, eventos futuros não contribuem e revisões não reiniciam validade. Contratos reais/limitações descritos em ARCHITECTURE.
+
+TDD: suítes novas executadas antes dos respectivos módulos, RED por contratos/módulos ausentes, depois GREEN;49 novos/5 suítes. Focados49/5 PASS; suíte completa245/20 e cobertura245/20 PASS, preservando196 anteriores. Linhas novas98,91%, branches98,33%, linhas globais98,95%; linhas defensivas não cobertas: denominador/divisor interno inválido e propagação de erro inesperado do contexto. Build PASS. git diff --check e conferência explícita dos untracked PASS; staging vazio, sem commit/push. Somente ARCHITECTURE e este checkpoint modificados entre os arquivos rastreados.
+
+Referências independentes para EMA/Wilder/RSI, F/Q/V/T, T60 e vizinhos racionais, S69,50 e vizinhos, acordo por participantes e todos os desempates. Rejeição da série de30 preços10000000000000000.00000000..29 confirmada pela integração C2 antes de decisão. Testes causais incluem disponibilidade contextual, correções/retrações, duplicatas/conflitos, ordem de chegada, entradas congeladas e isolamento BTC/ETH. Recuperação real150h sem mocks: T90, C50 gera S69; C80 confirmado disponível no instante gera S73,50→74, selecionando MEAN_REVERSION. Nenhum uso de Date.now/Math.random.
+
+Medição local única após adiar reduções RSI não consumidas:150h/1.800 candles234,21ms, heap5,45→9,37MiB, RSS após63,40MiB;200h/2.400 candles362,29ms, heap6,02→16,31MiB, RSS após80,76MiB. Caminho completo com entradas congeladas, preços alternados exatos e GC anterior. Não é SLA nem pico de memória; histórias maiores não medidas, custo dos inteiros cresce. Observação Number permanece apenas diagnóstica; incertezas conservadoras de regimes do C1 continuam bloqueando qualificação.
+
+Pendentes: produtor contextual, integração operacional, ENTRY_CANDIDATE/Coordenador/Gestor, ordens/orçamento/proteções, persistência/SQLite/ledger, cenários oficiais, certificação, aprendizagem e H positivo. REQ-100 operacional/empírico continua NOT_EXECUTED/PENDING_VERIFICATION. Sem autorização financeira, fontes externas, frontend ou integração automática NestJS. Próximo incremento somente mediante tarefa explícita.
+
+## MVP-001-C2 — registro histórico
 BOT-CRYPTO-MVP-001-C2 — IMPLEMENTATION / TDD.
 STATUS: DONE. Preflight: raiz backend, master/6e1a0e2bc0fd526cc151edf1880278ad39553fa1, worktree/staging limpos, Node v24.18.0/npm11.16.0. Consultadas somente instruções e seções/interfaces pertinentes. Sem conflito encontrado entre as interpretações operacionais autorizadas e DEC-039/DEC-043/DEC-053. Decisões, requisitos, limiares e módulos anteriores preservados.
 
