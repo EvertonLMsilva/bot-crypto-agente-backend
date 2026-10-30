@@ -2,7 +2,7 @@
 
 ## Escopo e retomada
 - Projeto independente de Jarvis/Kate. Não importar suas regras, arquivos ou arquitetura.
-- Diretório oficial: `D:\04-Projetos\30-bot-crypto-agence`.
+- Diretório oficial: `D:\04-Projetos\30-bot-crypto-agence\backend`.
 - Antes de iniciar novas tarefas, ler [contexto](docs/PROJECT_CONTEXT.md), [decisões](docs/DECISIONS.md) e [estado](docs/DEVELOPMENT_STATE.md).
 - Consultar [requisitos](docs/REQUIREMENTS.md), [arquitetura](docs/ARCHITECTURE.md) e [roadmap](docs/ROADMAP.md) conforme o escopo.
 - Inspecionar arquivos, instruções locais e Git antes de modificar; preservar trabalho existente.

@@ -1733,3 +1733,32 @@ REQ-037, REQ-038, REQ-039, REQ-043, REQ-092, REQ-098; DEC-022 a DEC-024, DEC-035
 
 SUBSTITUI:
 Não se aplica; detalha o MVP e preserva integralmente o histórico.
+
+## DEC-063
+ID: DEC-063
+DATA: 2026-10-30
+TÍTULO: ARCH-001 — arquitetura mínima aprovada e incremento MVP-001-A
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-MVP-001-A aprova explicitamente a stack ARCH-001 e autoriza somente fundação, relógio e candles sintéticos determinísticos. Baseline observada master/4424b4654a0dd531e699776d35d13f60f1d78e0a, worktree limpa e staging vazio; Node v24.18.0 e npm11.16.0 funcionais. DEC-001 a DEC-062 preservadas integralmente.
+
+DECISÃO:
+TypeScript, Node.js24 LTS, NestJS modular inicialmente sem HTTP e Jest. SQLite local previsto para persistência e biblioteca decimal exata prevista para cálculos financeiros, sem instalação/implementação desses componentes neste incremento. React/Vite/Three.js para fase posterior. Zero serviços pagos, APIs de mercado ou operações reais.
+Fundação mínima com AppModule e SimulationModule, contexto standalone criado por NestFactory.createApplicationContext e encerrado por app.close(), sem listener HTTP. Dependências locais com versões explícitas no package.json e árvore travada em package-lock.json: NestJS common/core11.1.15, TypeScript5.9.3, Jest30.5.2, ts-jest29.4.15, reflect-metadata0.2.2, rxjs7.8.2; tipos Node24.19.2/Jest30.0.0. NestJS12 foi descartado durante a verificação por incompatibilidade ESM nesta configuração do Jest; configuração final11.1.15 validada em Node24.
+Relógio lógico UTC recebe timestamp explícito alinhado em5min, sem Date.now() nas decisões. Início é a abertura do primeiro intervalo; step avança exatamente300.000ms e só então disponibiliza o intervalo fechado. Validar formato/calendário/alinhamento e impedir avanço além do limite UTC suportado. Snapshot imutável registra início, tempo atual e passos para reprodução desde a configuração inicial; persistência/retomada durável não implementadas.
+Gerador inicial v1 usa seed explícita, hash FNV-1a e fluxos xorshift32 separados por ativo. Cada next é o único responsável por avançar seu relógio; avanço externo é rejeitado. BTC/ETH usam estados/preços independentes. OHLCV fechado, imutável e causal, sem rótulo de regime ou prévia de candle futuro. Preços/volume em strings decimais canônicas de8 casas; aritmética de preço em bigint escalado, sem float financeiro ou biblioteca contábil antecipada. Aritmética Number do PRNG usa apenas inteiros32bits; timestamps são inteiros em milissegundos.
+Gerador é fixture de infraestrutura sintética, não implementação ou validação dos seis cenários oficiais, aquecimento, agregação horária ou geração contextual. Não comprova oportunidades, rentabilidade, indicadores, sinais, operações ou LEARN-GATE.
+Smoke local com seed bot-crypto-mvp-001-a-v1 e início2026-01-01T00:00:00.000Z gera3 intervalos fechados,6 candles BTC/ETH até00:15UTC, fecha contexto e encerra processo, sem rede durante execução.
+
+JUSTIFICATIVA:
+Entregar a menor fundação executável e testável com reprodução temporal e preços exatos, preservando limites e separação de responsabilidades.
+
+IMPACTOS:
+MVP-001-A implementado: configuração/build/Jest, módulos standalone, relógio e gerador inicial. Verificação final:30 testes em2 suítes aprovados,95,6% de linhas no total e100% nos três componentes de simulação; build e smoke aprovados. Testes escritos antes dos componentes; nenhum indicador, score, ordem, banco, ledger, biblioteca decimal financeira, aprendizado ou3D implementado. Nenhuma simulação financeira executada; REQ-100 empírica NOT_EXECUTED/PENDING_VERIFICATION. Próximo incremento MVP-001-B, sem avanço automático, commit ou push.
+
+REFERÊNCIAS:
+BOT-CRYPTO-MVP-001-A; REQ-020, REQ-057, REQ-059, REQ-080, REQ-081, REQ-095; DEC-011, DEC-019, DEC-037, DEC-038, DEC-053; DEC-016/LEARN-GATE, SIGNAL e OPS-002 preservados. Padrão standalone: https://docs.nestjs.com/application-context
+
+SUBSTITUI:
+Não se aplica; registra aprovação ARCH-001 recebida nesta tarefa e concretiza somente o incremento autorizado. Propostas históricas tecnológicas permanecem preservadas como histórico, com aprovação atual limitada aos termos acima.

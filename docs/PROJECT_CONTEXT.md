@@ -1,7 +1,7 @@
 # Contexto do projeto
 
 ## Identidade e objetivo
-BOT CRUPTO, independente de Jarvis/Kate. Diretório oficial: `D:\04-Projetos\30-bot-crypto-agence`.
+BOT CRUPTO, independente de Jarvis/Kate. Diretório oficial: `D:\04-Projetos\30-bot-crypto-agence\backend`.
 Aplicação web que representa um escritório virtual 3D de acompanhamento/análise de criptomoedas. Personagens acompanham atividades reais do sistema simulado; animações não determinam análises, operações ou resultados. Autonomia especializada sob limites compartilhados e supervisão; viabilidade técnica não comprova rentabilidade.
 
 ## MVP aprovado — DOCS-007-R2

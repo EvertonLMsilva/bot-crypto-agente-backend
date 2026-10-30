@@ -1,6 +1,6 @@
 # Arquitetura conceitual
 
-Divisão de responsabilidades APPROVED (DEC-019); arquitetura implementada: nenhuma. Contratos concretos, frameworks, topologia e tecnologias PENDING. Blocos não implicam microsserviços. Referências: [decisões](DECISIONS.md), [requisitos](REQUIREMENTS.md).
+Divisão de responsabilidades APPROVED (DEC-019); arquitetura mínima ARCH-001 aprovada em DEC-063. MVP-001-A implementa somente fundação NestJS standalone, relógio e candles sintéticos. TypeScript/Node24/NestJS/Jest aprovados; contratos e componentes restantes não implementados. Blocos não implicam microsserviços. Referências: [decisões](DECISIONS.md), [requisitos](REQUIREMENTS.md).
 
 ## Fluxo aprovado
 ```text
@@ -36,11 +36,11 @@ AGENTE BTC                  AGENTE ETH
 BTC/ETH são os dois especialistas definidos no MVP, entre cinco agentes lógicos (DEC-036). Central, Coordenador e Gestor completam os cinco; simulação/execução/auditoria são componentes, não agentes. SOL futuro. Resultados alimentam somente o aprendizado do respectivo especialista. Visualização observa atividades; persistência/auditoria apoiam todo o fluxo.
 
 ## 1. Frontend e ambiente 3D
-DEC-040: um andar, cinco personagens, mesas BTC/ETH, salas centrais da Central e Gestor, Coordenador e telão; expansão lateral futura. Orbit/zoom/pan, interação/painéis derivados de eventos reais simulados; iniciar/pausar/avançar5min/velocidade/reinício confirmado. Animação simples, navegação curta, sem lógica financeira ou espera por caminhada. [Referência visual](PROJECT_CONTEXT.md). Engine/framework/linguagem não escolhidos; Three.js PROPOSED.
+DEC-040: um andar, cinco personagens, mesas BTC/ETH, salas centrais da Central e Gestor, Coordenador e telão; expansão lateral futura. Orbit/zoom/pan, interação/painéis derivados de eventos reais simulados; iniciar/pausar/avançar5min/velocidade/reinício confirmado. Animação simples, navegação curta, sem lógica financeira ou espera por caminhada. [Referência visual](PROJECT_CONTEXT.md). React/Vite/Three.js aprovados para fase posterior em DEC-063, sem implementação neste incremento.
 
 ## 2. Backend e serviços
 Separar fontes/dados, inteligência contextual, estratégias individuais, priorização, gestão financeira, simulação operacional, aprendizado, visualização e persistência/auditoria. A separação conceitual não escolhe serviços físicos ou tecnologias.
-STATUS: PENDING — aguardando definição arquitetural técnica.
+STATUS: fundação mínima TypeScript/Node24/NestJS standalone implementada em MVP-001-A; contratos técnicos dos componentes restantes pendentes, sem servidor HTTP.
 
 ## 3. Mecanismo dos agentes
 DEC-009/DEC-015/DEC-026: especialistas exclusivos por ativo, estratégias/memória/candidatas independentes. Seleção/combinação adaptativa conforme regime/contexto, política versionada e evolução só após DEC-016. Famílias iniciais e parâmetros aprovados em DEC-039/DEC-041 a DEC-050; bordas e ativação/bootstrap de H aprovados em DEC-051 a DEC-053; detalhes técnicos remanescentes PENDING.
@@ -210,3 +210,18 @@ Stop inicial2% e take4% calculados a partir do preço efetivo de entrada e fixos
 Promoção, rollback, notícia e mudança de regime não alteram proteções existentes; níveis e estratégia/versão de origem persistidos e auditáveis. Ausência/inconsistência exige recuperação/revisão, sem liquidação fictícia. DEC-024 permanece intacta como histórico: possibilidade de apertar proteção é extensão não habilitada no MVP.
 
 Etapa funcional OPS-003 encerrada. Próxima ARCH-001 — arquitetura mínima executável; depois MVP-001 — implementação incremental. Pendências LEARN e evidências experimentais serão tratadas quando necessárias; sem novos ciclos de especificação sem bloqueio concreto. DEC-016/LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100 e V1/V2/V3 preservados. Não há execução financeira ou simulação nesta tarefa.
+
+## Fundação executável — MVP-001-A / DEC-063
+Stack mínima aprovada: TypeScript, Node.js24 LTS, NestJS modular sem HTTP e Jest. SQLite local e biblioteca decimal financeira previstos para etapas posteriores; React/Vite/Three.js também posteriores. Arquivos package.json/package-lock.json fixam versões compatíveis; dependências só locais e gratuitas.
+
+AppModule importa SimulationModule configurável, ambos definidos em src/app.module.ts dentro da allowlist. Factories fornecem SimulationClock e SeededGenerator, sem I/O financeiro. src/main.ts inicializa contexto standalone, produz amostra fechada e executa app.close() em finally, inclusive se a geração falhar. Sem listener, scheduler de tempo real, rede de mercado ou persistência.
+
+Fluxo implementado: configuração explícita de inícioUTC/seed/preços sintéticos -> clock.step() fecha intervalo5min -> gerador publica par BTC/ETH imutável -> consumidor recebe somente OHLCV fechado. Início designa a abertura do primeiro candle. Snapshot contém startTime/currentTime/steps; reprodução reinicia com a mesma configuração e o mesmo número de passos. Não existe API de preview ou rótulo de regime, nem restauração durável. Avançar o relógio por fora do gerador causa rejeição para evitar divergência de sequência.
+
+Relógio valida timestamp UTC em fronteira de5min, segundos/milissegundos zero, calendário real e limite de quatro dígitos de ano. Falha de limite não avança estado. Não consulta Date.now() ou relógio do Windows para decidir passos.
+
+Gerador sintético v1: FNV-1a deriva estados xorshift32 separados por ativo. Configuração inicial é copiada para estados próprios; alteração do preço inicial ETH não altera BTC e vice-versa. Movimento inicial de fixture e pavios usam inteiros; valores de preço em bigint com escala100.000.000, serializados exatamente com8 casas. Volume sintético não negativo. Não há cálculos financeiros, biblioteca decimal contábil ou valores monetários em float. Objetos e batches de saída congelados.
+
+Limitação explícita: não implementa os seis cenários oficiais, eventos contextuais, warmup150h, agregação1h, indicadores, scores, orçamento, ordens, proteções executáveis, SQLite/ledger, aprendizado ou escritório3D. As regras funcionais anteriores continuam especificações, não capacidades entregues por este incremento; não houve simulação financeira ou prova de viabilidade REQ-100.
+
+Comandos locais: npm install (dependências locais); npm run test:coverage; npm run build; npm run smoke (após build). Smoke usa seed bot-crypto-mvp-001-a-v1 e início2026-01-01T00:00:00.000Z; publica3 candles fechados por ativo até00:15UTC e encerra. Execução standalone segue [documentação oficial NestJS](https://docs.nestjs.com/application-context). Resultados reais e limitações no checkpoint; próximo incremento MVP-001-B.

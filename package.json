@@ -1,0 +1,29 @@
+{
+  "name": "bot-crypto-agente",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic local simulation foundation; no trading or HTTP.",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --runInBand --coverage",
+    "smoke": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "11.1.15",
+    "@nestjs/core": "11.1.15",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@types/jest": "30.0.0",
+    "@types/node": "24.19.2",
+    "jest": "30.5.2",
+    "ts-jest": "29.4.15",
+    "typescript": "5.9.3"
+  }
+}
