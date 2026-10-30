@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: EXACT_SIGNAL_COMPOSITION_AND_SELECTION
-PHASE: MVP-001-C3 — contexto, composição exata e seleção pura
-MVP: FOUNDATION_INDICATORS_REGIMES_TECHNICAL_FAMILIES_SIGNAL_COMPOSITION_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
-IMPLEMENTATION: MVP_001_A_B_C1_C2_AND_C3_IMPLEMENTED_ONLY
+CURRENT_PHASE: DECISION_ENVELOPE_AND_MEMORY_AUDIT
+PHASE: MVP-001-D1 — proposta de entrada/WAIT e auditoria em memória
+MVP: FOUNDATION_THROUGH_D1_DECISION_CONTRACT_IMPLEMENTED; FINANCIAL_OPERATIONS_NOT_IMPLEMENTED
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_AND_D1_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -14,7 +14,7 @@ NEXT_CANDLE_EXECUTION: APPROVED
 CONSERVATIVE_INTRABAR_STOP_TAKE: APPROVED
 OPS-002: APPROVED
 PERSISTENT_AUDIT: APPROVED
-SIGNAL_POLICY: FUNCTIONAL_RULES_APPROVED; PURE_COMPOSITION_IMPLEMENTED; OPERATIONAL_INTEGRATION_PENDING
+SIGNAL_POLICY: PURE_COMPOSITION_AND_DECISION_ENVELOPE_IMPLEMENTED; FINANCIAL_INTEGRATION_PENDING
 SIGNAL-001: APPROVED
 SIGNAL-002: APPROVED
 SIGNAL-003: APPROVED
@@ -51,24 +51,39 @@ COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_245_TESTS_20_SUITES; 49_NEW_AND_196_PRESERVED
-COVERAGE_LINES: 98.95_PERCENT_GLOBAL; 98.91_PERCENT_NEW_SIGNALS
+TESTS: PASS_265_TESTS_22_SUITES; 13_NEW_AND_252_PRESERVED
+COVERAGE_LINES: 98.99_PERCENT_GLOBAL; 100_PERCENT_NEW_OPERATIONS
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C3
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D1
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: REMAINING_INCREMENT_REQUIRES_EXPLICIT_TASK
+NEXT: SUGGESTED_DETERMINISTIC_COORDINATION_WITH_EXPLICIT_ROTATION_STATE; REQUIRES_EXPLICIT_TASK
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
-REQ_061_080: HOURLY_AGGREGATION_REGIMES_AND_VOLATILITY_IMPLEMENTED; NO_OPERATIONAL_SIGNALS_OR_AUTHORIZATION
+REQ_061_080: ANALYSIS_AND_ENTRY_PROPOSAL_WAIT_ENVELOPE_IMPLEMENTED; NO_FINANCIAL_AUTHORIZATION
 REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
-SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; NO_OPERATIONAL_ENTRY_CANDIDATE_OR_ORDERS
+SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
+OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D1 — IMPLEMENTATION / TDD.
+STATUS: DONE. Preflight: raiz backend, master/8bcec6024d7e877e10b205c8320e64c3708cc335, staging/worktree limpos, Node v24.18.0/npm11.16.0. Lidas instruções e seções autorizadas. C3/FIX-001 compõe a baseline com252 testes; checkpoint histórico C3 abaixo conserva resultados anteriores ao fix.
+
+Criados quatro módulos src/operations/{types,decision,audit,index}.ts e dois testes autorizados. prepareSimulatedDecision recebe PositionView explícito do ciclo/ativo e chama C3 uma vez. FLAT+representante gera ENTRY_CANDIDATE; ausência de representante gera WAIT. OPEN/UNKNOWN bloqueiam novas propostas; OPEN registra EXIT_EVALUATION_PENDING, sem HOLD ou conclusão sobre saída. Não reanalisa score/ranking. ID canônico por ativo/ciclo/política/origem/tipo. FinancialAuthorization NOT_EVALUATED e execution NOT_EXECUTED; validade só para próxima abertura elegível, sem consultá-la ou executá-la. Contratos detalhados em ARCHITECTURE.
+
+Auditoria contém cópia profunda e congelada da posição, contexto/grupos/eventIDs, três avaliações, representante e descartadas, versões e razões. Frações permanecem strings exatas JSON, inclusive além de2^53. Inputs não são alterados/congelados; mutações posteriores não alteram envelope. Evidência em memória, sem ledger, recuperação após reinício ou idempotência financeira.
+
+TDD: ambas as suítes RED antes dos módulos (contratos ausentes), depois13 novos GREEN/2 suítes; suíte completa265/22 e cobertura265/22 PASS, preservando252 anteriores. Linhas/statements/branches novas100%, linhas globais98,99%. Build PASS; git diff --check e conferência explícita de untracked/allowlist PASS. Testes reais de integração C3 com recuperação150h, score74 qualificado/69 insuficiente, contexto inválido e posição OPEN/UNKNOWN; identidade/versões, UTC/calendário, ciclo/ativo divergentes, futuro/lacunas, prefixos, isolamento BTC/ETH e ausência de Date.now/Math.random. Benchmarks não repetidos; sem nova alegação de desempenho.
+
+Somente ARCHITECTURE e este checkpoint modificados, além dos seis arquivos novos autorizados; C1/C2/C3, indicadores, decisões/requisitos, dependências e frontend preservados. Branch/HEAD preservados; staging vazio; sem commit/push. Entrega parcial de contratos REQ-036/041/063/064/069/070/098, sem implementação integral financeira/temporal; REQ-042 persistente continua pendente.
+
+Ausentes: saída estratégica, Coordenador/rodízio, Gestor/orçamento/autorização, ordens/fills/reservas/proteções, persistência/SQLite/ledger, recuperação e aprendizagem. REQ-100 experimental continua NOT_EXECUTED/PENDING_VERIFICATION. Próximo incremento sugerido: coordenação determinística com estado explícito de rodízio antes de reservas e execução, somente mediante tarefa própria.
+
+## MVP-001-C3 — registro histórico
 BOT-CRYPTO-MVP-001-C3 — IMPLEMENTATION / TDD.
 STATUS: DONE. Preflight: raiz backend, master/d82664545390b102c6f79b00e9ea4a7d6dc56902, worktree/staging limpos, Node v24.18.0/npm11.16.0. Instruções e seções autorizadas consultadas; decisões, requisitos, C1/C2, indicadores e dependências preservados.
 
