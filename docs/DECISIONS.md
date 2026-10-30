@@ -1591,3 +1591,145 @@ REQ-100; DEC-016, DEC-041, DEC-043 a DEC-046; LEARN-004, SIGNAL-001 a SIGNAL-005
 
 SUBSTITUI:
 Não se aplica; detalha pendência anterior, preservando as decisões existentes.
+
+## Consolidação DOCS-009 — 2026-10-30
+
+Fonte: BOT-CRYPTO-DOCS-009, baseline master/6cae9dc8283f79c342e6e75cff545a50511798ea, worktree limpa e staging vazio. DEC-001 a DEC-058 integralmente preservadas. Pendências históricas OPS-003 são detalhadas pelos registros abaixo, sem modificar o conteúdo anterior. OPS-003.1 a OPS-003.4: APPROVED_SPEC; IMPLEMENTATION: NOT_STARTED; TESTS / SIMULATION: NOT_EXECUTED. Esta etapa funcional se encerra; próxima etapa ARCH-001 (arquitetura mínima executável), depois MVP-001 (implementação incremental), mediante tarefas próprias. Sem novos ciclos de especificação sem bloqueio concreto.
+
+## DEC-059
+ID: DEC-059
+DATA: 2026-10-30
+TÍTULO: OPS-003.1: Máquina de estados
+STATUS: APPROVED
+
+CONTEXTO:
+Separar entidades operacionais e seus efeitos para impedir transições e liquidações duplicadas.
+
+DECISÃO:
+- Separar sinal, ordem de entrada, reserva financeira e posição.
+- Saídas estratégicas e proteções vinculadas à posição.
+- Ordem: PENDING_BUDGET, REJECTED, RESERVED, FILLED, CANCELLED, EXPIRED.
+- Reserva: ACTIVE, SETTLED, RELEASED.
+- Posição: OPEN, CLOSED.
+- EXIT_REQUEST: PENDING_OPEN, FILLED, SUPERSEDED_BY_PROTECTION, REVALIDATION_REQUIRED.
+- Transições terminais, identidades estáveis e idempotência.
+- Apenas preenchimento integral; sem execução parcial ou redimensionamento automático.
+- Stop/take prioritários sobre saída estratégica.
+- Contabilidade atômica e auditável.
+- ENTRY perdida expira; EXIT perdida exige reavaliação.
+
+JUSTIFICATIVA:
+Separar entidades operacionais e seus efeitos para impedir transições e liquidações duplicadas. Manter controles financeiros, causalidade e rastreabilidade.
+
+IMPACTOS:
+Especificação funcional aprovada, sem implementação ou testes/simulações executados. Contratos técnicos e tecnologia ficam para ARCH-001. Não alterar LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100, limites ou janelas V1/V2/V3.
+
+REFERÊNCIAS:
+REQ-043, REQ-036, REQ-042, REQ-068, REQ-098; DEC-021 a DEC-025, DEC-029, DEC-056.
+
+SUBSTITUI:
+Não se aplica; detalha o MVP e preserva integralmente o histórico.
+
+## DEC-060
+ID: DEC-060
+DATA: 2026-10-30
+TÍTULO: OPS-003.2: Dimensionamento e orçamento
+STATUS: APPROVED
+
+CONTEXTO:
+Fixar alvo de exposição e reserva anterior à abertura, sem orçamento dependente do score.
+
+DECISÃO:
+- Alvo inicial fixo de exposição de 10% do patrimônio por oportunidade.
+- Sujeito aos limites existentes: exposição individual20%, consolidada40%, risco por operação1%, risco aberto2%, perda diária3%.
+- Quantidade inicial determinística, arredondada para baixo em oito casas.
+- Dimensionamento baseado em patrimônio, caixa, posições e reservas existentes, exposição e risco.
+- Reserva baseada no último fechamento válido, com margem de preço de 1%, slippage de compra0,05% e taxa de compra0,10%.
+- Margem de reserva não é previsão de preço nem autorização para exceder limites.
+- Quantidade e reserva congeladas após autorização.
+- Revalidar preço, caixa, exposição, risco, bloqueios e custos na abertura.
+- Se não couber na reserva ou limites, cancelar integralmente.
+- Sem aumento ou redimensionamento automático na abertura.
+- Liberar excedentes/cancelamentos exatamente uma vez.
+- Autorização atômica na ordem determinística do Coordenador, orçamento BTC/ETH compartilhado.
+- Não criar dimensionamento dependente do score.
+
+JUSTIFICATIVA:
+Fixar alvo de exposição e reserva anterior à abertura, sem orçamento dependente do score. Manter controles financeiros, causalidade e rastreabilidade.
+
+IMPACTOS:
+Especificação funcional aprovada, sem implementação ou testes/simulações executados. Contratos técnicos e tecnologia ficam para ARCH-001. Não alterar LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100, limites ou janelas V1/V2/V3.
+
+REFERÊNCIAS:
+REQ-030, REQ-035, REQ-043, REQ-047, REQ-096, REQ-098; DEC-020, DEC-022, DEC-029, DEC-054, DEC-056.
+
+SUBSTITUI:
+Não se aplica; detalha o MVP e preserva integralmente o histórico.
+
+## DEC-061
+ID: DEC-061
+DATA: 2026-10-30
+TÍTULO: OPS-003.3: Recuperação e reconciliação
+STATUS: APPROVED
+
+CONTEXTO:
+Definir fonte financeira oficial e recuperação verificável sem reconstrução fictícia de preços.
+
+DECISÃO:
+- Livro-razão financeiro imutável e append-only.
+- Eventos financeiros idempotentes, transações atômicas.
+- Checkpoint consistente ao finalizar cada candle de 5 minutos.
+- Checkpoints são derivados; histórico confirmado é fonte oficial.
+- Reconstrução determinística de ordens, reservas, posições, proteções, caixa e estado temporal.
+- Reconciliação decimal exata, sem tolerâncias arbitrárias.
+- Estados RUNNING, RECOVERING, ENTRY_SUSPENDED e MANUAL_REVIEW_REQUIRED.
+- Bloquear novas entradas diante de inconsistência financeira.
+- Preservar posições/proteções verificáveis, sem inventar preço de execução em lacunas.
+- Correções mediante eventos compensatórios auditados, sem editar lançamentos anteriores.
+- Carteiras shadow isoladas da carteira oficial.
+- Reprocessamentos e reinícios não duplicam reservas, taxas, execuções ou liquidações.
+- Tecnologia de banco de dados permanece para ARCH-001.
+
+JUSTIFICATIVA:
+Definir fonte financeira oficial e recuperação verificável sem reconstrução fictícia de preços. Manter controles financeiros, causalidade e rastreabilidade.
+
+IMPACTOS:
+Especificação funcional aprovada, sem implementação ou testes/simulações executados. Contratos técnicos e tecnologia ficam para ARCH-001. Não alterar LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100, limites ou janelas V1/V2/V3.
+
+REFERÊNCIAS:
+REQ-040, REQ-042, REQ-043, REQ-044, REQ-056, REQ-070; DEC-025, DEC-054, DEC-056.
+
+SUBSTITUI:
+Não se aplica; detalha o MVP e preserva integralmente o histórico.
+
+## DEC-062
+ID: DEC-062
+DATA: 2026-10-30
+TÍTULO: OPS-003.4: Proteções fixas do MVP
+STATUS: APPROVED
+
+CONTEXTO:
+Restringir o MVP a proteções fixas, preservando a possibilidade histórica de extensão futura.
+
+DECISÃO:
+- Stop inicial de 2% e take de 4%, calculados pelo preço efetivo de entrada.
+- Níveis permanecem fixos durante toda a posição.
+- Sem trailing stop, breakeven ou ajustes automáticos no MVP.
+- Saídas estratégicas aprovadas continuam válidas.
+- Gaps e ambiguidades seguem DEC-023 e REQ-098.
+- Promoção, rollback, notícias e mudança de regime não alteram proteções existentes.
+- Proteções e estratégia/versão de origem persistidas e auditáveis.
+- Ausência ou inconsistência de proteção exige recuperação/revisão, sem inventar liquidação.
+- Possibilidade histórica de apertar proteção em DEC-024 permanece como extensão não habilitada no MVP.
+
+JUSTIFICATIVA:
+Restringir o MVP a proteções fixas, preservando a possibilidade histórica de extensão futura. Manter controles financeiros, causalidade e rastreabilidade.
+
+IMPACTOS:
+Especificação funcional aprovada, sem implementação ou testes/simulações executados. Contratos técnicos e tecnologia ficam para ARCH-001. Não alterar LEARN-GATE, SIGNAL-001 a SIGNAL-005, OPS-002, REQ-093 a REQ-100, limites ou janelas V1/V2/V3.
+
+REFERÊNCIAS:
+REQ-037, REQ-038, REQ-039, REQ-043, REQ-092, REQ-098; DEC-022 a DEC-024, DEC-035, DEC-050, DEC-056.
+
+SUBSTITUI:
+Não se aplica; detalha o MVP e preserva integralmente o histórico.

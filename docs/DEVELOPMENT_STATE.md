@@ -35,7 +35,11 @@ LEARN_POST_PROMOTION_MONITORING: APPROVED
 LEARN_ROLLBACK_POLICY: APPROVED
 LEARN_STATISTICAL_DETAILS: PARTIALLY_PENDING
 SIGNAL_CALIBRATION: FORMULAS_AND_EDGES_APPROVED; EXPERIMENTAL_EVIDENCE_PENDING
-OPS_RELIABILITY: PENDING
+OPS_RELIABILITY: FUNCTIONAL_SPEC_APPROVED; TECHNICAL_CONTRACTS_ARCH_001
+OPS-003.1: APPROVED_SPEC
+OPS-003.2: APPROVED_SPEC
+OPS-003.3: APPROVED_SPEC
+OPS-003.4: APPROVED_SPEC
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
 TECHNICAL_ARCHITECTURE: PENDING
@@ -46,15 +50,17 @@ SPECIALIST_AGENTS: CONCEPT_APPROVED
 COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
-TRADING_POLICY: INITIAL_SPOT_SIMULATION_APPROVED; OPERATIONAL_DETAILS_PENDING
+TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
 TESTS: NOT_EXECUTED
-NEXT: PLAN_RESIDUAL_LEARN_OPS_003_ARCH_001
+SIMULATION: NOT_EXECUTED
+NEXT: ARCH-001 — arquitetura mínima executável
+AFTER_ARCH_001: MVP-001 — implementação incremental
 REQ_093_100: APPROVED_SPEC; NOT_IMPLEMENTED
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
-BOT-CRYPTO-DOCS-008 — DOCUMENTATION_ONLY.
-STATUS: DONE — DEC-051 a DEC-058 e REQ-093 a REQ-100 consolidadas como especificações aprovadas. Sem implementação, simulação, build, testes de código, commit ou push. Aprovação do protocolo REQ-100 não comprova frequência operacional ou rentabilidade.
+BOT-CRYPTO-DOCS-009 — DOCUMENTATION_ONLY.
+STATUS: DONE — OPS-003.1 a OPS-003.4 APPROVED_SPEC em DEC-059 a DEC-062. Etapa funcional encerrada; nenhuma implementação, simulação, build, teste de código, commit ou push. REQ-043 APPROVED como especificação funcional; REQ-044 PENDING somente pelo detalhamento residual de avaliações hipotéticas. Próxima etapa ARCH-001, seguida de MVP-001; não abrir nova especificação sem bloqueio concreto.
 
 ## Histórico preservado
 - DOCS-001: oito documentos criados a partir de raiz vazia, sem Git/implementação; seis decisões aprovadas e Three.js proposto; layout central, expansão lateral e imagem de referência documentados. Nenhuma instrução preexistente local/ancestral encontrada naquela inspeção.
@@ -74,8 +80,11 @@ STATUS: DONE — DEC-051 a DEC-058 e REQ-093 a REQ-100 consolidadas como especif
 - GIT-005: commit local e44ea76cbf855cd07d55c5a500916237da170ea5, pai 0feccd4b35cd12422c6dca24e7723b0edb3b1ace, mensagem `docs: consolidate MVP scope and SIGNAL-005 specification`; sete documentos. Tarefa COMMIT_ONLY, sem push nela. DOCS-007-R2/FIX-001 integram esta baseline.
 - DOCS-008: DEC-051 a DEC-058 acrescentadas, preservando integralmente DEC-001 a DEC-050. REQ-093 a REQ-100 existentes passam de PENDING para APPROVED quanto à especificação; dependências/IDs preservados. Sem implementação ou evidência experimental produzida.
 
+- GIT-006: commit local 6cae9dc8283f79c342e6e75cff545a50511798ea, pai e44ea76cbf855cd07d55c5a500916237da170ea5, mensagem `docs: consolidate REQ-093 to REQ-100 approvals`; sete documentos, COMMIT_ONLY, sem push naquela tarefa. Esta é a baseline observada da DOCS-009.
+- DOCS-009: quatro decisões DEC-059 a DEC-062 acrescentadas; DEC-001 a DEC-058 preservadas integralmente. REQ-043/REQ-044 e referências diretamente afetadas reconciliadas, sem novos requisitos e com REQ-093 a REQ-100 intactas. Apenas cinco documentos autorizados editados.
+
 ## Inspeção atual
-Raiz oficial D:\04-Projetos\30-bot-crypto-agence, branch master e HEAD e44ea76cbf855cd07d55c5a500916237da170ea5 confirmados antes das edições. Árvore limpa, staging vazio, DEC-050 última decisão e REQ-093 a REQ-100 PENDING no preflight. Oito documentos, sem código de implementação. Origin correto; nenhuma consulta ao servidor, fetch/pull ou API nesta tarefa. AGENTS.md somente leitura e íntegro. Após DOCS-008: sete documentos alterados localmente, staging vazio; nenhum commit/push.
+Raiz oficial D:\04-Projetos\30-bot-crypto-agence, master e HEAD 6cae9dc8283f79c342e6e75cff545a50511798ea confirmados. Antes das edições: worktree limpa e staging vazio, DEC-058 última decisão. Nenhuma mudança externa a sobrescrever. AGENTS.md somente leitura; README.md e PROJECT_CONTEXT.md fora do escopo e preservados. Após DOCS-009: cinco documentos alterados localmente e staging vazio. Sem fetch, consulta remota, implementação, commit ou push nesta tarefa.
 
 ## Aprovações consolidadas
 - Capital 10.000 UC centralizado compartilhado, sem saldo permanente por agente; exposição individual 20% e consolidada 40%; risco planejado 1% por operação e 2% aberto.
@@ -127,35 +136,35 @@ EMPIRICAL_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION.
 Com H0, pesos35/25/15/15/10 e S>=70, half-up aceita bruto69,50. Com C50: R100/A50 requer T aproximadamente91,43; R90/A50,98,58 conservador; R80/A50 impossível; R80/A100 aproximadamente91,43; R60/A100 impossível. A100 exige concordância qualificada. Conferência algébrica não demonstra frequência de entradas.
 Futuro diagnóstico por ativo/família/regime/cenário/janela: candles válidos, regimes elegíveis, gatilhos válidos, sinais>=70, autorizações, entradas, operações distintas concluídas, rejeições/motivos, reprodutibilidade e ausência de look-ahead. Sem resultados, certificação ou rentabilidade inventados.
 
-## Pendências residuais reais — PENDING
-Intervalos e algoritmos de geração/mutação, frequência de ciclos, estatística complementar e recuperação excepcional LEARN; transições completas de reservas, redimensionamento e contingências residuais OPS-003; contratos técnicos, confiabilidade, segurança, tecnologias e hardware ARCH-001. Implementação não iniciada; verificações operacionais/experimentais não executadas. Three.js permanece PROPOSED; nenhuma engine, stack, banco, biblioteca decimal ou serviço escolhido. As oito especificações acima não permanecem genericamente indefinidas.
+## OPS-003.1 a OPS-003.4 — APPROVED_SPEC
+- DEC-059: separar sinal/ordem/reserva/posição; estados e EXIT_REQUEST próprios, terminalidade, identidades estáveis e contabilidade atômica/idempotente; somente integral, sem parcial/redimensionamento automático; prioridade stop/take, ENTRY perdida expira e EXIT exige reavaliação.
+- DEC-060: alvo fixo10% do patrimônio por oportunidade, sem sizing por score; quantidade determinística arredondada para baixo8 casas. Reserva pelo último fechamento válido+margem1%, slippage compra0,05% e taxa0,10%. Quantidade/reserva congeladas; abertura revalida preço/caixa/exposição/risco/bloqueios/custos, cancelamento integral se não couber. Liberação única, autorização atômica na ordem do Coordenador e orçamento BTC/ETH compartilhado; limites20%/40%,1%/2%,3% preservados.
+- DEC-061: ledger imutável append-only, eventos idempotentes e transações atômicas; checkpoint por candle5min derivado do histórico confirmado oficial. Reconstrução determinística e reconciliação decimal exata; RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED; inconsistência bloqueia entrada sem abandonar proteção verificável ou inventar preço/liquidação. Correções compensatórias, shadow isolado, sem efeitos duplicados. Banco/contratos técnicos para ARCH-001.
+- DEC-062: stop2%/take4% do preço efetivo de entrada fixos toda posição; sem trailing, breakeven ou ajuste automático. Saídas estratégicas mantidas, gaps/ambiguidades conforme DEC-023/REQ-098. Origem/proteções auditáveis, não alteradas por promoção/rollback/notícia/regime; inconsistência exige recuperação/revisão. Apertar proteção em DEC-024 é extensão não habilitada no MVP.
+
+## Pendências residuais e prontidão
+REQ-043 APPROVED como especificação funcional. REQ-044 PENDING apenas porque o detalhamento das avaliações hipotéticas de oportunidades não executadas não foi aprovado por esta tarefa; isolamento shadow e recuperação/reconciliação funcional estão aprovados. REQ-031 mantém contratos técnicos de integração; ARCH-001 tratará arquitetura mínima executável, persistência/atomicidade/recuperação técnicas e escolhas necessárias. Sem escolha de stack/engine/banco/biblioteca decimal nesta etapa.
+Intervalos/algoritmos de geração/mutação, ciclos, estatística complementar e recuperação excepcional LEARN continuam pendentes para quando necessários. Evidências experimentais, incluindo REQ-100, permanecem NOT_EXECUTED/PENDING_VERIFICATION. Não iniciar novo ciclo de especificação sem bloqueio concreto. Essas pendências não impedem a próxima tarefa ARCH-001. Three.js permanece PROPOSED.
 
 ## Tarefa em andamento e próxima tarefa
-Nenhuma execução após esta consolidação. Próxima tarefa de planejamento deve fechar pendências explicitamente autorizadas; eventual publicação exige tarefa separada depois da revisão. Não há autorização de implementação ou simulação nesta tarefa. Roadmap permanece PROPOSED, sem fases implementadas.
+Etapa funcional OPS-003 consolidada. Próxima: ARCH-001 — arquitetura mínima executável; após ela MVP-001 — implementação incremental. Nenhuma implementação autorizada nesta DOCS-009. Pendências LEARN e evidências serão tratadas quando necessárias; não iniciar novos ciclos de especificação sem bloqueio concreto. Roadmap permanece PROPOSED, sem fases implementadas; aprovação funcional não é evidência executada.
 
 ## Bloqueios e limitações
 Sem bloqueio documental. Pendências não impedem esta consolidação, mas precisam de definição antes da implementação pertinente. Nenhum código, instalação, API externa ou operação executada. Imagem de referência permanece externa conforme PROJECT_CONTEXT.md. Gates são guardrails simulados, não prova de eficácia ou segurança real.
 
 ## Arquivos atualizados nesta tarefa
-- README.md
-- docs/PROJECT_CONTEXT.md
+- docs/DECISIONS.md
 - docs/REQUIREMENTS.md
 - docs/ARCHITECTURE.md
-- docs/DECISIONS.md
 - docs/ROADMAP.md
 - docs/DEVELOPMENT_STATE.md
-Sete documentos atualizados; AGENTS.md somente leitura, sem alteração. Nenhum arquivo criado ou modificado fora da allowlist.
+Cinco documentos autorizados; nenhum arquivo novo. AGENTS.md, README.md e docs/PROJECT_CONTEXT.md preservados.
 
 ## Git real e publicação
-REPOSITORY: https://github.com/EvertonLMsilva/bot-crypto-agente
-ORIGIN: https://github.com/EvertonLMsilva/bot-crypto-agente.git
-BRANCH: master
-HEAD: e44ea76cbf855cd07d55c5a500916237da170ea5
-UPSTREAM: origin/master
-LOCAL_REMOTE_TRACKING_HEAD: e44ea76cbf855cd07d55c5a500916237da170ea5
-LAST_CONFIRMED_REMOTE_COMMIT: 0feccd4b35cd12422c6dca24e7723b0edb3b1ace (histórico GIT-004)
-Baseline observada localmente; origin/master é referência local, sem nova confirmação do servidor. GIT-005 criou o commit e44ea76 local sem push naquela tarefa. Publicação posterior não consultada nem inferida nesta DOCS-008. DOCS-008 apenas na árvore de trabalho; staging vazio, sem commit/push, configuração e histórico Git preservados.
+BASELINE_BRANCH: master
+BASELINE_HEAD: 6cae9dc8283f79c342e6e75cff545a50511798ea
+Baseline local confirmada por Git, sem consulta ao servidor ou inferência de publicação. GIT-006 foi COMMIT_ONLY; nenhuma afirmação de push posterior. DOCS-009 somente na worktree, staging vazio. Histórico/configuração preservados, sem commit/push nesta tarefa.
 
 ## Validação documental
-Preflight confirmou baseline autorizada limpa. DEC-051 a DEC-058 e REQ-093 a REQ-100 conferidos quanto a sequência, unicidade e referências; decisões DEC-001 a DEC-050 preservadas integralmente. Fórmulas, limites, ordens V1/V2/V3 e gates DEC-016/LEARN-004/SIGNAL/OPS-002 mantidos. Álgebra H0 conferida documentalmente, sem diagnóstico ou simulação. Links locais, escopo dos sete documentos, integridade de AGENTS.md, staging vazio e git diff --check conferidos.
-IMPLEMENTATION: NOT_STARTED. Diagnósticos/simulações/build/testes de código: NOT_EXECUTED. REQ-100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION. COMMIT: NONE. PUSH: NONE.
+Preflight confirmou baseline limpa. DEC-059 a DEC-062 únicas e sequenciais; histórico DEC-001 a DEC-058 integralmente preservado. REQ-093 a REQ-100 intactas; REQ-043/REQ-044 com status e rastreabilidade reconciliados. Limites, fórmulas, score70, DEC-016/LEARN-GATE, SIGNAL-001 a SIGNAL-005, DEC-020 a DEC-025/OPS-002 e V1/V2/V3 preservados. Diff restrito à allowlist de cinco documentos, referências conferidas, git diff --check sem erro, staging vazio.
+IMPLEMENTATION: NOT_STARTED. TESTS / SIMULATION: NOT_EXECUTED. REQ-100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION. COMMIT: NONE. PUSH: NONE.
