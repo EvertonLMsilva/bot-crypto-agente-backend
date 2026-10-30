@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: CLOSED_HOURLY_REGIMES
-PHASE: MVP-001-C1-RESUME — comparação exata de D, agregação e regimes horários
-MVP: FOUNDATION_INDICATORS_HOURLY_REGIMES_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
-IMPLEMENTATION: MVP_001_A_B_AND_C1_IMPLEMENTED_ONLY
+CURRENT_PHASE: TECHNICAL_FAMILIES_AND_EVIDENCE
+PHASE: MVP-001-C2 — famílias técnicas e evidência T
+MVP: FOUNDATION_INDICATORS_REGIMES_TECHNICAL_FAMILIES_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
+IMPLEMENTATION: MVP_001_A_B_C1_AND_C2_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -43,7 +43,7 @@ OPS-003.4: APPROVED_SPEC
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
 TECHNICAL_ARCHITECTURE: MINIMAL_ARCH_001_APPROVED; REMAINING_CONTRACTS_PENDING
-ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_AND_HOURLY_FUNCTIONS_IMPLEMENTED
+ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_HOURLY_AND_TECHNICAL_FUNCTIONS_IMPLEMENTED
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
@@ -51,22 +51,37 @@ COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_147_TESTS_12_SUITES; 51_NEW_AND_96_PRESERVED
-COVERAGE_LINES: 98.85_PERCENT_GLOBAL; 100_PERCENT_NEW_AND_CHANGED_SOURCE
+TESTS: PASS_196_TESTS_15_SUITES; 49_NEW_AND_147_PRESERVED
+COVERAGE_LINES: 98.97_PERCENT_GLOBAL; 99.26_PERCENT_NEW_STRATEGIES
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C1
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C2
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: MVP-001-C2
+NEXT: MVP-001-C3
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_IMPLEMENTED_ONLY; REMAINING_NOT_IMPLEMENTED
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
 REQ_061_080: HOURLY_AGGREGATION_REGIMES_AND_VOLATILITY_IMPLEMENTED; NO_SIGNALS_OR_AUTHORIZATION
+REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; NO_GLOBAL_SCORE_OR_ORDERS
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-C2 — IMPLEMENTATION / TDD.
+STATUS: DONE. Preflight: raiz backend, master/6e1a0e2bc0fd526cc151edf1880278ad39553fa1, worktree/staging limpos, Node v24.18.0/npm11.16.0. Consultadas somente instruções e seções/interfaces pertinentes. Sem conflito encontrado entre as interpretações operacionais autorizadas e DEC-039/DEC-043/DEC-053. Decisões, requisitos, limiares e módulos anteriores preservados.
+
+Entregues cinco módulos src/strategies/{types,exact-triggers,technical-evidence,evaluate,index}.ts e três testes correspondentes a exact-triggers, technical-evidence e evaluate. API retorna três avaliações imutáveis do último candle na ordem TREND/BREAKOUT/MEAN_REVERSION; asOf deve coincidir com esse fechamento. Usa uma chamada à classificação horária, último horário fechado e aquecimento150h. Gatilhos exatos por bigint/EMA racional/RSI Wilder racional/Bollinger quadrático; estado em uma passagem e janela20. T estatístico sem arredondamento, com null/razões explícitas, sem T>=60 ou score global. triggerMet/G são certificados brutos; elegibilidade técnica também exige contexto, aquecimento e componentes válidos. Detalhes em ARCHITECTURE.
+
+TDD real: três suítes escritas e executadas antes dos módulos respectivos (RED por módulos ausentes);19 testes de gatilhos,19 de evidência e11 de avaliação aprovados. Focados49/3; suíte completa196/15 e npm run test:coverage196/15 PASS, preservando147 anteriores. Linhas novas99,26%, branches novas97,96%; global linhas98,97%, statements98,53%, branches97,58%. Uma linha defensiva de rejeição de T fora de intervalo não coberta; mínimo95% atendido. npm run build PASS. git diff --check PASS. Staging vazio; branch/HEAD preservados, sem commit/push.
+
+Testadas igualdades e um tick em EMA9/RSI35/Bollinger/rompimento/volume; séries e componentes conhecidos; T sem gatilho e elegibilidade com T<60; ATR0/amplitude0/volume médio0/indisponibilidade; asOf desatualizado/futuro/duplicações; último horário sem antecipação,149h/150h, classificação única, entradas congeladas, prefixos e independência BTC/ETH. RangeError estatístico não fabrica números; erros inesperados propagam.
+
+Diagnóstico adicional em memória:200h/2.400 candles com preços alternados e volumes exatos, entrada congelada;168,09ms local, três avaliações e aquecimento válido, sem NaN/Infinity. Não estabelece SLA nem comprova rentabilidade ou frequência de gatilhos. Histórias maiores e custo racional de longo prazo continuam sem medição. T é aproximado Number e seus limiares decisórios pertencem ao C3. Somente estes dois documentos foram modificados; nenhuma dependência, indicador, regime, relógio, gerador, NestJS ou frontend alterado.
+
+Pendentes: MVP-001-C3 (matriz R e demais scores conforme tarefa futura), contexto C, concordância A, H positivo, sinais, operações/orçamento/proteções, SQLite/ledger, cenários oficiais e aprendizado. C2 não é motor de ordens ou score global. NEXT: MVP-001-C3, não iniciado. REQ-100 empírico NOT_EXECUTED/PENDING_VERIFICATION.
+
+## MVP-001-C1-RESUME — registro histórico
 BOT-CRYPTO-MVP-001-C1-RESUME — TARGETED_FIX + IMPLEMENTATION / TDD.
 STATUS: DONE. Baseline conferida: backend, master/30f4a28bb724a5f25791c2386e8d77bec9e48dc7, staging/worktree limpos e Node v24.18.0. Tentativa C1 anterior interrompida sem arquivos alterados por comparação Number de D; retomada autoriza frações exatas e continuação. Nenhuma fórmula/limiar aprovado foi substituído e nenhuma decisão foi criada.
 
