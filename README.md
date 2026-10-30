@@ -1,4 +1,4 @@
-# BOT CRUPTO
+# BOT CRYPTO
 
 Aplicação web planejada como escritório virtual 3D de análise de criptomoedas, com personagens que refletem eventos reais de uma simulação. Capital exclusivamente fictício; nenhuma operação financeira real.
 
