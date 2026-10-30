@@ -4,6 +4,7 @@
  */
 export type IndicatorSeries<T = number> = readonly (Readonly<T> | null)[];
 export type EmaPeriod = 9 | 20 | 21 | 50;
+export type IndicatorTimeframe = '5m' | '1h';
 
 export interface AdxPoint {
   readonly plusDI: number;

@@ -1,5 +1,5 @@
 import { Candle } from '../simulation/candle';
-import { IndicatorSeries, NumericCandle } from './types';
+import { IndicatorSeries, IndicatorTimeframe, NumericCandle } from './types';
 import { finiteResult, validateHistory } from './validation';
 
 /** t >= 1 only: previous close is mandatory, including gaps in market prices. */
@@ -8,8 +8,8 @@ export function trueRange(current: NumericCandle, previous: NumericCandle): numb
     Math.abs(current.high - previous.close), Math.abs(current.low - previous.close));
 }
 
-export function atr(candles: readonly Candle[], asOf: string): IndicatorSeries {
-  const data = validateHistory(candles, asOf);
+export function atr(candles: readonly Candle[], asOf: string, timeframe: IndicatorTimeframe = '5m'): IndicatorSeries {
+  const data = validateHistory(candles, asOf, timeframe);
   const result: (number | null)[] = Array(data.length).fill(null);
   let average = 0;
   for (let i = 1; i < data.length; i++) {

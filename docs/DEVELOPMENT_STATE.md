@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-30
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: CLOSED_CANDLE_INDICATORS
-PHASE: MVP-001-B — indicadores estatísticos sobre candles fechados
-MVP: FOUNDATION_AND_INDICATORS_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
-IMPLEMENTATION: MVP_001_A_AND_B_IMPLEMENTED_ONLY
+CURRENT_PHASE: CLOSED_HOURLY_REGIMES
+PHASE: MVP-001-C1-RESUME — comparação exata de D, agregação e regimes horários
+MVP: FOUNDATION_INDICATORS_HOURLY_REGIMES_IMPLEMENTED; REMAINING_INCREMENTS_NOT_STARTED
+IMPLEMENTATION: MVP_001_A_B_AND_C1_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -43,7 +43,7 @@ OPS-003.4: APPROVED_SPEC
 MVP_SCOPE: FUNCTIONAL_SCOPE_APPROVED; TECHNICAL_READINESS_PENDING
 FINAL_LEARNING_ALGORITHMS: PENDING
 TECHNICAL_ARCHITECTURE: MINIMAL_ARCH_001_APPROVED; REMAINING_CONTRACTS_PENDING
-ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_AND_INDICATORS_IMPLEMENTED
+ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_AND_HOURLY_FUNCTIONS_IMPLEMENTED
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
@@ -51,20 +51,36 @@ COORDINATOR: CONCEPT_APPROVED
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_82_TESTS_8_SUITES; 52_NEW_AND_30_PRESERVED
-COVERAGE_LINES: 97.96_PERCENT_GLOBAL; 100_PERCENT_NEW_INDICATORS
+TESTS: PASS_147_TESTS_12_SUITES; 51_NEW_AND_96_PRESERVED
+COVERAGE_LINES: 98.85_PERCENT_GLOBAL; 100_PERCENT_NEW_AND_CHANGED_SOURCE
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_B
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_C1
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: MVP-001-C
+NEXT: MVP-001-C2
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_IMPLEMENTED_ONLY; REMAINING_NOT_IMPLEMENTED
-REQ_091_095: INDICATOR_MATH_IMPLEMENTED; OPERATIONAL_150H_WARMUP_AND_DEPENDENT_INTEGRATION_PENDING
+REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
+REQ_061_080: HOURLY_AGGREGATION_REGIMES_AND_VOLATILITY_IMPLEMENTED; NO_SIGNALS_OR_AUTHORIZATION
+WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-C1-RESUME — TARGETED_FIX + IMPLEMENTATION / TDD.
+STATUS: DONE. Baseline conferida: backend, master/30f4a28bb724a5f25791c2386e8d77bec9e48dc7, staging/worktree limpos e Node v24.18.0. Tentativa C1 anterior interrompida sem arquivos alterados por comparação Number de D; retomada autoriza frações exatas e continuação. Nenhuma fórmula/limiar aprovado foi substituído e nenhuma decisão foi criada.
+
+Entregues: comparação causal exata de D por bigint/SMA/Wilder/MDC; parâmetro final opcional5m/1h em EMA/ATR/ADX/validação; agregação UTC de12 candles com OHLC/volume exatos e saída congelada; regimes com confirmação conservadora em dois horários; volatilidade exata com100 razões anteriores/P75 nearest-rank; warmupComplete informativo a partir da150ª hora. Number continua para auditoria. Proteção contra colisões, índices e fórmulas anteriores preservados; RSI/Bollinger não alterados. Contratos detalhados em ARCHITECTURE.
+
+Esclarecimento recebido do proprietário: classifyHourly rejeita histórico estruturalmente inválido com RangeError; UNKNOWN reservado a indisponibilidade/contradição/incerteza numérica. Sem classificação ou aquecimento reaproveitados por lacunas/futuro. Fronteiras ADX/DI são certificadas por intervalos com arredondamento binário para fora; quando não provadas, UNKNOWN com motivo. ADX exato20/25 não é decidido incorretamente; pode permanecer UNKNOWN. Volatilidade aproveita o ATR racional de D para igualdade e diferenças de um tick, sem epsilon ou arredondamento decisório.
+
+TDD: testes escritos/executados antes dos componentes/contratos (RED por módulos/API ausentes); reprodução original confirma Number D=0,24999999999029873, mas comparador exato atende+0,25. Focados finais:10 testes exatos,8 agregação,8 timeframe e25 classificação/volatilidade. Suíte sem cobertura145/12 aprovada antes dos2 casos completos adicionais de ADX; execução final npm run test:coverage aprovou147/12, preservando96 anteriores e acrescentando51. Cobertura de linhas100% em src/regimes e indicadores alterados; global98,85%, statements98,73%, branches97,32%; regimes branches96,57%. npm run build PASS. UTC/dia, precisão/volumes, prefixos, histórico parcial, determinismo, entradas congeladas e isolamento BTC/ETH verificados. git diff --check PASS.
+
+Criados somente5 módulos src/regimes/{types,aggregate-hourly,exact-d,classify-hourly,index}.ts e4 testes (test/regimes/{aggregate-hourly,exact-d,classify-hourly}.spec.ts, test/indicators/timeframe.spec.ts). Modificados6 arquivos permitidos de indicadores e apenas ARCHITECTURE/este checkpoint. Demais fontes, testes antigos, decisões/requisitos e dependências preservados. Sem integração automática no NestJS, finanças ou frontend. Branch/HEAD preservados; staging vazio, sem commit/push.
+
+Limitações: custo crescente de inteiros racionais em histórias extensas; valores Number de auditoria aproximados; intervalos direcionais podem exigir UNKNOWN junto às fronteiras. A indicação de150h não autoriza entradas. Pendentes: MVP-001-C2, estratégias/contexto/T/R/C/A/H/scores/sinais, seis cenários oficiais, execução/orçamento/proteções, SQLite/ledger e aprendizado. REQ-100 empírico continua NOT_EXECUTED/PENDING_VERIFICATION. Próximo MVP-001-C2 não iniciado.
+
+## MVP-001-B — registro histórico
 BOT-CRYPTO-MVP-001-B — IMPLEMENTATION / TDD / CLOSED_CANDLE_INDICATORS.
 STATUS: DONE — EMA9/20/21/50, RSI14, ATR14, ADX/+DI/-DI14 e Bollinger20/2 implementados conforme DEC-053/REQ-091/REQ-095. Preflight conferiu raiz backend, master/1b73021100b59b84f4f86e22d0ad28dc2bc3b96c, staging/worktree limpos, Node v24.18.0/npm11.16.0;30 testes anteriores aprovados antes da edição. Testes novos escritos e executados antes dos módulos: RED por módulos ausentes; depois52 novos aprovados/6 suítes e suíte completa82/8. Cobertura nova100% de linhas, branches, statements e funções; global97,96% de linhas,98,34% statements,98,16% branches. npm run build aprovado. Sem novas dependências ou decisões; REQUIREMENTS e demais arquivos fora da allowlist preservados. Entrega matemática parcial de REQ-091/REQ-095 não equivale a integração operacional, warmup150h ou comprovação REQ-100.
 

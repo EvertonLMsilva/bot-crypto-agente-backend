@@ -1,10 +1,10 @@
 import { Candle } from '../simulation/candle';
-import { EmaPeriod, IndicatorSeries } from './types';
+import { EmaPeriod, IndicatorSeries, IndicatorTimeframe } from './types';
 import { finiteResult, validateHistory } from './validation';
 
-export function ema(candles: readonly Candle[], asOf: string, period: EmaPeriod): IndicatorSeries {
+export function ema(candles: readonly Candle[], asOf: string, period: EmaPeriod, timeframe: IndicatorTimeframe = '5m'): IndicatorSeries {
   if (![9, 20, 21, 50].includes(period)) throw new RangeError('Unsupported EMA period');
-  const data = validateHistory(candles, asOf);
+  const data = validateHistory(candles, asOf, timeframe);
   const result: (number | null)[] = Array(data.length).fill(null);
   let average = 0;
   for (let i = 0; i < data.length; i++) {

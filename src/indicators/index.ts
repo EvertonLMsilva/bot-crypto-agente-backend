@@ -1,4 +1,4 @@
-export type { IndicatorSeries, EmaPeriod, AdxPoint, BollingerPoint, NumericCandle } from './types';
+export type { IndicatorSeries, EmaPeriod, IndicatorTimeframe, AdxPoint, BollingerPoint, NumericCandle } from './types';
 export { validateHistory } from './validation';
 export { ema } from './ema';
 export { rsi } from './rsi';

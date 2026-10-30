@@ -1,10 +1,10 @@
 import { Candle } from '../simulation/candle';
 import { trueRange } from './atr';
-import { AdxPoint, IndicatorSeries } from './types';
+import { AdxPoint, IndicatorSeries, IndicatorTimeframe } from './types';
 import { finiteResult, validateHistory } from './validation';
 
-export function adx(candles: readonly Candle[], asOf: string): IndicatorSeries<AdxPoint> {
-  const data = validateHistory(candles, asOf);
+export function adx(candles: readonly Candle[], asOf: string, timeframe: IndicatorTimeframe = '5m'): IndicatorSeries<AdxPoint> {
+  const data = validateHistory(candles, asOf, timeframe);
   const result: (AdxPoint | null)[] = Array(data.length).fill(null);
   let range = 0, plus = 0, minus = 0, strength = 0;
   for (let i = 1; i < data.length; i++) {
