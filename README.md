@@ -1,35 +1,29 @@
 # BOT CRUPTO
 
-Aplicação web planejada como escritório virtual 3D. O MVP-001 terá personagens que refletem atividades reais de uma simulação, com capital exclusivamente fictício e nenhuma operação financeira real.
+Aplicação web planejada como escritório virtual 3D de análise de criptomoedas, com personagens que refletem eventos reais de uma simulação. Capital exclusivamente fictício; nenhuma operação financeira real.
 
-## Funcionamento aprovado
-O Analista Central de Inteligência organiza e contextualiza dados e acontecimentos simulados. Especialistas autônomos exclusivos por ativo integram esse contexto às próprias estratégias. O Coordenador de Oportunidades ordena sinais sem refazer análises ou alterar pontuações. O Gestor de Orçamento avalia pedidos de capital fictício segundo política inicial aprovada (DEC-020). Operações simuladas geram resultados auditáveis para aprendizado individual, estratégias versionadas, validação independente e promoção/reversão automática controlada apenas na simulação.
+## MVP funcional aprovado
+Exatamente cinco agentes lógicos: Analista Central de Inteligência, especialistas BTC e ETH, Coordenador de Oportunidades e Gestor de Orçamento. Simulador, execução e auditoria são componentes separados. SOL e expansão lateral ficam para evolução futura.
 
-## Política inicial aprovada
-10.000 UC fictícias compartilhadas; exposição individual 20% e consolidada 40%; risco planejado 1% por operação e 2% aberto; perda diária de referência 3% do patrimônio inicial do dia UTC. Spot simulado, sem alavancagem ou venda descoberta. Entrada na próxima abertura elegível autorizada, stop inicial 2%, take 4%, taxa 0,10% e deslizamento 0,05% por execução. Proteções OHLC conservadoras, auditoria persistente e proteção durante evolução. Gaps/deslizamentos podem superar o risco planejado. Especificação completa e pendências em [decisões](docs/DECISIONS.md) e [requisitos](docs/REQUIREMENTS.md).
+Um andar, mesas por especialista, salas centrais da Central e do Gestor, Coordenador e painel compartilhado; câmera orbit/zoom/pan e interações. Iniciar, pausar, avançar 5 minutos, velocidade e reinício confirmado. Animações não executam lógica financeira. Three.js permanece PROPOSED; engine e stack não foram escolhidas.
 
-Repositório: [EvertonLMsilva/bot-crypto-agente](https://github.com/EvertonLMsilva/bot-crypto-agente).
+## Simulação, sinais e aprendizado
+Candles fechados de 5 minutos para operações e de 1 hora para regime; 12 candles válidos por horário, UTC 24/7. Três famílias iniciais por ativo: tendência, rompimento e reversão à média. SIGNAL-005.1–005.10 define indicadores, T/R/C/A, seleção interna, H por política, half-up e saídas por origem. Pesos globais 35/25/15/15/10 e limiar 70 preservados; H operacional inicial zero em UNVALIDATED. H calculado positivo não autoriza ativação automática: máquina de estados/bootstrap permanecem pendentes.
 
-## Sinais e aprendizado aprovados
-Especialistas selecionam múltiplas estratégias conforme regime/contexto, com política versionada. Fórmula global 0–100: T 35%, R 25%, C 15%, H 15%, A 10%; ENTRY_CANDIDATE exige nota >=70 e demais critérios, com autorização financeira separada. Nota não representa probabilidade de lucro. Uma política ativa e até três candidatas por ciclo/agente, estas sem consumir capital oficial; baseline inicial UNVALIDATED e promoções sujeitas ao LEARN-GATE. Tipos: ENTRY_CANDIDATE, EXIT_REQUEST, HOLD, WAIT e RISK_ALERT. Abertura de entrada perdida expira o sinal, libera reserva idempotentemente e exige nova análise/autorização; saída perdida exige reavaliação. Ordenação por nota, tempo simulado, rodízio e ID estável. Indicadores, algoritmos e calibração interna permanecem pendentes em [requisitos](docs/REQUIREMENTS.md).
+Aquecimento de 150 horários, desenvolvimento de 90 dias, validação 3x30 e monitoramento 2x30: 240 dias mais aquecimento. Cada validação contém os seis cenários, 5 dias cada, em ordens alternadas V1/V2/V3, com carteiras independentes de 10.000 UC e trajetórias/sementes distintas. Sem manipular amostra; insuficiência gera INSUFFICIENT_EVIDENCE.
 
-## Validação do aprendizado — LEARN-004
-Comparação por retorno líquido patrimonial, em três períodos cronológicos de mesma duração e carteiras independentes de 10.000 UC. Desenvolvimento/ajuste separados da validação final reservada; até uma desafiante final por ciclo e histórico de todas as tentativas. Avaliar o pior drawdown dos períodos e manter DEC-016 integral. Pós-promoção, degradação exige duas janelas consecutivas com pelo menos 20 operações encerradas da promovida em cada uma e desvantagem de pelo menos 1 p.p. em ambas. Violações críticas suspendem novas entradas imediatamente. Rollback preserva posições/proteções e usa versão anterior apenas íntegra/elegível; sem versão segura, mantém suspensão. Durações concretas, intervalos mutáveis, algoritmos e estatística complementar continuam pendentes em [decisões](docs/DECISIONS.md).
+LEARN-GATE, limites financeiros e OPS-002 preservados: spot-long simulado sem alavancagem/short; uma posição por ativo; capital compartilhado 10.000 UC, exposição20%/40%, risco1%/2%, perda diária3%; stop2%, take4%, taxa0,10% e deslizamento0,05% por execução. Autorização separada e entrada na próxima abertura elegível, sem retroatividade. Score não é probabilidade e risco planejado não garante perda máxima.
 
-## Estado atual
-Planejamento do MVP-001, requisitos em consolidação. DOCS-001/002 criaram a base; GIT-001 publicou o primeiro commit; DOCS-004 consolidou finanças/operações e GIT-002 publicou esse conteúdo em 4bba447862703bba1d99570a738621c269139c3e. DOCS-005 consolidou SIGNAL-001 a SIGNAL-004, publicada pela GIT-003 em aa9c24a94a234a6f164b183364efc72146f834d1. DOCS-006 consolida LEARN-004, com alterações documentais locais não commitadas. Sem evidência local de DOCS-003. Inspeção: oito documentos, master no HEAD aa9c24a94a234a6f164b183364efc72146f834d1, nenhuma aplicação implementada. Aprovações não comprovam capacidades executáveis.
+## Estado e retomada
+Planejamento funcional consolidado pela DOCS-007-R2; implementação NOT_STARTED, simulações/build/testes de código não executados. Baseline master/0feccd4b35cd12422c6dca24e7723b0edb3b1ace (GIT-004), com alterações DOCS-007-R2 locais não commitadas. Histórico preservado no checkpoint. Repositório: [EvertonLMsilva/bot-crypto-agente](https://github.com/EvertonLMsilva/bot-crypto-agente).
 
-## Visual e tecnologias
-Referência aprovada: um andar, análise/coordenação e orçamento no centro, mesas ao redor e expansão lateral. Visual final dos personagens/salas pendente. Three.js: PROPOSED. Frontend definitivo, backend, persistência, IA e infraestrutura não escolhidos. Dados e notícias reais somente em fase posterior, preservando contratos dos especialistas. MVP sem dependência de APIs externas pagas.
+Antes de prosseguir, ler contexto, decisões e checkpoint. Oito pendências explícitas, incluindo ativação/bootstrap de H, bordas matemáticas, precisão/ordenação, avaliação adicional e oportunidades com H=0, precisam de especificação. Esta tarefa não autoriza implementação, simulação, commit ou push.
 
 ## Documentação
 - [Instruções permanentes](AGENTS.md)
 - [Contexto e referência visual](docs/PROJECT_CONTEXT.md)
-- [Requisitos](docs/REQUIREMENTS.md)
+- [Requisitos e pendências](docs/REQUIREMENTS.md)
 - [Arquitetura conceitual](docs/ARCHITECTURE.md)
-- [Histórico de decisões](docs/DECISIONS.md)
-- [Roadmap proposto](docs/ROADMAP.md)
-- [Checkpoint do desenvolvimento](docs/DEVELOPMENT_STATE.md)
-
-## Retomar
-Ler contexto, decisões e checkpoint; consultar demais documentos conforme o escopo. Próximo passo funcional: MVP_SCOPE_001 — definir ativos/agentes, timeframes, cenários, duração das janelas e configurações iniciais. Publicação documental desta tarefa depende da GIT-004, ainda não executada. Esta tarefa não autoriza desenvolvimento, instalações, integrações ou commits. Não há comandos de execução ou testes de aplicação disponíveis.
+- [Decisões e fórmulas](docs/DECISIONS.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Checkpoint](docs/DEVELOPMENT_STATE.md)

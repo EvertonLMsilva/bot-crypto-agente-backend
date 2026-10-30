@@ -874,3 +874,375 @@ A aprovação deste mecanismo não define tecnologias, contratos técnicos ou re
 
 SUBSTITUI:
 Não se aplica; detalha decisões anteriores sem apagar seu histórico.
+
+## Consolidação DOCS-007-R2
+Fonte: BOT-CRYPTO-DOCS-007-R2, 2026-10-29; baseline 0feccd4b35cd12422c6dca24e7723b0edb3b1ace limpa, sem DOCS-007 anterior aplicada. DEC-001 a DEC-035 preservadas integralmente. As novas aprovações fecham composição, parâmetros e distribuição das janelas antes pendentes; não enfraquecem SIGNAL-001 a SIGNAL-004, DEC-016, LEARN-004 ou OPS-002. Registros antigos expressam o conhecimento da época; os seguintes detalham a configuração atual. Nenhuma implementação ou simulação.
+
+## DEC-036
+ID: DEC-036
+DATA: 2026-10-29
+TÍTULO: MVP-SCOPE-001: cinco agentes lógicos e dois ativos
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-007-R2 fecha a composição funcional inicial do MVP.
+
+DECISÃO:
+Exatamente cinco agentes: Analista Central de Inteligência, Especialista BTC, Especialista ETH, Coordenador de Oportunidades e Gestor de Orçamento. Simulador, execução e auditoria são componentes separados, não agentes adicionais. SOL fica para expansão futura. Especialistas têm estratégias, versões e aprendizado independentes. Coordenador prioriza sinais existentes sem recalcular scores ou autorizar capital; Gestor controla capital/risco.
+
+JUSTIFICATIVA:
+Fixar escopo sem agentes redundantes ou mistura de responsabilidades.
+
+IMPACTOS:
+Detalha DEC-009/DEC-019 e resolve composição antes pendente; não muda limites ou competências dos papéis.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-037
+ID: DEC-037
+DATA: 2026-10-29
+TÍTULO: MVP-SCOPE-002/003: candles e seis cenários simulados
+STATUS: APPROVED
+
+CONTEXTO:
+É necessário definir dados e temporalidade sem expor o regime verdadeiro aos especialistas.
+
+DECISÃO:
+Operações avaliadas com candles fechados de 5 minutos; regimes e contexto técnico superior em candles fechados de 1 hora. Cada horário agrega 12 candles válidos de 5 minutos. Relógio simulado UTC, mercado 24/7. Dados/eventos determinísticos, reproduzíveis e sem antecipação. Seis cenários: alta estável, alta turbulenta, baixa gradual, queda brusca, lateral estável, lateral turbulenta. Gerador conhece regime verdadeiro; agentes não recebem esse rótulo. BTC e ETH podem reagir diferentemente ao mesmo evento. Sem API de negociação real, capital real ou infraestrutura paga obrigatória.
+
+JUSTIFICATIVA:
+Separar dados simulados da classificação inferida pelos agentes.
+
+IMPACTOS:
+Candle horário em formação não é fonte válida de regime. Geração concreta e contingências ainda dependem de especificações pertinentes.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-038
+ID: DEC-038
+DATA: 2026-10-29
+TÍTULO: MVP-SCOPE-004: cronologia e correção das janelas de validação
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-007-R2 aprova durações e distribuição mista em CADA janela; não há DOCS-007 anterior aplicada na baseline.
+
+DECISÃO:
+Aquecimento inicial de 150 candles horários; desenvolvimento de 90 dias simulados; validação em três janelas independentes de 30 dias com 10.000 UC iniciais por carteira; monitoramento pós-promoção em duas janelas de 30 dias. Total cronológico inicial: 240 dias, mais aquecimento inicial. Não transferir posições, capital ou operações entre carteiras independentes.
+Cada janela de validação contém os seis cenários, cinco dias por cenário, nas ordens:
+- V1: alta estável -> alta turbulenta -> baixa gradual -> queda brusca -> lateral estável -> lateral turbulenta.
+- V2: lateral estável -> lateral turbulenta -> alta estável -> alta turbulenta -> baixa gradual -> queda brusca.
+- V3: baixa gradual -> queda brusca -> lateral estável -> lateral turbulenta -> alta estável -> alta turbulenta.
+Trajetórias/sementes distintas, sem duplicar observações ou manipular cenários para produzir operações mínimas. Preservar DEC-016/LEARN-004: 60 operações distintas concluídas no conjunto e pelo menos 10 em cada janela; insuficiência gera INSUFFICIENT_EVIDENCE.
+Permitir aquecimento com histórico anterior a cada carteira, sem importar estado operacional anterior ou reutilizar validação reservada para otimizar parâmetros.
+
+JUSTIFICATIVA:
+Garantir diversidade em cada carteira e evitar uma janela exclusiva para cada regime.
+
+IMPACTOS:
+Detalha DEC-031/DEC-034, sem editar histórico ou limites. A cronologia não comprova obtenção da amostra; nenhuma simulação executada nesta tarefa.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-039
+ID: DEC-039
+DATA: 2026-10-29
+TÍTULO: MVP-SCOPE-005: três famílias técnicas iniciais
+STATUS: APPROVED
+
+CONTEXTO:
+Famílias antes propostas passam a ter os gatilhos iniciais aprovados.
+
+DECISÃO:
+Tendência: EMA9/EMA21 de 5 minutos, recuperação da EMA9, adequação ao UPTREND. Rompimento: fechamento acima da máxima dos 20 candles anteriores e volume >1,2 vezes a média anterior. Reversão à média: SIDEWAYS, RSI14 recuperando acima de 35 após sobrevenda e retorno para dentro da banda inferior Bollinger 20/2. Parâmetros e aprendizado independentes por ativo. Contexto econômico/geopolítico continua camada transversal, não agente ou voto de família adicional.
+
+JUSTIFICATIVA:
+Fechar famílias iniciais sem cruzar aprendizagem entre BTC e ETH.
+
+IMPACTOS:
+Cálculos complementares em SIGNAL-005; intervalos mutáveis e bordas ainda não aprovadas não são inferidos.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-040
+ID: DEC-040
+DATA: 2026-10-29
+TÍTULO: MVP-SCOPE-006: escritório 3D e controles
+STATUS: APPROVED
+
+CONTEXTO:
+A referência visual e o layout central ganham escopo funcional de interface.
+
+DECISÃO:
+Instalação web 3D de um andar, cinco personagens, mesas por especialista, salas da Central e do Gestor, Coordenador, painel compartilhado e navegação curta. Preservar layout central aprovado, mesas ao redor. Câmera orbit/zoom/pan e interação com agentes/ambientes. Painéis derivados de eventos reais da simulação; animações simples sem interferir na lógica. Controles iniciar, pausar, avançar 5 minutos, velocidade e reinício confirmado. Expansão lateral futura; nenhuma engine ou stack escolhida.
+
+JUSTIFICATIVA:
+Representar estados da simulação de modo navegável e compreensível.
+
+IMPACTOS:
+Interações aprovadas; não representam implementação. Three.js continua PROPOSED. Inclusão de novos ativos é expansão futura, não ampliação automática do MVP.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-041
+ID: DEC-041
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.1: H inicial e arredondamento global
+STATUS: APPROVED
+
+CONTEXTO:
+A DOCS-007-R2 resolve o histórico inicial sem conceder desempenho fictício.
+
+DECISÃO:
+Enquanto política operacional UNVALIDATED, H=0. Preservar pesos globais e usar S = round_half_up(0.35*T + 0.25*R + 0.15*C + 0.15*H + 0.10*A), limiar S >= 70. Score não é probabilidade de lucro. Não relaxar elegibilidade, orçamento ou limiar por falta de histórico.
+
+JUSTIFICATIVA:
+Definir baseline operacional sem imputação neutra não aprovada.
+
+IMPACTOS:
+Detalha DEC-027/REQ-065: H=50 não é fallback. Verificação quantitativa de oportunidades com H=0 permanece PENDING, sem executar simulação aqui.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-042
+ID: DEC-042
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.2: regimes horários e volatilidade
+STATUS: APPROVED
+
+CONTEXTO:
+A classificação deve usar apenas indicadores e candles já fechados.
+
+DECISÃO:
+Indicadores horários: EMA20, EMA50, ADX/DI14, ATR14.
+D = (EMA20 - EMA50) / ATR14
+- UPTREND: ADX>=25, D>=0,25 e +DI>-DI.
+- DOWNTREND: ADX>=25, D<=-0,25 e -DI>+DI.
+- SIDEWAYS: ADX<20.
+- UNKNOWN: zona intermediária, contradição, dados inválidos ou histórico insuficiente.
+Confirmar novo regime em dois candles horários consecutivos; dados inválidos causam UNKNOWN imediatamente. Não consultar horário em formação.
+Volatilidade: ATR14 / Close, comparada ao percentil 75 (nearest rank) dos 100 valores horários anteriores. Atual acima do percentil: HIGH; demais valores válidos: NORMAL.
+
+JUSTIFICATIVA:
+Fixar classificação causal e tratamento conservador de insuficiência.
+
+IMPACTOS:
+Indexação e bordas exatas dos indicadores continuam PENDING; não inventar fallback numérico para divisor inválido.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-043
+ID: DEC-043
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.3: evidência técnica T
+STATUS: APPROVED
+
+CONTEXTO:
+O score técnico é calculado por estratégia elegível.
+
+DECISÃO:
+T = 40G + 30F + 20Q + 10V
+G: gatilho obrigatório binário.
+F: força técnica normalizada.
+Q = (Close-Low)/(High-Low)
+V = clip((Volume/Media20Anterior-1)/0.5, 0, 1)
+F de tendência: separação EMA9-EMA21 normalizada por 0,5*ATR14 de 5 minutos.
+F de rompimento: distância do fechamento acima da máxima anterior de 20 candles normalizada por 0,5*ATR14.
+F de reversão: recuperação do RSI acima de 35, com profundidade de sobrevenda normalizada por 15 e janela de três candles anteriores.
+Ausência de gatilho, histórico insuficiente ou divisor inválido impede entrada. Janelas de rompimento/volume excluem candle atual.
+
+JUSTIFICATIVA:
+Tornar evidência técnica rastreável sem aceitar sinais inválidos.
+
+IMPACTOS:
+Preservar exatamente os termos aprovados; composição/indexação e bordas não explicitadas não são completadas por suposição.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-044
+ID: DEC-044
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.4: matriz de adequação R
+STATUS: APPROVED
+
+CONTEXTO:
+Elegibilidade não equivale a uma nota zero.
+
+DECISÃO:
+Matriz aprovada:
+
+| Regime | Estratégia | Vol. NORMAL | Vol. HIGH |
+|---|---|---:|---:|
+| UPTREND | Tendência | 100 | 80 |
+| UPTREND | Rompimento | 90 | 80 |
+| SIDEWAYS | Rompimento | 80 | 60 |
+| SIDEWAYS | Reversão | 100 | 60 |
+
+Demais combinações INELEGIBLE, distintas de R=0. DOWNTREND sem novas compras; UNKNOWN e volatilidade inválida bloqueiam entradas.
+
+JUSTIFICATIVA:
+Impedir que uma nota alta contorne inelegibilidade de regime/família.
+
+IMPACTOS:
+Não alterar limiar 70 ou competências do Coordenador.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-045
+ID: DEC-045
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.5: contexto C por ativo
+STATUS: APPROVED
+
+CONTEXTO:
+Contexto deve distinguir fatos simulados, rumores e disponibilidade temporal.
+
+DECISÃO:
+Base neutra C=50 somente com fluxo de eventos válido.
+C = clip(50 + soma(direcao*intensidade*decaimento) - U, 0, 100)
+Fatos confirmados simulados: intensidade 10/20/30, direção favorável/desfavorável/neutra por ativo. Decaimento linear: cripto 6h, macro 24h, geopolítico/regulatório 72h. Rumores: penalidade de 5 por grupo independente, limitada a 10; não conceder bônus positivo por rumor não confirmado. Eventos duplicados agrupados por ID estável. Disponíveis apenas a partir do timestamp de publicação/disponibilização. BTC e ETH interpretam impactos separadamente. Fluxo obrigatório inválido bloqueia novas entradas; rumores não são fatos.
+
+JUSTIFICATIVA:
+Manter contexto causal, sem duplicação de influência ou evidência inventada.
+
+IMPACTOS:
+Precedência de eventos simultâneos/contraditórios PENDING; não escolher regra automaticamente.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-046
+ID: DEC-046
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.6: concordância A entre famílias
+STATUS: APPROVED
+
+CONTEXTO:
+Votos devem pertencer ao mesmo ativo e à política avaliada.
+
+DECISÃO:
+A=50 com uma família válida. A=100 com pelo menos duas famílias distintas e elegíveis, cada uma com T>=60; A=100 somente para candidatas que participam dessa concordância qualificada. Não contar versões duplicadas da mesma família, misturar votos BTC/ETH ou incluir shadow/challengers fora da política avaliada. Uma decisão operacional oficial por ativo/candle fechado, preservando alertas adicionais já aprovados.
+
+JUSTIFICATIVA:
+Evitar concordância artificial ou contaminação entre políticas/ativos.
+
+IMPACTOS:
+Não soma scores nem substitui seleção representativa e autorização financeira.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-047
+ID: DEC-047
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.7: seleção interna de representante
+STATUS: APPROVED
+
+CONTEXTO:
+Desempate do especialista deve permanecer distinto do Coordenador.
+
+DECISÃO:
+Calcular score separadamente por estratégia elegível; arredondar apenas score global por half-up nesta seleção. Escolher por maior S arredondado, maior score bruto, maior T, maior R e ID estável canônico crescente, nessa ordem. Preservar estratégia/versão de origem, avaliações descartadas, timestamps e justificativas. Nunca somar scores de estratégias distintas. Ordenação/rodízio aprovados do Coordenador permanecem inalterados.
+
+JUSTIFICATIVA:
+Produzir uma decisão oficial auditável sem reanálise pela coordenação.
+
+IMPACTOS:
+Arredondamento próprio do H em DEC-049 é regra separada; precisão/serialização e execução OPS-003 continuam pendentes.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-048
+ID: DEC-048
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.8: H pertence à política por especialista
+STATUS: APPROVED
+
+CONTEXTO:
+Desempenho histórico precisa de origem inequívoca.
+
+DECISÃO:
+H pertence à política adaptativa versionada de cada especialista. Todas as estratégias da mesma política utilizam o H operacional autorizado daquela versão. Históricos de BTC e ETH não são compartilhados.
+
+JUSTIFICATIVA:
+Preservar independência por ativo e rastreabilidade por versão.
+
+IMPACTOS:
+H calculado e H operacional autorizado são conceitos diferentes, detalhados em DEC-049.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-049
+ID: DEC-049
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.9: H validado e ativação não retroativa
+STATUS: APPROVED
+
+CONTEXTO:
+Ativar H altera decisões e exige validação própria, sem autorização implícita por cálculo.
+
+DECISÃO:
+Somente após aprovação integral LEARN-GATE:
+H = round_half_up(50 + 20E + 10K + 10D)
+E = clip((Delta - 1)/2, 0, 1), Delta em pontos percentuais de melhoria média líquida.
+K = numero_de_periodos_superiores - 2
+D = clip((10-MDD)/10, 0, 1), MDD pior drawdown percentual nas três janelas.
+Faixa de H validado: 50–90. Sem evidência suficiente ou política UNVALIDATED, H operacional inicial zero. Distinguir H histórico calculado de H operacional efetivamente autorizado.
+Ativar H positivo muda os sinais: exige nova configuração versionada e validação cronológica independente. Não aplicar retroativamente.
+
+JUSTIFICATIVA:
+Evitar que evidência obtida com uma configuração autorize automaticamente outra.
+
+IMPACTOS:
+Máquina de estados de experimentação/ativação de H positivo e bootstrap/referência da primeira política validada continuam PENDING. E/D desta fórmula são locais ao cálculo de H; não confundir D com separação de EMAs em DEC-042.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## DEC-050
+ID: DEC-050
+DATA: 2026-10-29
+TÍTULO: SIGNAL-005.10: indicadores matemáticos e saídas estratégicas
+STATUS: APPROVED
+
+CONTEXTO:
+Indicadores e saídas devem seguir dados fechados e versão de origem.
+
+DECISÃO:
+EMA: semente SMA de N fechamentos e atualização por 2/(N+1).
+RSI14: Wilder; casos de médias nulas precisam ser explicitados nas convenções de borda, sem inventar valores de fallback.
+ATR14 e ADX/DI14: Wilder. Bollinger20/2: SMA20 mais/menos 2 desvios-padrão populacionais. Rompimento/volume usam janelas anteriores excluindo atual. Sem valores futuros ou candles incompletos; indicadores inválidos bloqueiam sinais dependentes.
+Saídas: tendência com dois fechamentos consecutivos abaixo da EMA21; rompimento com dois fechamentos abaixo do nível rompido congelado na entrada; reversão com fechamento alcançando/superando SMA20 central da Bollinger. Saída estratégica gera EXIT_REQUEST para próxima abertura elegível. Stops/takes e gaps conservadores prevalecem conforme OPS-002.
+Posição preserva estratégia/versão de origem durante promoção/rollback. Reprocessamentos/concorrências não duplicam saída, taxas, liquidação ou reserva. Mudança de regime ou notícia negativa isolada não gera liquidação automática.
+
+JUSTIFICATIVA:
+Fixar métodos aprovados sem inferir convenções matemáticas ainda pendentes.
+
+IMPACTOS:
+Indexação/bordas exatas de ATR/ADX/DI/RSI, precisão/serialização/arredondamento de execução e ordenação temporal de eventos/proteções/abertura/saída/falha de dados PENDING. Casos de médias nulas de RSI não receberam valores numéricos na tarefa, portanto não aprovar convenção implícita.
+
+SUBSTITUI:
+Não se aplica; detalha configuração antes pendente sem apagar histórico.
+
+## Pendências explícitas DOCS-007-R2 — PENDING
+1. Máquina de estados para validação experimental e ativação operacional de H positivo.
+2. Bootstrap e referência de comparação da primeira política validada.
+3. Indexação exata e bordas de ATR/ADX/DI/RSI, incluindo valores nos casos de médias nulas de RSI não especificados no pedido.
+4. Precisão decimal, serialização e arredondamento de execução, coordenados com OPS-003.
+5. Precedência de eventos contextuais simultâneos/contraditórios.
+6. Ordenação temporal exata de proteção, abertura, saída estratégica e falha de dados.
+7. Configuração da avaliação adicional após INSUFFICIENT_EVIDENCE.
+8. Verificação quantitativa de oportunidades possíveis com H=0, sem relaxar limiar 70.
+
+As descrições aprovadas de F e gatilhos são preservadas literalmente no conteúdo funcional; composição/indexação e convenções de borda não explicitadas exigem especificação antes de implementar, sem criar fórmulas de fallback ou saturação por conta própria. Nenhuma dessas pendências foi resolvida nesta consolidação.
