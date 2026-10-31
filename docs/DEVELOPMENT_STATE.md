@@ -1,12 +1,12 @@
 # Checkpoint operacional
 
-LAST_UPDATED: 2026-10-30
+LAST_UPDATED: 2026-10-31
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: DETERMINISTIC_COORDINATION_WITH_EXPLICIT_ROTATION
-PHASE: MVP-001-D2 — ordenação de propostas e rodízio explícito
-MVP: FOUNDATION_THROUGH_D2_COORDINATION_IMPLEMENTED; FINANCIAL_OPERATIONS_NOT_IMPLEMENTED
-IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_AND_D2_IMPLEMENTED_ONLY
+CURRENT_PHASE: EXACT_CONSULTATIVE_BUDGET_QUOTE
+PHASE: MVP-001-D3.1 — cotação consultiva exata, sem autorização
+MVP: FOUNDATION_THROUGH_D3_1_ADVISORY_QUOTE_IMPLEMENTED; FINANCIAL_EFFECTS_NOT_IMPLEMENTED
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_AND_D3_1_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -51,14 +51,14 @@ COORDINATOR: PURE_BATCH_ORDERING_IMPLEMENTED; AUTONOMOUS_QUEUE_AND_PERSISTENCE_N
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_287_TESTS_25_SUITES; 22_NEW_AND_265_PRESERVED
-COVERAGE_LINES: 99.11_PERCENT_GLOBAL; 100_PERCENT_NEW_COORDINATION
+TESTS: PASS_336_TESTS_28_SUITES; 41_NEW_AND_295_PRESERVED
+COVERAGE_LINES: 100_PERCENT_NEW_BUDGET; 99.21_PERCENT_GLOBAL
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D2
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D3_1
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: SUGGESTED_BUDGET_AND_AUTHORIZATION_AFTER_FINANCIAL_INTEGRATION; REQUIRES_EXPLICIT_TASK
+NEXT: D3_2_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
@@ -67,10 +67,28 @@ REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBE
 SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
 OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
 COORDINATION_D2: VALIDATED_D1_BATCH_PRIORITY_DUPLICATES_AND_EXPLICIT_ROTATION_IMPLEMENTED; NO_FINANCIAL_EFFECTS
+BUDGET_D3_1: EXACT_FIXED8_QUOTE_AND_LIMITS_IMPLEMENTED; NOT_AUTHORIZED_NOT_RESERVED_NOT_EXECUTED
+REQ_096: ADVISORY_ARITHMETIC_IMPLEMENTED_ONLY; OFFICIAL_ACCOUNTING_LEDGER_AND_RECOVERY_PENDING
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D3.1 — IMPLEMENTATION / TDD.
+STATUS: DONE. Preflight: backend, master/ffc65288bc5caeab7feb487cd53dc2a25eaf34b5, staging/worktree limpos, Node v24.18.0/npm11.16.0. Instruções, decisões/requisitos e contratos autorizados consultados. Baseline D2/FIX-001 contém295 testes; checkpoint D2 histórico abaixo conserva números anteriores ao fix.
+
+Criados somente src/budget/{types,fixed8,limits,quote,index}.ts e test/budget/{fixed8,limits,quote}.spec.ts. evaluateBudgetQuote recebe lote D2, rank original1-based, BudgetSnapshot explícito e ClosedPriceReference validado. Cotação QUOTABLE/NOT_QUOTABLE apenas consultiva, com origem/valores/limites/motivos imutáveis. Marcadores NOT_EVALUATED/NOT_CREATED/NOT_EXECUTED, sem chamar novamente D2/C3 ou recalcular scores/ranking. Sinal antigo não ganha validade; timestamp futuro/ativo/preço/snapshot/origem inválidos falham explicitamente.
+
+Aritmética bigint fixed8 com precisão interna maior, quantidade/recebimentos/limites para baixo e custos/taxas/comprometimento para cima. Fórmulas e critérios completos em ARCHITECTURE: alvo10%, margem1%, slippage0,05% e taxa0,10% por lado, stop estimado2% da entrada estimada; risco=custo total de entrada-recebimento líquido estimado no stop. Custos totais somam-se conservadoramente às exposições comprometidas fornecidas. Limites20%/40%, risco1%/2%, caixa disponível e perda diária3% exata; estados não RUNNING, posição OPEN/UNKNOWN e reserva ACTIVE/UNKNOWN bloqueiam. Sem fallback para capital10000, contexto, preço ou posição; sem redimensionamento automático.
+
+TDD: três suítes RED antes dos módulos (ausentes), depois41 novos GREEN/3 suítes. Suíte completa336/28 PASS preservando295 anteriores; npm run test:coverage336/28 PASS, linhas novas100%, branches novas98,79%, linhas globais99,21%. npm run build PASS. Referência E10000/P100: Q10; compra conservadora101,0505; comprometimento1011,51550500; líquido estimado no stop988,80995279; risco22,70555221. Referências independentes para arredondamentos, um tick nos limites, diário>=3%, caixa exato/insuficiente, estados/reservas/posições, separação BTC/ETH, ciclos, rank, preço validado, origem contraditória e imutabilidade/JSON. Nenhum Date.now/Math.random decisório; benchmarks não repetidos.
+
+Somente estes dois documentos modificados além dos oito novos arquivos autorizados; decisões/requisitos, dependências/configurações e A/B/C1/C2/C3/D1/D2 preservados. Staging vazio; branch/HEAD preservados; sem commit/push. Sem execução financeira, reservas efetivas, ordens/fills/proteções, banco/ledger, saldos mutáveis ou resultados/rentabilidade simulados.
+
+Conclusão em2026-10-31 após retomada: git diff --check e conferência explícita dos oito untracked da tarefa PASS. Apareceu durante a pausa o untracked externo docs/BOT_CRUPTO_ROADMAP_COMPLETO_MVP.md; preservado sem leitura ou alteração e fora da entrega D3.1. Escopo da tarefa continua dez arquivos autorizados, sem staging ou limpeza de trabalho externo.
+
+Limitações: snapshot e flag de fechamento são evidência explícita do chamador, não consulta/reconciliação financeira ou certificação de provedor. Margem não garante preço contra gaps; stop estimado não é proteção instalada. Cotações independentes não são autorizações simultâneas e não consomem caixa. D3.2 tratará autorização em ordem, atualização atômica, redimensionamento inicial condicionado e deduplicação/liberações, com persistência futura. REQ-100 empírico continua NOT_EXECUTED/PENDING_VERIFICATION. Não iniciar D3.2 automaticamente.
+
+## MVP-001-D2 — registro histórico
 BOT-CRYPTO-MVP-001-D2 — IMPLEMENTATION / TDD.
 STATUS: DONE. Preflight: raiz backend, master/0a162ba3b888ab83d998d67d235e9e4eb50c2356, staging/worktree limpos, Node v24.18.0/npm11.16.0. Consultadas instruções, decisões/requisitos e contratos autorizados. Sem alteração dos componentes anteriores.
 

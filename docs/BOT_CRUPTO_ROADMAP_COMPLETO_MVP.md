@@ -1,0 +1,244 @@
+# 💹 BOT CRUPTO — Roadmap completo do MVP
+
+> **Atualizado em:** 31/10/2026
+> **Projeto:** BOT CRUPTO — Backend, agentes, aprendizado, frontend 3D e validação integrada
+> **Referência da análise:** documentação do repositório `EvertonLMsilva/bot-crypto-agente-backend`, branch `master`, commit `ffc65288bc5caeab7feb487cd53dc2a25eaf34b5`.
+
+Este documento cobre o **MVP completo do BOT CRUPTO**, incluindo backend, cinco agentes de IA, aprendizado autônomo controlado, escritório virtual 3D, simulação financeira e validação.
+
+A documentação do projeto prevê **6 fases oficiais, de 0 a 5**, e **100 requisitos documentados**. Apenas a sequência de incrementos `MVP-001` recebeu numeração própria de implementação até este checkpoint; ainda não há códigos oficiais de implementação para `MVP-002`, `MVP-003` etc.
+
+Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organização analítica para acompanhamento** e não representam tarefas formalmente aprovadas com esses IDs no repositório.
+
+## Visão geral das fases
+
+| Fase | Área | Situação |
+|---|---|---|
+| 0 | Planejamento e arquitetura | Base documental aprovada; pendências residuais |
+| 1 | Fundação e núcleo operacional | Em desenvolvimento — 7 publicados; D3.1 implementado e aguardando publicação |
+| 2 | Escritório virtual 3D | Não iniciado |
+| 3 | Inteligência e cinco agentes especializados | Parcial — funções técnicas implementadas |
+| 4 | Orçamento, operações e aprendizado | Parcial — contratos D1/D2 e cotação consultiva D3.1 implementados; autorização pendente |
+| 5 | Integração e validação final | Não iniciado |
+
+**Nota:** as fases representam áreas funcionais e não uma sequência rigidamente isolada: componentes das fases 3 e 4 já estão sendo desenvolvidos dentro do `MVP-001`.
+
+---
+
+## Fase 0 — Planejamento e arquitetura
+
+| Código | Tópico | Estado |
+|---|---|---|
+| 0.1 | Definir visão, objetivos e limites do MVP | Aprovado |
+| 0.2 | Definir requisitos, critérios de aceite e decisões técnicas | Aprovado, com pendências |
+| 0.3 | Arquitetura mínima do backend, frontend e agentes | Base aprovada |
+| 0.4 | Contratos de integração e calibração restantes | Pendente |
+| 0.5 | Segurança, credenciais e permissões | Pendente |
+| 0.6 | Métricas, observabilidade e hardware-alvo | Pendente |
+| 0.7 | Detalhes residuais de aprendizado e avaliações hipotéticas | Pendente |
+
+## Fase 1 — Backend e núcleo operacional (`MVP-001`)
+
+| Código | Tópico | Estado |
+|---|---|---|
+| A | Fundação NestJS e relógio da simulação | **Concluído e publicado** |
+| B | Indicadores matemáticos | **Concluído e publicado** |
+| C1 | Regimes de mercado e volatilidade | **Concluído e publicado** |
+| C2 | Estratégias técnicas BTC/ETH | **Concluído e publicado** |
+| C3 | Contexto, score global e seleção | **Concluído e publicado** |
+| D1 | Decisões e auditoria imutável | **Concluído e publicado** |
+| D2 | Coordenador determinístico | **Concluído e publicado** |
+| D3.1 | Cálculos financeiros e avaliação de risco | **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH** |
+| D3.2 | Autorizações e reservas | **PRÓXIMO — NÃO IMPLEMENTADO** |
+| D4 | Execução simulada e proteções | Pendente |
+| D5 | Persistência, ledger e recuperação | Pendente |
+
+**Progresso da sequência MVP-001 numerada:** **7 de 11 incrementos publicados (63,6%)**. Isso mede somente os incrementos listados, **não** o percentual de funcionalidades do MVP completo.
+
+Distribuição dos **11 incrementos**: **7 publicados** (A até D2), **1 implementado e aguardando publicação** (D3.1) e **3 ainda não implementados** (D3.2, D4 e D5). A aprovação técnica do D3.1 não o torna publicado; essa condição depende da confirmação posterior de commit/push.
+
+### MVP-001-D3.1 — implementação aprovada, publicação pendente
+
+O tópico anteriormente marcado como **Próximo / não iniciado** passa a **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH**. D3.2 é o próximo incremento, sem início automático. A entrega é uma cotação consultiva de oportunidades priorizadas pelo D2, sem autorização financeira, reserva efetiva ou execução.
+
+| Capacidade implementada no D3.1 | Regra e limite |
+|---|---|
+| Aritmética financeira | `bigint` exato; valores canônicos com 8 casas decimais; precisão interna superior |
+| Dimensionamento inicial | Alvo fixo de 10% do patrimônio explícito; quantidade arredondada para baixo, sem redimensionamento silencioso |
+| Comprometimento e taxas | Arredondamento conservador para cima; recebimento líquido para baixo; taxa de venda quantizada antes da subtração |
+| Referência de compra | Último fechamento validado, margem de referência de 1%, slippage de compra de 0,05% e taxa por execução de 0,10%; sem dupla cobrança |
+| Risco planejado | Stop estimado de 2% da entrada estimada, com custos previstos de entrada e saída; slippage de venda de 0,05%; não instala ordem de proteção |
+| Exposição máxima | Individual de 20% e consolidada de 40% do patrimônio |
+| Risco máximo | Por operação de 1% e aberto/comprometido de 2% do patrimônio |
+| Perda diária | Atingir 3% do patrimônio inicial do dia UTC bloqueia nova cotação elegível; patrimônio informado inclui efeitos não realizados |
+| Estados e disponibilidade | Bloqueios explícitos para `RECOVERING`, `ENTRY_SUSPENDED`, `MANUAL_REVIEW_REQUIRED`, posição `OPEN`/`UNKNOWN` e reserva `ACTIVE`/`UNKNOWN`; sem saldos ou posições inferidos |
+| Causalidade | Sem look-ahead; rank original, ativo, ciclo e fechamento validados; sinais antigos não ganham nova validade |
+| Isolamento financeiro | `financialAuthorization=NOT_EVALUATED`, `reservation=NOT_CREATED`, `execution=NOT_EXECUTED`; sem alteração de saldos, ordens, fills, banco ou ledger |
+
+A margem de 1% não garante preço contra gaps. Duas cotações independentes não são duas autorizações simultâneas. Autorização/atualização atômica do orçamento compartilhado e reservas continuam no escopo futuro de D3.2 e da persistência. Não há operação financeira ou rentabilidade simulada comprovada; `REQ-100` empírico permanece pendente.
+
+#### Evidências técnicas anteriores à atualização documental
+
+| Registro | Evidência |
+|---|---|
+| TASK | `BOT-CRYPTO-MVP-001-D3.1` |
+| FIX | `BOT-CRYPTO-MVP-001-D3.1-FIX-001` |
+| REVIEW | `APPROVED_CODE_DOCUMENTATION_PENDING` |
+| TESTS | `342 PASS` |
+| COVERAGE_CHANGED | `100%` das linhas alteradas pelo FIX |
+| BUILD | `PASS` |
+| DIFF_CHECK | `PASS` |
+
+Correção crítica validada na fixture de regressão: patrimônio, base diária e caixa de `10.00000260`, fechamento de `1.00000026` e quantidade de `1.00000000`.
+
+| Estimativa da fixture | Valor exato |
+|---|---|
+| Comprometimento de compra | `1.01151578` |
+| Taxa de venda arredondada para cima | `0.00098981` |
+| Recebimento líquido estimado | `0.98881019` |
+| Risco planejado estimado | `0.02270559` |
+
+Esses valores são referências de teste, **não uma operação executada**. Testes e build não foram repetidos nesta tarefa documental. As evidências não alteram o status dos requisitos aprovados nem certificam o MVP integrado. O histórico publicado permanece encerrado em D2 até confirmação da publicação do D3.1.
+
+## Fase 2 — Escritório virtual 3D
+
+| Código | Tópico | Estado |
+|---|---|---|
+| 2.1 | Criar projeto frontend web e renderização 3D | Não iniciado |
+| 2.2 | Construir escritório de um andar, salas e mesas BTC/ETH | Não iniciado |
+| 2.3 | Criar os cinco personagens e suas estações | Não iniciado |
+| 2.4 | Implementar deslocamentos e animações por atividade | Não iniciado |
+| 2.5 | Implementar câmera orbit, zoom, pan e interações | Não iniciado |
+| 2.6 | Criar telão compartilhado, painéis dos agentes e carteira | Não iniciado |
+| 2.7 | Implementar iniciar, pausar, avançar 5 minutos, velocidade e reinício confirmado | Não iniciado |
+| 2.8 | Integrar eventos e estados reais do backend ao ambiente 3D | Não iniciado |
+
+O escritório 3D deve **representar os acontecimentos do sistema**, sem controlar decisões financeiras. **Three.js** continua como opção proposta, não como escolha definitiva.
+
+## Fase 3 — Inteligência e agentes
+
+A arquitetura aprovada prevê **exatamente cinco agentes lógicos**: Analista Central de Inteligência, Especialista BTC, Especialista ETH, Coordenador e Gestor de Orçamento. Simulador, persistência e frontend são componentes de suporte, não agentes adicionais.
+
+| Código | Tópico | Estado |
+|---|---|---|
+| 3.1 | Gerador de preços BTC/ETH e seis cenários reproduzíveis | Gerador básico implementado; cenários completos pendentes |
+| 3.2 | Gerador e distribuição temporal de acontecimentos contextuais | Parcial |
+| 3.3 | Analista Central de Inteligência — validação e distribuição de contexto | Funções de contexto prontas; agente pendente |
+| 3.4 | Especialista BTC — execução autônoma do ciclo de análise | Matemática pronta; runtime pendente |
+| 3.5 | Especialista ETH — análise e memória independentes | Matemática pronta; runtime pendente |
+| 3.6 | Coordenador — receber decisões e encaminhar oportunidades | Ordenação D2 pronta; integração pendente |
+| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Pendente |
+| 3.8 | Políticas e estratégias versionadas por agente | Parcial |
+| 3.9 | Estados operacionais e comunicação entre agentes | Pendente |
+| 3.10 | Ativação controlada do componente histórico H após validação | Pendente |
+
+## Fase 4 — Orçamento, operações e evolução autônoma
+
+Esta fase contém capacidades que dependem parcialmente dos incrementos `D3–D5`, além de aprendizado posterior. **Há sobreposição de escopo intencional** entre esta tabela e a Fase 1; não contar como entregas duplicadas.
+
+| Código | Tópico | Estado |
+|---|---|---|
+| 4.1 | Capital inicial fictício de 10.000 UC e orçamento compartilhado | Referência explícita na cotação D3.1; orçamento/autorização efetivos pendentes |
+| 4.2 | Dimensionamento de posição e limites de risco | Cotação consultiva D3.1 implementada e aprovada tecnicamente; sem autorização |
+| 4.3 | Reservas atômicas e bloqueio de capital duplicado | D3.2 e persistência |
+| 4.4 | Execução spot simulada na próxima abertura elegível | D4 planejado |
+| 4.5 | Stop loss, take profit, gaps, custos e slippage | D4 planejado |
+| 4.6 | EXIT_REQUEST, HOLD, WAIT, RISK_ALERT e saídas por origem | Parcial; saídas pendentes |
+| 4.7 | Contabilidade, patrimônio, histórico e recuperação | D5 planejado |
+| 4.8 | Memória persistente e resultados exclusivos de cada especialista | Pendente |
+| 4.9 | Uma política ativa e até três candidatas por ciclo/agente | Pendente |
+| 4.10 | Carteiras shadow e avaliação hipotética isolada | Pendente |
+| 4.11 | Busca local controlada de parâmetros e geração de desafiante | Pendente |
+| 4.12 | Desenvolvimento cronológico e histórico de aquecimento | Parcial; integração pendente |
+| 4.13 | Validação em três carteiras independentes de 30 dias | Pendente |
+| 4.14 | Métricas: retorno líquido, operações distintas, risco e drawdown | Pendente |
+| 4.15 | LEARN-GATE e critérios para promoção automática simulada | Pendente |
+| 4.16 | Ativação segura do H validado por política/ativo | Pendente |
+| 4.17 | Monitoramento pós-promoção em duas janelas de 30 dias | Pendente |
+| 4.18 | Suspensão crítica e rollback de estratégia | Pendente |
+| 4.19 | Proteção de posições durante promoção, rollback ou recuperação | Pendente |
+
+### Cronologia da validação e do aprendizado
+
+A especificação aprovada prevê:
+
+- **150 candles horários válidos** de aquecimento informativo inicial;
+- **90 dias** de desenvolvimento;
+- **3 janelas independentes de 30 dias** de validação;
+- **2 janelas de 30 dias** de monitoramento pós-promoção;
+- **240 dias no total**, mais o aquecimento;
+- **6 cenários em cada janela de validação**, com **5 dias por cenário**;
+- carteiras independentes iniciando com **10.000 UC** cada, sem herdar capital ou posições de outras janelas.
+
+As exigências de amostra e integridade do LEARN-GATE não são substituídas por resultados de testes unitários nem por uma simples quantidade de candles.
+
+## Fase 5 — Integração e validação final
+
+| Código | Tópico | Estado |
+|---|---|---|
+| 5.1 | Integração de backend, agentes, orçamento e simulação | Pendente |
+| 5.2 | Integração completa do frontend 3D | Pendente |
+| 5.3 | Testes ponta a ponta com BTC e ETH | Pendente |
+| 5.4 | Testes de causalidade e ausência de look-ahead | Parcialmente cobertos nos módulos |
+| 5.5 | Testes de orçamento simultâneo e limites financeiros | Pendente |
+| 5.6 | Testes de execução, gaps, stops, takes e saídas | Pendente |
+| 5.7 | Testes de recuperação, reinício e idempotência financeira | Pendente |
+| 5.8 | Testes de autonomia e isolamento dos agentes | Pendente |
+| 5.9 | Testes de aprendizado, validação e rollback | Pendente |
+| 5.10 | Diagnóstico empírico de viabilidade com H=0 (`REQ-100`) | Pendente |
+| 5.11 | Segurança, observabilidade e desempenho | Pendente |
+| 5.12 | Critérios de aceite final e reprodução completa dos cenários | Pendente |
+
+## Fora do MVP inicial
+
+| Expansão futura | Situação |
+|---|---|
+| Dados reais de mercado e notícias | Posterior |
+| Novo especialista SOL | Posterior |
+| Novas mesas e personagens para mais ativos | Posterior |
+| Negociação financeira real | Fora do MVP simulado; exige autorização específica |
+| Ampliação do escritório além do primeiro escopo | Posterior |
+
+---
+
+## Resumo consolidado
+
+| Indicador | Quantidade | Interpretação |
+|---|---:|---|
+| Fases oficiais | **6** | Áreas do roadmap: 0 a 5 |
+| Tópicos detalhados neste documento | **67** | Subdivisão analítica do escopo, não 67 tarefas independentes aprovadas |
+| Requisitos documentados | **100** | Requisitos funcionais e técnicos registrados |
+| Requisitos com status `APPROVED` | **95/100** | Aprovação de especificação, não implementação |
+| Requisitos com status `PENDING` | **5/100** | `REQ-013`, `REQ-017`, `REQ-031`, `REQ-033`, `REQ-044` |
+| Incrementos publicados na sequência MVP-001 | **7/11** | A, B, C1, C2, C3, D1 e D2 |
+| Incrementos implementados aguardando publicação | **1/11** | D3.1 aprovado tecnicamente; aguardando commit/push |
+| Incrementos ainda não implementados | **3/11** | D3.2, D4 e D5 |
+| Último incremento publicado | **MVP-001-D2** | Coordenador determinístico |
+| Próximo incremento | **MVP-001-D3.2** | Autorizações e reservas; não iniciado |
+
+### Como interpretar o andamento
+
+1. **O MVP-001 não representa o MVP inteiro**: é a sequência já numerada do núcleo de backend.
+2. **As 6 fases incluem tudo que foi aprovado para o MVP completo**: escritório virtual, agentes, orçamento, evolução e validação.
+3. **O número 67 representa tópicos organizacionais**, extraídos da análise dos requisitos e do roadmap, e **não** 67 unidades de entrega oficialmente planejadas ou sem sobreposição.
+4. **95% de requisitos aprovados não significa 95% do software construído**.
+5. **D5 não encerra automaticamente o produto**: ainda serão necessários agentes, frontend, aprendizado, integração e evidências finais.
+6. **Não existe rentabilidade demonstrada**: as operações financeiras e a validação empírica ainda não estavam implementadas neste checkpoint.
+
+### Organização recomendada para as próximas etapas
+
+Manter a sequência `MVP-001` já desenvolvida, concluir o núcleo operacional e criar um roadmap **executável e versionado** para os componentes restantes, incluindo seus critérios de aceite, dependências, testes e identificadores oficiais. A numeração proposta neste documento pode servir de base, mas não deve ser confundida com aprovação formal dos próximos incrementos.
+
+## Referências oficiais
+
+- [Roadmap](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/ROADMAP.md)
+- [Contexto e escopo do MVP](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/PROJECT_CONTEXT.md)
+- [Requisitos](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/REQUIREMENTS.md)
+- [Arquitetura](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/ARCHITECTURE.md)
+- [Decisões](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/DECISIONS.md)
+- [Checkpoint do desenvolvimento](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/DEVELOPMENT_STATE.md)
+- [Commit publicado do MVP-001-D2](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/commit/ffc65288bc5caeab7feb487cd53dc2a25eaf34b5)
+
+---
+
+*Documento de acompanhamento preparado a partir da análise consolidada do escopo do MVP. Não substitui as decisões, requisitos e aprovações formais mantidas no repositório.*
