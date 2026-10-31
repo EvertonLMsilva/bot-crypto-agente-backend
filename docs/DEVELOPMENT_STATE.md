@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-31
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: EXACT_CONSULTATIVE_BUDGET_QUOTE
-PHASE: MVP-001-D3.1 — cotação consultiva exata, sem autorização
-MVP: FOUNDATION_THROUGH_D3_1_ADVISORY_QUOTE_IMPLEMENTED; FINANCIAL_EFFECTS_NOT_IMPLEMENTED
-IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_AND_D3_1_IMPLEMENTED_ONLY
+CURRENT_PHASE: LOCAL_AUTHORIZATION_AND_RESERVATIONS
+PHASE: MVP-001-D3.2 — autorização e reserva lógica em memória, sem execução
+MVP: FOUNDATION_THROUGH_D3_2_LOCAL_STATE_IMPLEMENTED; EXECUTION_AND_DURABILITY_PENDING
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_AND_D3_2_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -51,28 +51,44 @@ COORDINATOR: PURE_BATCH_ORDERING_IMPLEMENTED; AUTONOMOUS_QUEUE_AND_PERSISTENCE_N
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_336_TESTS_28_SUITES; 41_NEW_AND_295_PRESERVED
-COVERAGE_LINES: 100_PERCENT_NEW_BUDGET; 99.21_PERCENT_GLOBAL
+TESTS: PASS_390_TESTS_31_SUITES; 48_NEW_AND_342_PRESERVED
+COVERAGE_LINES: 100_PERCENT_NEW_AUTHORIZATION_AND_RESERVATIONS; 99.30_PERCENT_GLOBAL
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D3_1
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D3_2
 SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: D3_2_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
+NEXT: D4_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
-REQ_061_080: ANALYSIS_AND_ENTRY_PROPOSAL_WAIT_ENVELOPE_IMPLEMENTED; NO_FINANCIAL_AUTHORIZATION
+REQ_061_080: ENTRY_PROPOSAL_WAIT_AND_LOCAL_ENTRY_AUTHORIZATION_IMPLEMENTED; DURABLE_FINANCIAL_INTEGRATION_PENDING
 REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
 SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
 OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
 COORDINATION_D2: VALIDATED_D1_BATCH_PRIORITY_DUPLICATES_AND_EXPLICIT_ROTATION_IMPLEMENTED; NO_FINANCIAL_EFFECTS
 BUDGET_D3_1: EXACT_FIXED8_QUOTE_AND_LIMITS_IMPLEMENTED; NOT_AUTHORIZED_NOT_RESERVED_NOT_EXECUTED
-REQ_096: ADVISORY_ARITHMETIC_IMPLEMENTED_ONLY; OFFICIAL_ACCOUNTING_LEDGER_AND_RECOVERY_PENDING
+BUDGET_D3_2: LOCAL_SEQUENTIAL_AUTHORIZATION_RESERVATIONS_AND_RELEASE_IMPLEMENTED; NOT_EXECUTED_NOT_PERSISTED
+REQ_096: EXACT_ADVISORY_QUOTE_AND_LOCAL_RESERVATION_ARITHMETIC_IMPLEMENTED; OFFICIAL_ACCOUNTING_LEDGER_AND_RECOVERY_PENDING
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D3.2 — IMPLEMENTATION / TDD.
+
+Preflight: master/74d66c80693f60f5ed656d3fa432f6b96b0dfe15, worktree/staging limpos, Node v24.18.0/npm11.16.0. D3.1 publicado nesse SHA, conforme tarefa; fórmulas e contratos anteriores preservados. Criados somente authorization-types.ts, authorize.ts, reservations.ts e três testes budget autorizados. index.ts e os três documentos autorizados atualizados. D3.2 não publicado; sem staging/commit/push.
+
+Autorização pura sequencial por rank D2 com cotações D3.1, caixa BTC/ETH compartilhado e compromissos anteriores do lote. Autorizações/rejeições e reservas locais com identidades estáveis, estados ACTIVE/RELEASED, liberação/expiração única e replay sem segundo débito. SETTLED apenas no contrato para D4. Auditoria conserva D1, rank/score/origem D2, referência estável da cotação, preço fechado, quantidades/capital/risco/limites/razões e cadeia before/after reconciliada exatamente. Estados/retornos JSON profundamente imutáveis; referências externas não são alteradas.
+
+UTC e etapas BEFORE_OPEN/AFTER_OPEN distinguem autorização anterior da abertura perdida na mesma fronteira. Não consulta abertura futura, não transfere autorização nem reativa reserva liberada; eventos fora de ordem falham. Snapshot divergente do estado local bloqueia explicitamente; não implementa marcação a mercado, atualização da base diária, posições ou recuperação durável. Reservas externas permanecem na referência e não podem ser liberadas pela API local. Idempotência somente no estado explicitamente fornecido, sem transação/garantia entre processos.
+
+TDD: RED por APIs ausentes antes da implementação; regressão adicional RED/GREEN para bloquear autorização após expiração direta na mesma fronteira. Testes focados48 PASS; cobrem autorização/rejeição, compartilhamento de caixa/exposição/risco, limites e fronteiras de um tick, valores além de2^53, estados indisponíveis, posição/reserva conflitante, quantidade zero, repetição/divergência de identidade, transições, snapshots corrompidos, cronologia, serialização, ausência de mutação/relógio real/aleatoriedade.
+
+Validação final: npm run test:coverage390 testes/31 suítes PASS, preservando342 anteriores;100% das linhas novas e99,30% globais. npm run build PASS. Testes focados48 PASS. Nenhuma dependência/configuração alterada; src/budget/{types,fixed8,limits,quote}.ts e módulos anteriores preservados. git diff --check e conferência de allowlist/untracked executados ao concluir.
+
+Sem ordem, fill, cobrança efetiva, proteção, banco/ledger ou saldo inicial inferido. Patrimônio não muda por reserva/liberação. REQ-009/030/035/043/068/069/096/098 parcialmente implementados; REQ-040/042 persistentes e REQ-100 empírico continuam pendentes. Próximo D4 somente por tarefa própria.
+
+## MVP-001-D3.1 — registro histórico
 BOT-CRYPTO-MVP-001-D3.1 — IMPLEMENTATION / TDD.
 STATUS: DONE. Preflight: backend, master/ffc65288bc5caeab7feb487cd53dc2a25eaf34b5, staging/worktree limpos, Node v24.18.0/npm11.16.0. Instruções, decisões/requisitos e contratos autorizados consultados. Baseline D2/FIX-001 contém295 testes; checkpoint D2 histórico abaixo conserva números anteriores ao fix.
 

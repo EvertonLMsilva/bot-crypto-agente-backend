@@ -2,7 +2,7 @@
 
 > **Atualizado em:** 31/10/2026
 > **Projeto:** BOT CRUPTO — Backend, agentes, aprendizado, frontend 3D e validação integrada
-> **Referência da análise:** documentação do repositório `EvertonLMsilva/bot-crypto-agente-backend`, branch `master`, commit `ffc65288bc5caeab7feb487cd53dc2a25eaf34b5`.
+> **Referência da análise:** documentação do repositório `EvertonLMsilva/bot-crypto-agente-backend`, branch `master`, D3.1 publicado no commit `74d66c80693f60f5ed656d3fa432f6b96b0dfe15`; D3.2 implementado e aprovado tecnicamente, aguardando commit/push.
 
 Este documento cobre o **MVP completo do BOT CRUPTO**, incluindo backend, cinco agentes de IA, aprendizado autônomo controlado, escritório virtual 3D, simulação financeira e validação.
 
@@ -15,10 +15,10 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | Fase | Área | Situação |
 |---|---|---|
 | 0 | Planejamento e arquitetura | Base documental aprovada; pendências residuais |
-| 1 | Fundação e núcleo operacional | Em desenvolvimento — 7 publicados; D3.1 implementado e aguardando publicação |
+| 1 | Fundação e núcleo operacional | Em desenvolvimento — 8 publicados; D3.2 implementado e aprovado tecnicamente, aguardando commit/push |
 | 2 | Escritório virtual 3D | Não iniciado |
 | 3 | Inteligência e cinco agentes especializados | Parcial — funções técnicas implementadas |
-| 4 | Orçamento, operações e aprendizado | Parcial — contratos D1/D2 e cotação consultiva D3.1 implementados; autorização pendente |
+| 4 | Orçamento, operações e aprendizado | Parcial — cotação D3.1 e autorização/reservas em memória D3.2 implementadas; execução e persistência pendentes |
 | 5 | Integração e validação final | Não iniciado |
 
 **Nota:** as fases representam áreas funcionais e não uma sequência rigidamente isolada: componentes das fases 3 e 4 já estão sendo desenvolvidos dentro do `MVP-001`.
@@ -48,18 +48,18 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | C3 | Contexto, score global e seleção | **Concluído e publicado** |
 | D1 | Decisões e auditoria imutável | **Concluído e publicado** |
 | D2 | Coordenador determinístico | **Concluído e publicado** |
-| D3.1 | Cálculos financeiros e avaliação de risco | **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH** |
-| D3.2 | Autorizações e reservas | **PRÓXIMO — NÃO IMPLEMENTADO** |
-| D4 | Execução simulada e proteções | Pendente |
+| D3.1 | Cálculos financeiros e avaliação de risco | **PUBLICADO — 74d66c80693f60f5ed656d3fa432f6b96b0dfe15** |
+| D3.2 | Autorizações e reservas | **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH** |
+| D4 | Execução simulada e proteções | **PRÓXIMO — NÃO IMPLEMENTADO** |
 | D5 | Persistência, ledger e recuperação | Pendente |
 
-**Progresso da sequência MVP-001 numerada:** **7 de 11 incrementos publicados (63,6%)**. Isso mede somente os incrementos listados, **não** o percentual de funcionalidades do MVP completo.
+**Progresso da sequência MVP-001 numerada:** **8 de 11 incrementos publicados (72,7%)**. Isso mede somente os incrementos listados, **não** o percentual de funcionalidades do MVP completo.
 
-Distribuição dos **11 incrementos**: **7 publicados** (A até D2), **1 implementado e aguardando publicação** (D3.1) e **3 ainda não implementados** (D3.2, D4 e D5). A aprovação técnica do D3.1 não o torna publicado; essa condição depende da confirmação posterior de commit/push.
+Distribuição dos **11 incrementos**: **8 publicados** (A até D3.1), **1 implementado e não publicado** (D3.2) e **2 ainda não implementados** (D4 e D5). D3.2 não será considerado publicado antes da confirmação de commit/push.
 
-### MVP-001-D3.1 — implementação aprovada, publicação pendente
+### MVP-001-D3.1 — histórico da aprovação técnica e publicação
 
-O tópico anteriormente marcado como **Próximo / não iniciado** passa a **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH**. D3.2 é o próximo incremento, sem início automático. A entrega é uma cotação consultiva de oportunidades priorizadas pelo D2, sem autorização financeira, reserva efetiva ou execução.
+O tópico anteriormente marcado como **Próximo / não iniciado** foi implementado e aprovado tecnicamente, inicialmente aguardando commit/push. Foi publicado no SHA `74d66c80693f60f5ed656d3fa432f6b96b0dfe15`, informado na tarefa D3.2. A entrega D3.1 é uma cotação consultiva de oportunidades priorizadas pelo D2, sem autorização financeira, reserva efetiva ou execução.
 
 | Capacidade implementada no D3.1 | Regra e limite |
 |---|---|
@@ -75,7 +75,7 @@ O tópico anteriormente marcado como **Próximo / não iniciado** passa a **IMPL
 | Causalidade | Sem look-ahead; rank original, ativo, ciclo e fechamento validados; sinais antigos não ganham nova validade |
 | Isolamento financeiro | `financialAuthorization=NOT_EVALUATED`, `reservation=NOT_CREATED`, `execution=NOT_EXECUTED`; sem alteração de saldos, ordens, fills, banco ou ledger |
 
-A margem de 1% não garante preço contra gaps. Duas cotações independentes não são duas autorizações simultâneas. Autorização/atualização atômica do orçamento compartilhado e reservas continuam no escopo futuro de D3.2 e da persistência. Não há operação financeira ou rentabilidade simulada comprovada; `REQ-100` empírico permanece pendente.
+A margem de 1% não garante preço contra gaps. Duas cotações independentes não são duas autorizações simultâneas. O processamento sequencial e as reservas locais foram acrescentados por D3.2; atomicidade persistente permanece futura. Não há operação financeira ou rentabilidade simulada comprovada; `REQ-100` empírico permanece pendente.
 
 #### Evidências técnicas anteriores à atualização documental
 
@@ -98,7 +98,38 @@ Correção crítica validada na fixture de regressão: patrimônio, base diária
 | Recebimento líquido estimado | `0.98881019` |
 | Risco planejado estimado | `0.02270559` |
 
-Esses valores são referências de teste, **não uma operação executada**. Testes e build não foram repetidos nesta tarefa documental. As evidências não alteram o status dos requisitos aprovados nem certificam o MVP integrado. O histórico publicado permanece encerrado em D2 até confirmação da publicação do D3.1.
+Esses valores são referências de teste, **não uma operação executada**. Testes e build não foram repetidos na tarefa documental histórica. As evidências não alteram o status dos requisitos aprovados nem certificam o MVP integrado. A publicação posterior de D3.1 está registrada acima, preservando as evidências da revisão anterior.
+
+### MVP-001-D3.2 — implementado e aprovado tecnicamente, não publicado
+
+Autorização e rejeição sequenciais na ordem D2, consumindo cotações D3.1 sem refazer fórmulas, scores ou dimensionamento. BTC/ETH compartilham caixa, exposição e risco, incluindo reservas anteriores do lote. Estado explícito imutável conserva referência financeira, oportunidades processadas, decisões, reservas e auditoria before/after reconciliada exatamente com bigint e strings de8 casas.
+
+Reservas ACTIVE congelam quantidade, capital, risco, origem/versão e próxima abertura elegível. Cancelamento/expiração libera uma vez para RELEASED; replay não duplica reserva nem reativa identidade terminal. Etapas lógicas BEFORE_OPEN/AFTER_OPEN preservam causalidade na mesma fronteira UTC, sem consultar abertura futura. SETTLED consta apenas no contrato; efetivação por fill pertence ao D4.
+
+Idempotência e transições são **somente em memória, no estado explícito recebido**. Não há garantia transacional entre processos, recuperação durável, banco/ledger, ordem, fill, taxa efetiva ou stop/take. Patrimônio e posições não mudam por reserva. Snapshot divergente falha; atualização patrimonial/base diária e integração financeira continuam pendentes. Rejeição financeira não invalida a estratégia técnica. Nenhum requisito passou a concluído apenas por testes unitários.
+
+Histórico da implementação `BOT-CRYPTO-MVP-001-D3.2`: RED/GREEN,48 novos testes focados PASS;390 testes/31 suítes PASS, incluindo342 anteriores;100% das linhas novas,99,30% globais e build PASS. A revisão independente identificou uma falha de integridade: replay aceitava cotações armazenadas com campos financeiros inválidos ou contraditórios. A correção FIX-001 foi posteriormente conferida e aprovada em revisão independente, com as evidências finais abaixo.
+
+#### Evidências finais — D3.2 / FIX-001
+
+| Registro | Evidência |
+|---|---|
+| TASK | `BOT-CRYPTO-MVP-001-D3.2` |
+| FIX | `BOT-CRYPTO-MVP-001-D3.2-FIX-001` |
+| REVIEW | `APPROVED_CODE_DOCUMENTATION_PENDING` — resultado técnico anterior a esta atualização documental |
+| TESTS | `423 PASS / 31 suítes` |
+| REGRESSION | `390` testes anteriores preservados; `33` testes novos |
+| FOCUSED_TESTS | `81 PASS` |
+| COVERAGE | `100%` das linhas alteradas; `99,31%` global |
+| BUILD | `PASS` |
+| DIFF_CHECK | `PASS` |
+| FILES | `6` novos e `4` modificados, incluindo este roadmap |
+
+O FIX verifica os nove campos financeiros de `quote.estimates`: quantidade, exposição de referência, preço conservador de compra, comprometimento bruto, taxa de compra, comprometimento total, preço do stop, recebimento líquido no stop e risco planejado. Formato canônico de8 casas é obrigatório; valores inválidos são rejeitados com `RangeError`, sem correção silenciosa. As relações **bruto + taxa = comprometimento** e **comprometimento − líquido = risco** são conferidas exatamente com `bigint`.
+
+A cotação armazenada é conferida pelo avaliador D3.1 existente contra as evidências de origem e o snapshot original `before`, preservando o ranking D2. Replay rejeita estado corrompido; liberação falha antes de creditar caixa; expiração recebe a mesma proteção. Quantidade, capital e risco congelados continuam vinculados à reserva; uma reserva RELEASED não pode ser reativada por replay. Autorizações sequenciais, orçamento BTC/ETH compartilhado, atualização conservadora dos compromissos, limites de capital/risco, auditoria determinística e ausência de look-ahead permanecem preservados.
+
+Essas evidências correspondem a testes, **não a operações executadas**. O estado continua apenas em memória, sem persistência transacional, recuperação após reinício ou garantia de idempotência entre processos. Não há execução de ordens, fills, cobrança de taxas efetivas ou atualização patrimonial por operações. D4 tratará execução simulada e proteções; D5 tratará persistência, ledger e recuperação. D4 permanece próximo e não implementado; D5 permanece pendente. D3.2 está **IMPLEMENTADO — APROVADO TECNICAMENTE — AGUARDANDO COMMIT/PUSH**, ainda não publicado e sem autorização para operações reais. Testes e build não foram repetidos nesta tarefa documental.
 
 ## Fase 2 — Escritório virtual 3D
 
@@ -127,7 +158,7 @@ A arquitetura aprovada prevê **exatamente cinco agentes lógicos**: Analista Ce
 | 3.4 | Especialista BTC — execução autônoma do ciclo de análise | Matemática pronta; runtime pendente |
 | 3.5 | Especialista ETH — análise e memória independentes | Matemática pronta; runtime pendente |
 | 3.6 | Coordenador — receber decisões e encaminhar oportunidades | Ordenação D2 pronta; integração pendente |
-| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Pendente |
+| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Autorização pura e reservas em memória D3.2; runtime/persistência pendentes |
 | 3.8 | Políticas e estratégias versionadas por agente | Parcial |
 | 3.9 | Estados operacionais e comunicação entre agentes | Pendente |
 | 3.10 | Ativação controlada do componente histórico H após validação | Pendente |
@@ -138,9 +169,9 @@ Esta fase contém capacidades que dependem parcialmente dos incrementos `D3–D5
 
 | Código | Tópico | Estado |
 |---|---|---|
-| 4.1 | Capital inicial fictício de 10.000 UC e orçamento compartilhado | Referência explícita na cotação D3.1; orçamento/autorização efetivos pendentes |
-| 4.2 | Dimensionamento de posição e limites de risco | Cotação consultiva D3.1 implementada e aprovada tecnicamente; sem autorização |
-| 4.3 | Reservas atômicas e bloqueio de capital duplicado | D3.2 e persistência |
+| 4.1 | Capital inicial fictício de 10.000 UC e orçamento compartilhado | Snapshot explícito e orçamento compartilhado local D3.2; sem criar saldo inicial |
+| 4.2 | Dimensionamento de posição e limites de risco | Cotação D3.1 e autorização local D3.2 implementadas; sem execução |
+| 4.3 | Reservas atômicas e bloqueio de capital duplicado | D3.2 em memória; atomicidade persistente/recuperação pendentes |
 | 4.4 | Execução spot simulada na próxima abertura elegível | D4 planejado |
 | 4.5 | Stop loss, take profit, gaps, custos e slippage | D4 planejado |
 | 4.6 | EXIT_REQUEST, HOLD, WAIT, RISK_ALERT e saídas por origem | Parcial; saídas pendentes |
@@ -180,7 +211,7 @@ As exigências de amostra e integridade do LEARN-GATE não são substituídas po
 | 5.2 | Integração completa do frontend 3D | Pendente |
 | 5.3 | Testes ponta a ponta com BTC e ETH | Pendente |
 | 5.4 | Testes de causalidade e ausência de look-ahead | Parcialmente cobertos nos módulos |
-| 5.5 | Testes de orçamento simultâneo e limites financeiros | Pendente |
+| 5.5 | Testes de orçamento simultâneo e limites financeiros | Compartilhamento sequencial/limites locais D3.2 cobertos; integração/concorrência persistente pendentes |
 | 5.6 | Testes de execução, gaps, stops, takes e saídas | Pendente |
 | 5.7 | Testes de recuperação, reinício e idempotência financeira | Pendente |
 | 5.8 | Testes de autonomia e isolamento dos agentes | Pendente |
@@ -210,11 +241,11 @@ As exigências de amostra e integridade do LEARN-GATE não são substituídas po
 | Requisitos documentados | **100** | Requisitos funcionais e técnicos registrados |
 | Requisitos com status `APPROVED` | **95/100** | Aprovação de especificação, não implementação |
 | Requisitos com status `PENDING` | **5/100** | `REQ-013`, `REQ-017`, `REQ-031`, `REQ-033`, `REQ-044` |
-| Incrementos publicados na sequência MVP-001 | **7/11** | A, B, C1, C2, C3, D1 e D2 |
-| Incrementos implementados aguardando publicação | **1/11** | D3.1 aprovado tecnicamente; aguardando commit/push |
-| Incrementos ainda não implementados | **3/11** | D3.2, D4 e D5 |
-| Último incremento publicado | **MVP-001-D2** | Coordenador determinístico |
-| Próximo incremento | **MVP-001-D3.2** | Autorizações e reservas; não iniciado |
+| Incrementos publicados na sequência MVP-001 | **8/11** | A, B, C1, C2, C3, D1, D2 e D3.1 |
+| Incrementos implementados aguardando publicação | **1/11** | D3.2 implementado e aprovado tecnicamente; aguardando commit/push |
+| Incrementos ainda não implementados | **2/11** | D4 e D5 |
+| Último incremento publicado | **MVP-001-D3.1** | Cotação exata; SHA74d66c80693f60f5ed656d3fa432f6b96b0dfe15 |
+| Próximo incremento | **MVP-001-D4** | Execução simulada e proteções; não iniciado |
 
 ### Como interpretar o andamento
 
@@ -238,6 +269,7 @@ Manter a sequência `MVP-001` já desenvolvida, concluir o núcleo operacional e
 - [Decisões](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/DECISIONS.md)
 - [Checkpoint do desenvolvimento](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/blob/master/docs/DEVELOPMENT_STATE.md)
 - [Commit publicado do MVP-001-D2](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/commit/ffc65288bc5caeab7feb487cd53dc2a25eaf34b5)
+- [Commit publicado do MVP-001-D3.1](https://github.com/EvertonLMsilva/bot-crypto-agente-backend/commit/74d66c80693f60f5ed656d3fa432f6b96b0dfe15)
 
 ---
 
