@@ -1795,3 +1795,32 @@ DEC-025,029,054,056,059,060,061,063; REQ-040/042/043/056/069/070/096/098. Docume
 
 SUBSTITUI:
 Não se aplica; detalha implementação técnica autorizada sem substituir decisões aprovadas.
+
+## DEC-065
+ID: DEC-065
+DATA: 2026-11-01
+TÍTULO: RUNTIME-001 — abertura causal e evidência reproduzível sobre o D5
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-RUNTIME-001 ratificou expressamente os contratos técnicos da primeira entrega transversal de integração. Baseline master/dab28991b502a4c8dddccae81b927c4c9788b7dd. MVP-001 mantém 11/11 incrementos publicados; não cria D6 ou altera decisões financeiras anteriores.
+
+DECISÃO:
+- SeededGenerator.currentOpenings() retorna somente asset/asOf/price correntes BTC/ETH, como cópias congeladas; não consome aleatoriedade, chama next(), avança o relógio ou expõe OHLC futuro. Avanço externo do relógio é rejeitado.
+- RuntimeConfiguration versão1 é opcional no genesis D5, porém completa e obrigatória para simulações que optem pelo contrato: simulationId, início UTC, capital inicial explícito, provedor seeded-generator/1, seed/preços iniciais BTC/ETH, políticas P0 UNVALIDATED/famílias versionadas por ativo, origem/feed contextual reproduzível e 150 horários completos de aquecimento. Sem defaults financeiros ou alteração de política comercial.
+- OperationPayload.evidence.runtime versão1 vincula identidade, hash da configuração, provedor, instante/fase, passos/fechamentos confirmados, hash do histórico e rodízio D2. Usa JSON canônico e as transações, hashes, operações e checkpoints D5 existentes; nenhuma tabela/migração ou segundo ledger.
+- Recuperação recria relógio/gerador desde a origem e reproduz exclusivamente comandos confirmados. OPEN confere a abertura conhecida; CLOSE confere integralmente candles BTC/ETH, incluindo OHLCV e tempos. História, fase, rodízio, reservas e fills permanecem confirmados; AFTER_OPEN não gera segundo fill nem antecipa fechamento.
+- LoadedState.runtime é opcional e profundamente imutável. Quando presente contém configuração, evidência, histórico separado por ativo, progresso do aquecimento, authorizedAt e aberturas correntes, sempre com mode PAUSED. Durante AFTER_OPEN essas aberturas representam a fronteira já aberta, não autorização para outra execução.
+- Contagem de aquecimento usa horários UTC completos e contínuos por ativo; 1800 candles5m bastam quando alinhados. Início desalinhado descarta a hora parcial inicial; BTC/ETH têm progresso separado. Não criar candles, sinais ou elegibilidade artificial.
+- Configuração/evidência divergente, fechamento não reproduzível ou fase impossível rejeita a operação e usa o bloqueio D5 com diagnóstico RUNTIME_EVIDENCE; transação é revertida e o ledger financeiro não é reescrito. Falha de gravação preserva a fronteira confirmada para nova reconstrução. Registros D5 legados sem runtime continuam recuperáveis, sem inventar campos ou converter sua configuração; evidência nova em origem legada é rejeitada.
+
+IMPACTOS:
+RED: duas suítes falharam pelas APIs/tipos ainda ausentes. GREEN: 555 PASS / 41 suítes, preservando os 517 testes anteriores e acrescentando 38; inclui recuperação em novo processo real. Cobertura diferencial: 92/92 linhas executáveis alteradas (100%); runtime-evidence.ts com 100% de linhas, branches e funções; global de linhas 99,40%. npm run build PASS. A suíte completa foi executada com npm run test:coverage; não representa E2E integral.
+Não implementa runtime operacional, loop, comandos iniciar/pausar/avançar, geração automática de saídas estratégicas ou E2E integral. PAUSED é a representação de retomada para a futura API, separada da saúde financeira D5; não altera RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED. Progresso de aquecimento não autoriza sinais: os validadores e dependências dos indicadores continuam obrigatórios na integração futura. Reprodução percorre comandos e pode crescer com o histórico; não há SLA, compactação ou certificação física do armazenamento. Gerador básico ainda não entrega os seis cenários oficiais. Nenhuma operação real, aprendizado ou interface 3D.
+RUNTIME-001 IMPLEMENTADO / NÃO PUBLICADO. RUNTIME-002 (orquestração e saídas aprovadas por origem) e RUNTIME-003 (E2E integrado) permanecem planejados, sujeitos a tarefas posteriores.
+
+REFERÊNCIAS:
+DEC-050, DEC-053, DEC-056, DEC-061, DEC-064; REQ-082, REQ-092, REQ-095, REQ-098. Sem alteração dos requisitos canônicos ou regras financeiras.
+
+SUBSTITUI:
+Não se aplica; acrescenta contratos técnicos expressamente ratificados nesta tarefa.

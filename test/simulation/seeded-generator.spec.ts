@@ -25,6 +25,32 @@ describe('exact synthetic decimal representation', () => {
 });
 
 describe('SeededGenerator', () => {
+  it('observes only immutable known openings without time or random consumption', () => {
+    const clock = new SimulationClock(startTime), a = new SeededGenerator(clock, { seed: 'openings' });
+    const b = new SeededGenerator(new SimulationClock(startTime), { seed: 'openings' });
+    for (let i = 0; i < 4; i++) {
+      const before = clock.snapshot();
+      const opening = a.currentOpenings();
+      expect(opening).toEqual(a.currentOpenings());
+      expect(clock.snapshot()).toEqual(before);
+      expect(Object.isFrozen(opening)).toBe(true);
+      for (const v of opening) {
+        expect(Object.keys(v).sort()).toEqual(['asOf', 'asset', 'price']);
+        expect(Object.isFrozen(v)).toBe(true);
+        expect(v.asOf).toBe(clock.snapshot().currentTime);
+      }
+      const next = a.next();
+      expect(next).toEqual(b.next());
+      expect(next.map(c => c.open)).toEqual(opening.map(o => o.price));
+    }
+  });
+
+  it('rejects observing an opening after external clock advancement', () => {
+    const clock = new SimulationClock(startTime), source = new SeededGenerator(clock, { seed: 'openings' });
+    clock.step();
+    expect(() => source.currentOpenings()).toThrow();
+  });
+
   it('replays identical seed/configuration and a deterministic distinct seed', () => {
     const a = generator(); const b = generator();
     const otherA = generator('other'); const otherB = generator('other');

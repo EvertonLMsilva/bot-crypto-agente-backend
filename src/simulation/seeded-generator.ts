@@ -45,6 +45,13 @@ export class SeededGenerator {
     };
   }
 
+  /** Known prices only: observation consumes neither clock nor random stream. */
+  currentOpenings(): readonly Readonly<{ asset: Asset; asOf: string; price: string }>[] {
+    const clock = this.clock.snapshot();
+    if (clock.steps !== this.#steps) throw new Error('Clock advanced outside its generator');
+    return Object.freeze(ASSETS.map(asset => Object.freeze({ asset, asOf: clock.currentTime, price: toDecimalString(this.#states[asset].price) })));
+  }
+
   /** Sole clock owner: a batch becomes available only after its interval closes. */
   next(): CandleBatch {
     if (this.clock.snapshot().steps !== this.#steps) throw new Error('Clock advanced outside its generator');

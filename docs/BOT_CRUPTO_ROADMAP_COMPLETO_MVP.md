@@ -15,7 +15,7 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | Fase | Área | Situação |
 |---|---|---|
 | 0 | Planejamento e arquitetura | Base documental aprovada; pendências residuais |
-| 1 | Fundação e núcleo operacional | 11/11 incrementos publicados; integração operacional e MVP completo ainda pendentes |
+| 1 | Fundação e núcleo operacional | 11/11 incrementos publicados; integração transversal em andamento com RUNTIME-001 local; E2E e MVP completo pendentes |
 | 2 | Escritório virtual 3D | Não iniciado |
 | 3 | Inteligência e cinco agentes especializados | Parcial — funções técnicas implementadas |
 | 4 | Orçamento, operações e aprendizado | Parcial — D4 e persistência financeira D5 locais implementados; runtime completo e aprendizado pendentes |
@@ -186,7 +186,7 @@ Testes também cobrem rollback em quatro pontos, resposta perdida, reabertura re
 
 Limitações: durabilidade depende de disco/VFS/flush/locks locais; sem garantia absoluta contra hardware defeituoso ou edição administrativa. API síncrona e replay completo crescem com o histórico, sem SLA/compactação. Sem backup, migração para schema futuro, compensação financeira arbitrária ou restauração direta do PRNG privado. Runtime autônomo, gatilhos automáticos de saída, aprendizado, frontend3D e validação empírica continuam pendentes. Sem corretoras, dinheiro real ou dados financeiros externos. Nenhuma fase posterior é iniciada automaticamente e o MVP completo não está finalizado.
 
-### Checkpoint de encerramento documental da sequência MVP-001
+### Checkpoint de encerramento documental da sequência MVP-001 — histórico anterior ao RUNTIME-001
 
 Contratos A–D5 implementados e publicados; integração operacional ponta a ponta: **PENDENTE**. src/main.ts executa apenas smoke do gerador. Integrações D2–D5 existentes são parciais; testes E2E completos ainda ausentes. Permanecem pendentes de integração: inicialização unificada, aquecimento de histórico, contexto e políticas operacionais, ordenação causal de abertura/fechamento, saídas estratégicas automáticas e retomada coordenada após reinício.
 
@@ -195,6 +195,16 @@ As evidências da entrega D5 — 517 PASS / 40 suítes, crash e concorrência co
 Publicação dos 11 incrementos não conclui o MVP completo nem converte requisitos aprovados em comportamentos operacionalmente validados. Seis cenários oficiais ainda não entregues, aprendizado controlado, escritório 3D e REQ-100 empírico permanecem pendentes. Limitações de replay síncrono e durabilidade condicionada ao armazenamento permanecem vigentes.
 
 Próxima frente recomendada: **INTEGRAÇÃO OPERACIONAL DETERMINÍSTICA DO BACKEND**, sem constituir incremento aprovado. Gate posterior deverá definir runtime unificado, inicialização/aquecimento, processamento causal, contexto/políticas, saídas estratégicas, retomada coordenada e E2E multicíclo com reinício. Nenhum novo código oficial de incremento é criado por este checkpoint.
+
+### Integração operacional transversal — primeira entrega
+
+**RUNTIME-001: IMPLEMENTADO / NÃO PUBLICADO**, conforme DEC-065. Entrega abertura conhecida sem avanço do gerador, manifesto/evidência JSON versão1, reconstrução do gerador pelos fechamentos confirmados e contagem de aquecimento por ativo. Reutiliza exclusivamente o ledger D5; registros antigos continuam recuperáveis sem evidência inventada. Snapshots recuperados têm mode PAUSED; isso não implementa os controles operacionais futuros.
+
+RED: duas suítes falharam pelas APIs/tipos ainda ausentes. GREEN: 555 PASS / 41 suítes, preservando os 517 testes anteriores e acrescentando 38; inclui recuperação em novo processo real. Cobertura diferencial: 92/92 linhas executáveis alteradas (100%); runtime-evidence.ts com 100% de linhas, branches e funções; global de linhas 99,40%. npm run build PASS. A suíte completa foi executada com npm run test:coverage; não representa E2E integral.
+
+Não implementa runtime operacional, loop, comandos iniciar/pausar/avançar, geração automática de saídas estratégicas ou E2E integral. PAUSED é a representação de retomada para a futura API, separada da saúde financeira D5; não altera RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED. Progresso de aquecimento não autoriza sinais: os validadores e dependências dos indicadores continuam obrigatórios na integração futura. Reprodução percorre comandos e pode crescer com o histórico; não há SLA, compactação ou certificação física do armazenamento. Gerador básico ainda não entrega os seis cenários oficiais. Nenhuma operação real, aprendizado ou interface 3D.
+
+RUNTIME-002 (runtime unificado e saídas estratégicas por origem) e RUNTIME-003 (E2E multicíclo com reinício) permanecem **PLANEJADOS / NÃO IMPLEMENTADOS**. Acompanhar esta frente nos tópicos existentes 0.4, 3.1, 3.2, 3.9 e 5.7, sem criar linhas/incrementos adicionais. MVP-001 continua com 11/11 publicados; D5 no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d. Publicação desta entrega transversal e início das seguintes exigem tarefas próprias.
 
 ## Fase 2 — Escritório virtual 3D
 

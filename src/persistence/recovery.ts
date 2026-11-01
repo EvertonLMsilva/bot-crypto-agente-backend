@@ -1,5 +1,6 @@
 import { SqliteStore, Row } from './sqlite-store';
-import { Control, Cursor, GenesisInput, LedgerEvent, OperationPayload, Posting, Receipt } from './types';
+import { Control, Cursor, GenesisInput, LedgerEvent, OperationPayload, Posting, Receipt, RuntimeSnapshot } from './types';
+import { reconstructRuntime, validateRuntimeOperation } from './runtime-evidence';
 import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, immutable, parseCanonical, requireBudget, same, ZERO_HASH } from './ledger';
 import { ExecutionState } from '../operations';
 export function eventRow(sim:string,e:LedgerEvent):Row{return {simulation_id:sim,seq:e.seq,event_id:e.eventId,operation_id:e.operationId,ordinal:e.ordinal,kind:e.kind,
@@ -24,6 +25,7 @@ export function controls(store:SqliteStore,simulationId:string):Control[] {
   });
 }
 export interface Confirmed {
+  readonly genesis:GenesisInput;readonly runtime?:RuntimeSnapshot;
   readonly state:ExecutionState;readonly cursor:Cursor;readonly revision:string;readonly headSeq:string;readonly headHash:string;
   readonly checkpointIssue:boolean;readonly control:Control;
 }
@@ -44,6 +46,7 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
       before=state;p=parseCanonical<OperationPayload>(op.payload!);
       requireBudget(p.command.id===op.command_id,'Operation/command identity mismatch');
       state=execute(state,p);cursor=advanceCursor(cursor,p,state);
+      validateRuntimeOperation(genesis,state,p,cursor);
     }
     const built=buildLedger(simulationId,op.operation_id!,String(i),before,state,cursor,headSeq,headHash,i===0?genesis:undefined);
     requireBudget(canonical(built.receipt)===op.receipt,'Confirmed receipt differs from replay');
@@ -57,6 +60,7 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
   for(const c of history){const pair=receipts.get(c.revision);requireBudget(pair && c.headSeq===pair.r.seqEnd && c.headHash===pair.h
     && c.stateHash===pair.r.stateHash && same(c.cursor,pair.r.cursor),'Runtime head/cursor differs from confirmed history');}
   const control=history.at(-1)!;requireBudget(control.revision===rev && control.headHash===headHash,'Unconfirmed/obsolete runtime head');
-  return immutable({state,cursor,revision:rev,headSeq,headHash,control,
+  const runtime=reconstructRuntime(genesis,state,cursor);
+  return immutable({genesis,state,cursor,revision:rev,headSeq,headHash,control,...(runtime?{runtime}:{}),
     checkpointIssue:!same(checkpoints,store.all('SELECT * FROM checkpoints WHERE simulation_id=? ORDER BY event_seq',[simulationId]))});
 }

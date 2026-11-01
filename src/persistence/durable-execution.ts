@@ -2,6 +2,7 @@ import { SqliteStore } from './sqlite-store';
 import { appendControl, checkpointRow, Confirmed, controls, eventRow, postingRow, reconstruct } from './recovery';
 import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, identifier, immutable, parseCanonical, requireBudget, revision, ZERO_HASH } from './ledger';
 import { Control, GenesisInput, LoadedState, OperationInput, OperationPayload, Receipt, StoreOptions } from './types';
+import { validateRuntimeOperation } from './runtime-evidence';
 class IntegrityFailure extends RangeError {}
 class CheckpointFailure extends RangeError {}
 /** Durable boundary only. All execution prices, fills and protections remain D4. */
@@ -80,7 +81,15 @@ export class DurableExecution {
         requireBudget(p.command.kind!=='AUTHORIZE' || p.command.authorization.decisions.every(d=>d.status==='REJECTED'),'New entry authorization suspended');
         requireBudget(p.command.kind!=='OPEN' || !confirmed.state.reservations.some(r=>r.status==='ACTIVE'),'Cancel active entry holds before processing suspended opening');
       }
-      const state=execute(confirmed.state,p),cursor=advanceCursor(confirmed.cursor,p,state),rev=String(BigInt(confirmed.revision)+1n);
+      let state:LoadedState['state'],cursor:Control['cursor'];
+      try{
+        state=execute(confirmed.state,p);cursor=advanceCursor(confirmed.cursor,p,state);
+        validateRuntimeOperation(confirmed.genesis,state,p,cursor);
+      }catch(e){
+        if(Object.hasOwn(confirmed.genesis.configuration,'runtime') || p.evidence && Object.hasOwn(p.evidence,'runtime'))throw new IntegrityFailure(`RUNTIME_EVIDENCE:${String(e)}`);
+        throw e;
+      }
+      const rev=String(BigInt(confirmed.revision)+1n);
       const built=buildLedger(id,input.operationId,rev,confirmed.state,state,cursor,confirmed.headSeq,confirmed.headHash);
       this.save(id,input.operationId,p.command.id,input.payload,built,state,p.command.kind==='CLOSE');
       appendControl(this.store,id,{status,revision:rev,headSeq:built.receipt.seqEnd,headHash:built.events.at(-1)!.hash,stateHash:built.receipt.stateHash,cursor,reason:'OPERATION_CONFIRMED'});
@@ -94,7 +103,7 @@ export class DurableExecution {
       if(c.checkpointIssue && control.status==='RUNNING'){
         control={...control,status:'ENTRY_SUSPENDED',reason:'CHECKPOINT_MISMATCH_LEDGER_VALID'};appendControl(this.store,id,control);
       }
-      return immutable({state:c.state,control});
+      return immutable({state:c.state,control,...(c.runtime?{runtime:c.runtime}:{})});
     });
   }
   recover(id:string,resumeEntries=false):LoadedState {
@@ -105,7 +114,7 @@ export class DurableExecution {
         const c=this.checked(id),history=controls(this.store,id),prior=history.filter(v=>v.status!=='RECOVERING').at(-1)!;
         const suspended=c.checkpointIssue || prior.status==='ENTRY_SUSPENDED' && !resumeEntries;
         const control:Control={...c.control,status:suspended?'ENTRY_SUSPENDED':'RUNNING',reason:c.checkpointIssue?'CHECKPOINT_MISMATCH_LEDGER_VALID':'REPLAY_AND_RECONCILIATION_VALIDATED'};
-        appendControl(this.store,id,control);return immutable({state:c.state,control});
+        appendControl(this.store,id,control);return immutable({state:c.state,control,...(c.runtime?{runtime:c.runtime}:{})});
       });
       this.blocked.delete(id);return result;
     }catch(e){this.block(id,e);throw e;}
@@ -113,7 +122,7 @@ export class DurableExecution {
   suspendEntries(id:string,reason:string):LoadedState {
     requireBudget(typeof reason==='string' && reason.length>0,'Explicit suspension reason required');
     return this.guarded(id,()=>{const c=this.checked(id);const control:Control={...c.control,status:'ENTRY_SUSPENDED',reason};
-      appendControl(this.store,id,control);return immutable({state:c.state,control});});
+      appendControl(this.store,id,control);return immutable({state:c.state,control,...(c.runtime?{runtime:c.runtime}:{})});});
   }
   close():void {this.store.close();}
 }

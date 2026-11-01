@@ -5,6 +5,7 @@ import { parseSigned, signed } from '../operations/execution-accounting';
 import { createExecutionState, acceptAuthorizations, cancelActiveReservation, processOpening, processClosedCandle, validateExecutionState, ExecutionState, ExecutionCommand } from '../operations';
 import { budgetCycleTime, requireBudget } from '../budget/limits';
 import { Configuration, Cursor, ENGINE_VERSION, GenesisInput, LedgerEvent, OperationPayload, Posting, Receipt } from './types';
+import { validateRuntimeGenesis } from './runtime-evidence';
 export { immutable, same, requireBudget };
 export const ZERO_HASH = '0'.repeat(64);
 export const canonical = (v: unknown): string => JSON.stringify(immutable(v));
@@ -20,6 +21,7 @@ function clock(c: Configuration['clock'], asOf: string): void {
     && Number.isSafeInteger(c.steps) && c.steps>=0 && Date.parse(asOf)-Date.parse(c.startTime)===c.steps*300000,'Invalid confirmed logical clock');
 }
 export function genesisState(input: GenesisInput): {state:ExecutionState;cursor:Cursor} {
+  validateRuntimeGenesis(input);
   identifier(input.simulationId);identifier(input.operationId);
   const state=createExecutionState(input.initial),c=input.configuration;
   requireBudget(c && c.engineVersion===ENGINE_VERSION && ['BTC','ETH'].includes(c.coordinatorState.nextTieAsset)

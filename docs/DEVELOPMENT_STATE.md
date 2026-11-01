@@ -3,8 +3,8 @@
 LAST_UPDATED: 2026-11-01
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: PUBLISHED_COMPONENTS_OPERATIONAL_INTEGRATION_PENDING
-PHASE: MVP-001 — 11 incrementos publicados; integração operacional pendente
+CURRENT_PHASE: RUNTIME_EVIDENCE_AND_CAUSAL_SOURCE_IMPLEMENTED_LOCAL
+PHASE: RUNTIME-001 — primeira entrega transversal implementada, não publicada; MVP-001 com 11/11 publicados
 MVP: FOUNDATION_THROUGH_D5_IMPLEMENTED; FULL_RUNTIME_LEARNING_FRONTEND_AND_EMPIRICAL_VALIDATION_PENDING
 IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_D4_AND_D5_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
@@ -51,14 +51,14 @@ COORDINATOR: PURE_BATCH_ORDERING_AND_D5_ROTATION_EVIDENCE_PERSISTENCE_IMPLEMENTE
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_517_TESTS_40_SUITES; 41_NEW_AND_476_PRESERVED
-COVERAGE_LINES: 99.15_PERCENT_PERSISTENCE; 100_PERCENT_D4_EXTENSION; 99.37_PERCENT_GLOBAL
+TESTS: PASS_555_TESTS_41_SUITES; 38_NEW_AND_517_PRESERVED
+COVERAGE_LINES: 100_PERCENT_CHANGED_RUNTIME_001_92_OF_92; 100_PERCENT_RUNTIME_EVIDENCE; 99.40_PERCENT_GLOBAL
 BUILD: PASS
 SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D5
 SIMULATION: LOCAL_SPOT_EXECUTION_TEST_FIXTURES; NO_REAL_OPERATIONS; FULL_SCENARIO_RUNTIME_PENDING
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: RECOMMENDED_DETERMINISTIC_BACKEND_INTEGRATION_CONTRACT_GATE; NOT_AN_APPROVED_INCREMENT; NO_AUTOMATIC_START
+NEXT: RUNTIME_001_REVIEW_AND_PUBLICATION; RUNTIME_002_AND_003_PLANNED_ONLY; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
@@ -76,6 +76,17 @@ WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-RUNTIME-001 — IMPLEMENTATION / TDD.
+
+STATUS: IMPLEMENTADO / NÃO PUBLICADO. Baseline backend/master/dab28991b502a4c8dddccae81b927c4c9788b7dd com worktree/staging limpos; Node24.18.0. Alterações limitadas aos 12 arquivos autorizados, sem dependências novas. DEC-065 registra as decisões técnicas ratificadas; decisões/requisitos antigos preservados.
+
+Implementados currentOpenings sem avanço/aleatoriedade, manifesto/evidência JSON versão1 e reconstrução verificada pelo D5 existente. LoadedState.runtime opcional retorna configuração completa, histórico confirmado, progresso BTC/ETH, cursor/rodízio/authorizedAt e mode PAUSED. Bancos D5 legados permanecem sem campos inventados; sem migração/schema novo. Configuração, abertura, candle ou evidência divergente falha antes da confirmação e usa bloqueio D5; falha de gravação permite reconstrução na última fronteira confirmada.
+
+RED: duas suítes falharam pelas APIs/tipos ainda ausentes. GREEN: 555 PASS / 41 suítes, preservando os 517 testes anteriores e acrescentando 38; inclui recuperação em novo processo real. Cobertura diferencial: 92/92 linhas executáveis alteradas (100%); runtime-evidence.ts com 100% de linhas, branches e funções; global de linhas 99,40%. npm run build PASS. A suíte completa foi executada com npm run test:coverage; não representa E2E integral.
+
+Não implementa runtime operacional, loop, comandos iniciar/pausar/avançar, geração automática de saídas estratégicas ou E2E integral. PAUSED é a representação de retomada para a futura API, separada da saúde financeira D5; não altera RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED. Progresso de aquecimento não autoriza sinais: os validadores e dependências dos indicadores continuam obrigatórios na integração futura. Reprodução percorre comandos e pode crescer com o histórico; não há SLA, compactação ou certificação física do armazenamento. Gerador básico ainda não entrega os seis cenários oficiais. Nenhuma operação real, aprendizado ou interface 3D. RUNTIME-002 e RUNTIME-003 somente planejados. Sem staging/commit/push nesta tarefa; próxima ação é revisão independente desta entrega.
+
+## CLOSURE-DOC-001 — registro histórico
 BOT-CRYPTO-MVP-001-CLOSURE-DOC-001 — DOCUMENTATION_ONLY.
 
 D5 publicado no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d; sequência A–D5: 11/11 incrementos publicados. Checkpoint documental distingue publicação, contratos implementados e comportamento validado.
