@@ -1824,3 +1824,30 @@ DEC-050, DEC-053, DEC-056, DEC-061, DEC-064; REQ-082, REQ-092, REQ-095, REQ-098.
 
 SUBSTITUI:
 Não se aplica; acrescenta contratos técnicos expressamente ratificados nesta tarefa.
+
+## DEC-066
+ID: DEC-066
+DATA: 2026-11-01
+TÍTULO: SOURCE-001 — fonte causal fixture-market/1 e evidência runtime2
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-RUNTIME-003-SOURCE-001 autorizou expressamente esta extensão isolada para desbloquear a construção dos cenários E2E. Baseline master/ffc2eecfbcf3ef7268a9cd870d6500f6fbbbcb65; trabalho parcial RUNTIME-003 preservado. Não aprova o E2E integral nem modifica decisões financeiras.
+
+DECISÃO:
+- MarketSource compartilha currentOpenings/next e metadados entre seeded-generator/1 e fixture-market/1. SeededGenerator e SimulationClock publicados permanecem intactos. Aberturas são cópias congeladas contendo apenas asset/asOf/price, sem avançar relógio ou divulgar OHLCV futuro; CLOSE confirmado consome o lote pelo relógio existente.
+- RuntimeConfiguration/evidência versão2 são exclusivas de fixtures. O genesis contém o manifesto completo versionado: ID, início UTC canônico, pares ordenados BTC/ETH contínuos de cinco minutos, OHLCV canônico8 coerente, volume não negativo e SHA256. O hash usa JSON com chaves ordenadas e exclui o próprio hash. Preços de abertura podem ter gaps; lacunas temporais são rejeitadas, nunca preenchidas.
+- Identidade de reprodução: fixture-market/1:<hash>. O campo legado generator.seed/provider.seed transporta essa mesma identidade somente como ponte de compatibilidade do cursor D5, sem representar seed aleatória nem alimentar PRNG. Não há nova tabela, migração, segundo ledger ou alteração dos cálculos D3/D4.
+- Manifesto é configuração imutável da simulação. Outra cauda exige outra configuração/identidade e nova simulação; recriar uma simulação existente com configuração diferente é rejeitado. Estratégias e avaliadores recebem apenas histórico confirmado, contexto causal e políticas; não recebem o manifesto.
+- Reconstrução recria a fonte e confronta aberturas, OHLCV/tempos fechados, identidade/hash, cursor e fase com comandos/evidências confirmados. Divergências usam o bloqueio D5 existente. Recuperação representa PAUSED até start explícito; estado financeiro, reservas, fills e rodízio são preservados.
+- EOF válido é observável em runtime2 por exhausted=true/openings=[] e diagnóstico SOURCE_EXHAUSTED no controlador. Impede AUTHORIZE/OPEN sem intervalo disponível; não avança relógio, repete preços, classifica EOF como corrupção ou força liquidação. Posições abertas continuam abertas no último estado confirmado.
+- Runtime1 conserva formato/hash/evidências; D5 legado sem runtime permanece financeiro, sem migração automática. Versão/provedor incompatíveis são rejeitados na fronteira pública de validação.
+
+IMPACTOS:
+SOURCE-001 implementado localmente, não publicado. Suíte final:626 PASS/46 suítes,584 anteriores preservados e42 novos;5 TODO preexistentes. Build PASS. Cobertura diferencial88/88 linhas (100%) e global99,47%, coletadas na execução completa de624 PASS anterior aos dois últimos testes adicionais, sem alteração posterior de código executável. Teste de recuperação em processo real; teste financeiro de contrato usa análise real com150 horas completas em memória, sem decisão/score pronto, e verifica AUTHORIZE, OPEN e posição preservada no EOF. Esse teste não substitui aquecimento operacional persistido ou E2E integral. RUNTIME-003 continua bloqueado para aceite integral; gate de desempenho/replay, seis cenários oficiais e demais pendências permanecem abertos. Manifesto é material de teste, sem certificação de realismo ou rentabilidade.
+
+REFERÊNCIAS:
+DEC-050/053/056/061/064/065; REQ-082/092/095/098. Arquitetura, checkpoint e roadmap completo registram o escopo demonstrado. Nenhum requisito canônico alterado.
+
+SUBSTITUI:
+Não se aplica; estende DEC-065 com autorização explícita, preservando o contrato versão1.

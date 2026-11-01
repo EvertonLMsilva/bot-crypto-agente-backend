@@ -365,3 +365,13 @@ Manter a sequência `MVP-001` já desenvolvida, concluir o núcleo operacional e
 ---
 
 *Documento de acompanhamento preparado a partir da análise consolidada do escopo do MVP. Não substitui as decisões, requisitos e aprovações formais mantidas no repositório.*
+
+## Checkpoint SOURCE-001 — fonte de fixtures para a validação pendente
+
+BOT-CRYPTO-RUNTIME-003-SOURCE-001: IMPLEMENTADO LOCALMENTE / NÃO PUBLICADO. DEC-066: fonte causal fixture-market/1 com manifesto completo BTC/ETH, gaps de preço, OHLCV canônico8, continuidade5m, identidade vinculada ao SHA256 canônico e evidência/configuração runtime2 verificada pelo mesmo D5. SeededGenerator, runtime1, D5 legado e cálculos financeiros preservados. Manifesto de simulação existente não pode ser trocado; cenários com caudas diferentes exigem novas identidades/simulações. EOF pausa sem fabricar dados, autorizar novo ciclo ou liquidar posições; retomada permanece PAUSED.
+
+Evidências de SOURCE-001:42 testes novos;626 PASS/46 suítes,584 anteriores preservados e5 TODO preexistentes; cobertura diferencial88/88 (100%) e global99,47% na execução completa de624 PASS anterior aos dois testes adicionais, com código executável inalterado; build PASS e diff check PASS. Inclui recuperação em processo real e preservação de reservas/posição em teste de contrato com análise real, sem decisões prontas. Isso não constitui negociação E2E pelo runtime após aquecimento persistido.
+
+O bloqueio anterior por ausência de uma fonte pública de fixtures foi resolvido nesta entrega isolada. RUNTIME-003 permanece PARCIAL / BLOQUEADO PARA ACEITE INTEGRAL; gate de desempenho/replay ainda PENDENTE. Aquecimento operacional150h, negociação persistida, proteções/saídas/capital e equivalência integral contínua versus reiniciada ainda dependem dos cenários E2E não demonstrados. Não se reduzem scores, aquecimento ou verificações D5 para acelerá-los.
+
+Mantidos6 fases,67 tópicos e11/11 incrementos MVP-001 publicados; RUNTIME-001/002 publicados, RUNTIME-002 no SHA ffc2eecfbcf3ef7268a9cd870d6500f6fbbbcb65. Nenhum D6 ou novo tópico oficial criado. Este checkpoint atualiza a situação da extensão de fonte; os registros e contagens antigos permanecem históricos. Seis cenários oficiais, REQ-100 empírico, aprendizado e escritório3D continuam pendentes; MVP completo não concluído.

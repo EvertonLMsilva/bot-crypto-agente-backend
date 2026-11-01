@@ -7,13 +7,13 @@ import { authorizeEntryBatch, createAuthorizationState, ClosedPriceReference } f
 import { coordinateEntryBatch, CoordinatorState } from '../coordination';
 import { Asset, ASSETS, Candle } from '../simulation/candle';
 import { SimulationClock } from '../simulation/clock';
-import { SeededGenerator } from '../simulation/seeded-generator';
+import { createMarketSource, MarketSource } from '../simulation/market-source';
 import { ExecutionState, ExecutionCommand, prepareSimulatedDecision, acceptAuthorizations, processOpening, processClosedCandle, cancelActiveReservation } from '../operations';
 import { evaluateStrategicExits } from './strategic-exits';
 import { BoundaryAnalysis, OperationalSnapshot, RuntimeMode } from './types';
 
 /** Composition only: D1 calls C3, which calls C2/indicators/hourly/context. */
-export function analyzeBoundary(state:ExecutionState,history:Readonly<Record<Asset,readonly Candle[]>>,config:RuntimeConfiguration,coordinator:CoordinatorState,entriesEnabled:boolean):BoundaryAnalysis {
+export function analyzeBoundary(state:ExecutionState,history:Readonly<Record<Asset,readonly Candle[]>>,config:Pick<RuntimeConfiguration,'policies'|'context'> & {readonly provider:{readonly initialPrices:Readonly<Record<Asset,string>>}},coordinator:CoordinatorState,entriesEnabled:boolean):BoundaryAnalysis {
   const context={status:config.context.feed.status,events:config.context.feed.status==='VALID'?config.context.feed.events.filter(event=>
     Date.parse(event.publishedAt)<=Date.parse(state.asOf) && Date.parse(event.availableAt)<=Date.parse(state.asOf)):[]};
   const decisions=entriesEnabled?ASSETS.map(asset=>prepareSimulatedDecision(history[asset],state.asOf,context,config.policies[asset],
@@ -37,8 +37,8 @@ export class SimulationRuntime {
   private initialized():LoadedState {
     requireBudget(!this.closed && this.current && this.current.runtime,'Explicit runtime initialization/resume required');return this.current;
   }
-  private source(rt:RuntimeSnapshot):SeededGenerator {
-    const source=new SeededGenerator(new SimulationClock(rt.configuration.startTime),rt.configuration.provider);
+  private source(rt:RuntimeSnapshot):MarketSource {
+    const source=createMarketSource(new SimulationClock(rt.configuration.startTime),rt.configuration.provider);
     for(let i=0;i<rt.confirmedSteps;i++){
       const batch=source.next();requireBudget(batch.every(c=>same(c,rt.history[c.asset][i])),'Confirmed runtime history differs during source reconstruction');
     }
@@ -66,6 +66,7 @@ export class SimulationRuntime {
   }
   start():OperationalSnapshot {
     const s=this.initialized();requireBudget(this.mode!=='BLOCKED' && ['RUNNING','ENTRY_SUSPENDED'].includes(s.control.status),'Runtime blocked; explicit verified resume required');
+    if(s.runtime!.version==='2' && s.runtime!.exhausted){this.mode='PAUSED';this.diagnostic='SOURCE_EXHAUSTED';return this.snapshot();}
     this.mode=s.runtime!.warmup.ready?'READY':'WARMING_UP';return this.snapshot();
   }
   pause():OperationalSnapshot {this.initialized();requireBudget(this.mode!=='BLOCKED','Runtime blocked');this.mode='PAUSED';return this.snapshot();}
@@ -92,6 +93,7 @@ export class SimulationRuntime {
     const initial=this.initialized();requireBudget(this.mode==='READY' || this.mode==='WARMING_UP','Explicit start required before advancing');
     try{this.current=this.store.loadState(initial.runtime!.simulationId);}catch(e){this.mode='BLOCKED';this.diagnostic=String(e);throw e;}
     if(this.current.control.revision!==expectedRevision){this.mode='PAUSED';this.diagnostic='Obsolete runtime revision';throw new RangeError(this.diagnostic);}
+    if(this.current.runtime!.version==='2' && this.current.runtime!.exhausted){this.mode='PAUSED';this.diagnostic='SOURCE_EXHAUSTED';return this.snapshot();}
     try{
       requireBudget(['RUNNING','ENTRY_SUSPENDED'].includes(this.current.control.status),'Financial recovery gate blocks processing');
       if(this.current.state.phase==='BEFORE_OPEN'){
@@ -100,7 +102,8 @@ export class SimulationRuntime {
         requireBudget(this.current.runtime!.warmup.ready || !this.current.state.reservations.some(r=>r.status==='ACTIVE'),'Warmup incomplete: active entry authorization cannot execute');
         let exits:BoundaryAnalysis['exits'];
         if(this.current.control.cursor.authorizedAt!==this.current.state.asOf){
-          const a=analyzeBoundary(this.current.state,this.current.runtime!.history,this.current.runtime!.configuration,this.current.control.cursor.coordinatorState,
+          const c=this.current.runtime!.configuration;
+          const a=analyzeBoundary(this.current.state,this.current.runtime!.history,{policies:c.policies,context:c.context,provider:{initialPrices:c.provider.initialPrices}},this.current.control.cursor.coordinatorState,
             this.current.runtime!.warmup.ready && this.current.control.status==='RUNNING');
           exits=a.exits;
           this.commit({id:JSON.stringify(['AUTHORIZE',this.current.state.asOf]),kind:'AUTHORIZE',authorization:a.authorization},a.coordination);
@@ -110,7 +113,8 @@ export class SimulationRuntime {
       }
       const source=this.source(this.current.runtime!),candles=source.next(),time=candles[0].closeTime;
       this.commit({id:JSON.stringify(['CLOSE',time]),kind:'CLOSE',asOf:time,candles},null);
-      this.mode=this.current.runtime!.warmup.ready?'READY':'WARMING_UP';return this.snapshot();
+      if(this.current.runtime!.version==='2' && this.current.runtime!.exhausted){this.mode='PAUSED';this.diagnostic='SOURCE_EXHAUSTED';}
+      else this.mode=this.current.runtime!.warmup.ready?'READY':'WARMING_UP';return this.snapshot();
     }catch(e){
       this.diagnostic=String(e);this.mode='BLOCKED';
       try{this.current=this.store.recover(initial.runtime!.simulationId);this.store.suspendEntries(initial.runtime!.simulationId,'RUNTIME_PROCESSING_FAILURE');
