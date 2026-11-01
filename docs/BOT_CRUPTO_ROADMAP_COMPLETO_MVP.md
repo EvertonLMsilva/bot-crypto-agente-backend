@@ -15,10 +15,10 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | Fase | Área | Situação |
 |---|---|---|
 | 0 | Planejamento e arquitetura | Base documental aprovada; pendências residuais |
-| 1 | Fundação e núcleo operacional | 11/11 incrementos publicados; integração transversal em andamento com RUNTIME-001 local; E2E e MVP completo pendentes |
+| 1 | Fundação e núcleo operacional | 11/11 incrementos publicados; RUNTIME-001 publicado e RUNTIME-002 local implementado; E2E integral e MVP completo pendentes |
 | 2 | Escritório virtual 3D | Não iniciado |
 | 3 | Inteligência e cinco agentes especializados | Parcial — funções técnicas implementadas |
-| 4 | Orçamento, operações e aprendizado | Parcial — D4 e persistência financeira D5 locais implementados; runtime completo e aprendizado pendentes |
+| 4 | Orçamento, operações e aprendizado | Parcial — orçamento, execução, D5 e runtime explícito implementados; E2E integral e aprendizado pendentes |
 | 5 | Integração e validação final | Não iniciado |
 
 **Nota:** as fases representam áreas funcionais e não uma sequência rigidamente isolada: componentes das fases 3 e 4 já estão sendo desenvolvidos dentro do `MVP-001`.
@@ -196,15 +196,29 @@ Publicação dos 11 incrementos não conclui o MVP completo nem converte requisi
 
 Próxima frente recomendada: **INTEGRAÇÃO OPERACIONAL DETERMINÍSTICA DO BACKEND**, sem constituir incremento aprovado. Gate posterior deverá definir runtime unificado, inicialização/aquecimento, processamento causal, contexto/políticas, saídas estratégicas, retomada coordenada e E2E multicíclo com reinício. Nenhum novo código oficial de incremento é criado por este checkpoint.
 
-### Integração operacional transversal — primeira entrega
+### Integração operacional transversal — RUNTIME-001 publicado
 
-**RUNTIME-001: IMPLEMENTADO / NÃO PUBLICADO**, conforme DEC-065. Entrega abertura conhecida sem avanço do gerador, manifesto/evidência JSON versão1, reconstrução do gerador pelos fechamentos confirmados e contagem de aquecimento por ativo. Reutiliza exclusivamente o ledger D5; registros antigos continuam recuperáveis sem evidência inventada. Snapshots recuperados têm mode PAUSED; isso não implementa os controles operacionais futuros.
+**RUNTIME-001: PUBLICADO — 98ed9c385c3d9228739aa805f9a4e263c06ddb38**, conforme tarefa RUNTIME-002. Situação anterior preservada: IMPLEMENTADO / NÃO PUBLICADO, conforme DEC-065. Entrega abertura conhecida sem avanço do gerador, manifesto/evidência JSON versão1, reconstrução do gerador pelos fechamentos confirmados e contagem de aquecimento por ativo. Reutiliza exclusivamente o ledger D5; registros antigos continuam recuperáveis sem evidência inventada. Snapshots recuperados têm mode PAUSED; isso não implementa os controles operacionais futuros.
 
 RED: duas suítes falharam pelas APIs/tipos ainda ausentes. GREEN: 555 PASS / 41 suítes, preservando os 517 testes anteriores e acrescentando 38; inclui recuperação em novo processo real. Cobertura diferencial: 92/92 linhas executáveis alteradas (100%); runtime-evidence.ts com 100% de linhas, branches e funções; global de linhas 99,40%. npm run build PASS. A suíte completa foi executada com npm run test:coverage; não representa E2E integral.
 
-Não implementa runtime operacional, loop, comandos iniciar/pausar/avançar, geração automática de saídas estratégicas ou E2E integral. PAUSED é a representação de retomada para a futura API, separada da saúde financeira D5; não altera RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED. Progresso de aquecimento não autoriza sinais: os validadores e dependências dos indicadores continuam obrigatórios na integração futura. Reprodução percorre comandos e pode crescer com o histórico; não há SLA, compactação ou certificação física do armazenamento. Gerador básico ainda não entrega os seis cenários oficiais. Nenhuma operação real, aprendizado ou interface 3D.
+Escopo histórico do componente RUNTIME-001: não implementa runtime operacional, loop, comandos iniciar/pausar/avançar, geração automática de saídas estratégicas ou E2E integral. PAUSED é a representação de retomada para a futura API, separada da saúde financeira D5; não altera RUNNING/RECOVERING/ENTRY_SUSPENDED/MANUAL_REVIEW_REQUIRED. Progresso de aquecimento não autoriza sinais: os validadores e dependências dos indicadores continuam obrigatórios na integração futura. Reprodução percorre comandos e pode crescer com o histórico; não há SLA, compactação ou certificação física do armazenamento. Gerador básico ainda não entrega os seis cenários oficiais. Nenhuma operação real, aprendizado ou interface 3D.
 
-RUNTIME-002 (runtime unificado e saídas estratégicas por origem) e RUNTIME-003 (E2E multicíclo com reinício) permanecem **PLANEJADOS / NÃO IMPLEMENTADOS**. Acompanhar esta frente nos tópicos existentes 0.4, 3.1, 3.2, 3.9 e 5.7, sem criar linhas/incrementos adicionais. MVP-001 continua com 11/11 publicados; D5 no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d. Publicação desta entrega transversal e início das seguintes exigem tarefas próprias.
+No checkpoint RUNTIME-001, RUNTIME-002 (runtime unificado e saídas estratégicas por origem) e RUNTIME-003 (E2E multicíclo com reinício) estavam **PLANEJADOS / NÃO IMPLEMENTADOS**. RUNTIME-002 foi implementado posteriormente conforme registro abaixo; RUNTIME-003 permanece pendente. Acompanhar esta frente nos tópicos existentes 0.4, 3.1, 3.2, 3.9 e 5.7, sem criar linhas/incrementos adicionais. MVP-001 continua com 11/11 publicados; D5 no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d. Publicação desta entrega transversal e início das seguintes exigem tarefas próprias.
+
+### Integração operacional transversal — RUNTIME-002
+
+**IMPLEMENTADO / NÃO PUBLICADO.** API SimulationRuntime com create(config,coordinatorState), start, pause, advanceCycle(expectedRevision), snapshot, resume e close, sem temporizadores ou loop automático. Integra decisões/indicadores/contexto/estratégias, D2, orçamento D3, execução D4 e persistência/evidência D5/RUNTIME-001. Reutiliza os contratos publicados; não cria D6 nem altera fórmulas financeiras.
+
+Aquecimento é formado pelos fechamentos persistidos, separado BTC/ETH, com mínimo de 150 horários completos para entradas. Lotes vazios são confirmados; contexto inválido ou indicadores indisponíveis não produzem sinais artificiais. Abertura é consultada sem avançar o gerador; OPEN confirma antes da geração do próximo fechamento. Retomada continua da fase confirmada e permanece PAUSED até start explícito. Falhas bloqueiam processamento sem publicar estado especulativo; saúde financeira e modo operacional continuam separados.
+
+Saídas estratégicas aprovadas DEC-050/REQ-092 implementadas por origem/versão: EMA21, nível original de rompimento e SMA20, com comparação exata e prioridade D4 de proteções. O nível de rompimento é recuperado do prefixo imutável da decisão original; evidência insuficiente bloqueia integração sem saída presumida.
+
+RED: duas suítes falharam inicialmente pelo módulo runtime ausente. GREEN: 576 PASS / 43 suítes, preservando os 555 anteriores e acrescentando 21 testes. Testes focados passaram; npm run test:coverage confirmou 137/137 linhas executáveis novas (100%), cobertura global de linhas 99,45%; npm run build PASS. Bancos de teste temporários fora do repositório. Não equivale à aprovação E2E integral.
+
+A entrada ETH75 foi obtida pela cadeia analítica real, sem score alterado, sobre histórico simulado; testes de ciclos frios usam D5 real e falhas entre fases. Esses testes parciais não equivalem a E2E completo de aquecimento persistido até negociação. RUNTIME-003 permanece PENDENTE: validação E2E integral multicíclo, aquecimento completo persistido seguido de negociação, reinício/concorrência em escala e cenários oficiais ainda precisam de entrega própria. O gerador básico não implementa os seis cenários oficiais. Replay e reconstrução integral podem crescer com o histórico; não há SLA ou garantia física adicional de armazenamento. Aprendizado, REQ-100 empírico e escritório 3D permanecem pendentes. Sem mercado real, dependências novas, timers ou loop automático; main.ts permanece smoke.
+
+Acompanhar RUNTIME-002 nos tópicos existentes 3.4–3.9, 4.4–4.5 e 5.7; RUNTIME-003 continua **PENDENTE / NÃO IMPLEMENTADO**. Preservados seis fases, 67 tópicos, MVP-001 com 11/11 publicados e D5 no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d. Aprendizado e frontend 3D não estão concluídos.
 
 ## Fase 2 — Escritório virtual 3D
 
@@ -230,12 +244,12 @@ A arquitetura aprovada prevê **exatamente cinco agentes lógicos**: Analista Ce
 | 3.1 | Gerador de preços BTC/ETH e seis cenários reproduzíveis | Gerador básico implementado; cenários completos pendentes |
 | 3.2 | Gerador e distribuição temporal de acontecimentos contextuais | Parcial |
 | 3.3 | Analista Central de Inteligência — validação e distribuição de contexto | Funções de contexto prontas; agente pendente |
-| 3.4 | Especialista BTC — execução autônoma do ciclo de análise | Matemática pronta; runtime pendente |
-| 3.5 | Especialista ETH — análise e memória independentes | Matemática pronta; runtime pendente |
-| 3.6 | Coordenador — receber decisões e encaminhar oportunidades | Ordenação D2 pronta; integração pendente |
-| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Autorização pura D3.2 e persistência D5 publicadas; integração do runtime pendente |
+| 3.4 | Especialista BTC — execução autônoma do ciclo de análise | Composição BTC no runtime explícito implementada; autonomia e E2E integral pendentes |
+| 3.5 | Especialista ETH — análise e memória independentes | Composição ETH no runtime explícito implementada; memória/aprendizado e E2E integral pendentes |
+| 3.6 | Coordenador — receber decisões e encaminhar oportunidades | D2 composto no runtime explícito; validação E2E integral pendente |
+| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | D3/D5 reutilizados pelo runtime explícito; validação E2E integral pendente |
 | 3.8 | Políticas e estratégias versionadas por agente | Parcial |
-| 3.9 | Estados operacionais e comunicação entre agentes | Pendente |
+| 3.9 | Estados operacionais e comunicação entre agentes | Estados do runtime explícito implementados; comunicação autônoma pendente |
 | 3.10 | Ativação controlada do componente histórico H após validação | Pendente |
 
 ## Fase 4 — Orçamento, operações e evolução autônoma
@@ -246,10 +260,10 @@ Esta fase contém capacidades que dependem parcialmente dos incrementos `D3–D5
 |---|---|---|
 | 4.1 | Capital inicial fictício de 10.000 UC e orçamento compartilhado | Snapshot explícito e orçamento compartilhado local D3.2; sem criar saldo inicial |
 | 4.2 | Dimensionamento de posição e limites de risco | Cotação D3.1 e autorização local D3.2 implementadas; sem execução |
-| 4.3 | Reservas atômicas e bloqueio de capital duplicado | D3.2 com fronteira transacional/idempotência durável D5 implementada; integração do runtime pendente |
-| 4.4 | Execução spot simulada na próxima abertura elegível | D4 puro local implementado; runtime integrado pendente |
-| 4.5 | Stop loss, take profit, gaps, custos e slippage | D4 local publicado; integração operacional completa pendente |
-| 4.6 | EXIT_REQUEST, HOLD, WAIT, RISK_ALERT e saídas por origem | Parcial; consumo de ExitRequest D4 implementado, geração automática pendente |
+| 4.3 | Reservas atômicas e bloqueio de capital duplicado | Fronteira D5 composta pelo runtime explícito; validação E2E integral pendente |
+| 4.4 | Execução spot simulada na próxima abertura elegível | D4 composto no runtime explícito; validação E2E integral pendente |
+| 4.5 | Stop loss, take profit, gaps, custos e slippage | Proteções D4 e saídas por origem compostas; validação E2E integral pendente |
+| 4.6 | EXIT_REQUEST, HOLD, WAIT, RISK_ALERT e saídas por origem | PARCIAL: D4 consome ExitRequest explícito; RUNTIME-002 gera automaticamente os gatilhos aprovados — tendência: dois fechamentos abaixo da EMA21; rompimento: dois abaixo do nível original congelado; reversão: fechamento alcança ou supera SMA20. E2E operacional integral e demais comportamentos/aceites completos, incluindo HOLD, WAIT e RISK_ALERT, permanecem parcialmente comprovados ou pendentes |
 | 4.7 | Contabilidade, patrimônio, histórico e recuperação | D4/D5 locais implementados; runtime completo e aceites finais pendentes |
 | 4.8 | Memória persistente e resultados exclusivos de cada especialista | Pendente |
 | 4.9 | Uma política ativa e até três candidatas por ciclo/agente | Pendente |

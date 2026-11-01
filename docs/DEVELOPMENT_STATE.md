@@ -3,8 +3,8 @@
 LAST_UPDATED: 2026-11-01
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: RUNTIME_EVIDENCE_AND_CAUSAL_SOURCE_IMPLEMENTED_LOCAL
-PHASE: RUNTIME-001 — primeira entrega transversal implementada, não publicada; MVP-001 com 11/11 publicados
+CURRENT_PHASE: EXPLICIT_DETERMINISTIC_OPERATIONAL_RUNTIME_IMPLEMENTED_LOCAL
+PHASE: RUNTIME-002 — implementado, não publicado; RUNTIME-001 publicado; MVP-001 com 11/11 publicados
 MVP: FOUNDATION_THROUGH_D5_IMPLEMENTED; FULL_RUNTIME_LEARNING_FRONTEND_AND_EMPIRICAL_VALIDATION_PENDING
 IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_D4_AND_D5_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
@@ -14,7 +14,7 @@ NEXT_CANDLE_EXECUTION: APPROVED
 CONSERVATIVE_INTRABAR_STOP_TAKE: APPROVED
 OPS-002: APPROVED
 PERSISTENT_AUDIT: APPROVED
-SIGNAL_POLICY: PURE_COMPOSITION_AND_DECISION_ENVELOPE_IMPLEMENTED; FINANCIAL_INTEGRATION_PENDING
+SIGNAL_POLICY: COMPOSITION_DECISIONS_AND_EXPLICIT_RUNTIME_FINANCIAL_CHAIN_IMPLEMENTED; FULL_E2E_PENDING
 SIGNAL-001: APPROVED
 SIGNAL-002: APPROVED
 SIGNAL-003: APPROVED
@@ -51,18 +51,18 @@ COORDINATOR: PURE_BATCH_ORDERING_AND_D5_ROTATION_EVIDENCE_PERSISTENCE_IMPLEMENTE
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_555_TESTS_41_SUITES; 38_NEW_AND_517_PRESERVED
-COVERAGE_LINES: 100_PERCENT_CHANGED_RUNTIME_001_92_OF_92; 100_PERCENT_RUNTIME_EVIDENCE; 99.40_PERCENT_GLOBAL
+TESTS: PASS_576_TESTS_43_SUITES; 21_NEW_AND_555_PRESERVED
+COVERAGE_LINES: 100_PERCENT_NEW_RUNTIME_002_137_OF_137; 99.45_PERCENT_GLOBAL
 BUILD: PASS
 SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D5
 SIMULATION: LOCAL_SPOT_EXECUTION_TEST_FIXTURES; NO_REAL_OPERATIONS; FULL_SCENARIO_RUNTIME_PENDING
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: RUNTIME_001_REVIEW_AND_PUBLICATION; RUNTIME_002_AND_003_PLANNED_ONLY; NO_AUTOMATIC_START
+NEXT: RUNTIME_002_REVIEW_AND_PUBLICATION; RUNTIME_003_PENDING; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
-REQ_061_080: ENTRY_PROPOSAL_WAIT_AND_DURABLE_LOCAL_EXECUTION_IMPLEMENTED; FULL_RUNTIME_INTEGRATION_PENDING
+REQ_061_080: ENTRY_PROPOSAL_WAIT_DURABLE_EXECUTION_AND_EXPLICIT_RUNTIME_IMPLEMENTED; FULL_RUNTIME_E2E_PENDING
 REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
 SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
 OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
@@ -72,10 +72,27 @@ BUDGET_D3_2: LOCAL_SEQUENTIAL_AUTHORIZATION_RESERVATIONS_AND_RELEASE_IMPLEMENTED
 REQ_096: EXACT_ARITHMETIC_AND_LOCAL_DURABLE_LEDGER_IMPLEMENTED; FULL_RUNTIME_VALIDATION_PENDING
 EXECUTION_D4: LOCAL_FULL_FILLS_SETTLEMENT_FIXED_PROTECTIONS_AND_FINANCIAL_ACCOUNTING_IMPLEMENTED; D5_DURABLE_WRAPPER_AVAILABLE
 PERSISTENCE_D5: SQLITE_SCHEMA_1_WAL_FULL_FK_IMMEDIATE_TRANSACTIONS_REPLAY_AND_FAIL_CLOSED_IMPLEMENTED
-WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
+WARMUP: 150_COMPLETE_CONFIRMED_HOURS_PER_ASSET_REQUIRED_FOR_RUNTIME_ENTRIES; NOT_FINANCIAL_ELIGIBILITY
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-RUNTIME-002 — IMPLEMENTATION / TDD.
+
+STATUS: IMPLEMENTADO / NÃO PUBLICADO. Baseline backend/master/98ed9c385c3d9228739aa805f9a4e263c06ddb38, worktree/staging limpos. RUNTIME-001 publicado nesse SHA; MVP-001 mantém 11/11 incrementos publicados e D5 permanece no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d. Seis novos arquivos runtime/testes e apenas três documentos modificados, dentro da allowlist; contratos anteriores, decisões, requisitos, main e fórmulas financeiras intactos.
+
+SimulationRuntime compõe a cadeia publicada com criação/retomada PAUSED, start/pause explícitos, advanceCycle com revisão, snapshot imutável e close. Persiste o aquecimento e lotes vazios, exige 150 horários completos por ativo para novas entradas, filtra contexto futuro e usa orçamento/rodízio confirmados. AUTHORIZE/OPEN/CLOSE parciais não são repetidos; falhas descartam estado especulativo, recuperam o prefixo e bloqueiam novas entradas via D5. Conflito de revisão pausa; avanço concorrente além do recibo interrompe o ciclo. Nenhum loop/timer ou segundo ledger.
+
+Saídas automáticas DEC-050 por origem: dois fechamentos abaixo EMA21; dois abaixo do nível original de rompimento; Close>=SMA20. Comparações exatas, origem/versão preservadas e createExitRequest existente; D4 mantém proteções prioritárias e impede reentrada. Evidência ausente bloqueia integração sem criar saída. Suspensão financeira D5 não é removida por start/resume operacional.
+
+RED: duas suítes falharam inicialmente pelo módulo runtime ausente. GREEN: 576 PASS / 43 suítes, preservando os 555 anteriores e acrescentando 21 testes. Testes focados passaram; npm run test:coverage confirmou 137/137 linhas executáveis novas (100%), cobertura global de linhas 99,45%; npm run build PASS. Bancos de teste temporários fora do repositório. Não equivale à aprovação E2E integral.
+
+Testes novos distinguem ciclos frios persistidos de análises sobre histórico gerado em memória; entrada qualificada ETH75 calculada sem score artificial e saída com stop prioritário. Não foi declarada execução E2E integral do aquecimento persistido até negociação.
+
+RUNTIME-003 permanece PENDENTE: validação E2E integral multicíclo, aquecimento completo persistido seguido de negociação, reinício/concorrência em escala e cenários oficiais ainda precisam de entrega própria. O gerador básico não implementa os seis cenários oficiais. Replay e reconstrução integral podem crescer com o histórico; não há SLA ou garantia física adicional de armazenamento. Aprendizado, REQ-100 empírico e escritório 3D permanecem pendentes. Sem mercado real, dependências novas, timers ou loop automático; main.ts permanece smoke.
+
+## RUNTIME-001 — histórico da entrega e publicação
+PUBLICADO no SHA 98ed9c385c3d9228739aa805f9a4e263c06ddb38. O registro de implementação abaixo antecede essa publicação.
+
 BOT-CRYPTO-RUNTIME-001 — IMPLEMENTATION / TDD.
 
 STATUS: IMPLEMENTADO / NÃO PUBLICADO. Baseline backend/master/dab28991b502a4c8dddccae81b927c4c9788b7dd com worktree/staging limpos; Node24.18.0. Alterações limitadas aos 12 arquivos autorizados, sem dependências novas. DEC-065 registra as decisões técnicas ratificadas; decisões/requisitos antigos preservados.
