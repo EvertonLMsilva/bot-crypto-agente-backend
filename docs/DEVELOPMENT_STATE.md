@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-31
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: LOCAL_AUTHORIZATION_AND_RESERVATIONS
-PHASE: MVP-001-D3.2 — autorização e reserva lógica em memória, sem execução
-MVP: FOUNDATION_THROUGH_D3_2_LOCAL_STATE_IMPLEMENTED; EXECUTION_AND_DURABILITY_PENDING
-IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_AND_D3_2_IMPLEMENTED_ONLY
+CURRENT_PHASE: LOCAL_SIMULATED_SPOT_EXECUTION
+PHASE: MVP-001-D4 — execução spot simulada e proteções em memória
+MVP: FOUNDATION_THROUGH_D4_LOCAL_EXECUTION_IMPLEMENTED; DURABILITY_AND_RUNTIME_INTEGRATION_PENDING
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_AND_D4_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -51,14 +51,14 @@ COORDINATOR: PURE_BATCH_ORDERING_IMPLEMENTED; AUTONOMOUS_QUEUE_AND_PERSISTENCE_N
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_390_TESTS_31_SUITES; 48_NEW_AND_342_PRESERVED
-COVERAGE_LINES: 100_PERCENT_NEW_AUTHORIZATION_AND_RESERVATIONS; 99.30_PERCENT_GLOBAL
+TESTS: PASS_476_TESTS_35_SUITES; 53_NEW_AND_423_PRESERVED
+COVERAGE_LINES: 100_PERCENT_NEW_D4_EXECUTION; 99.41_PERCENT_GLOBAL
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D3_2
-SIMULATION: SYNTHETIC_CANDLES_ONLY; FINANCIAL_NOT_EXECUTED
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D4
+SIMULATION: LOCAL_SPOT_EXECUTION_TEST_FIXTURES; NO_REAL_OPERATIONS; FULL_SCENARIO_RUNTIME_PENDING
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: D4_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
+NEXT: D5_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
@@ -70,10 +70,26 @@ COORDINATION_D2: VALIDATED_D1_BATCH_PRIORITY_DUPLICATES_AND_EXPLICIT_ROTATION_IM
 BUDGET_D3_1: EXACT_FIXED8_QUOTE_AND_LIMITS_IMPLEMENTED; NOT_AUTHORIZED_NOT_RESERVED_NOT_EXECUTED
 BUDGET_D3_2: LOCAL_SEQUENTIAL_AUTHORIZATION_RESERVATIONS_AND_RELEASE_IMPLEMENTED; NOT_EXECUTED_NOT_PERSISTED
 REQ_096: EXACT_ADVISORY_QUOTE_AND_LOCAL_RESERVATION_ARITHMETIC_IMPLEMENTED; OFFICIAL_ACCOUNTING_LEDGER_AND_RECOVERY_PENDING
+EXECUTION_D4: LOCAL_FULL_FILLS_SETTLEMENT_FIXED_PROTECTIONS_AND_FINANCIAL_ACCOUNTING_IMPLEMENTED; NOT_PERSISTED
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D4 — IMPLEMENTATION / TDD.
+
+STATUS: DONE, aguardando revisão e commit. Preflight master/40b2c893d7955c9ca58ab53c438379c6815797d2, worktree/staging limpos, Node v24.18.0/npm11.16.0. D3.2 publicado nesse SHA conforme tarefa. Criados seis módulos operations e quatro testes autorizados; modificados somente operations/index.ts e três documentos. D1/D2/D3.1/D3.2, relógio, dependências e frontend preservados. Nenhum staging/commit/push.
+
+Estado próprio D4 com snapshot inicial financeiro explícito, evidências D3.2 históricas, reservas correntes ACTIVE/SETTLED/RELEASED, ordens, fills integrais e posições OPEN/CLOSED. Validador reconstrói e reconcilia exatamente comandos/resultados/auditoria em memória. Ponte importa uma autorização por fronteira, verifica referência corrente e preserva identidades entre ciclos. Histórico D3.2 e seu NOT_EXECUTED não são alterados; snapshot D4 nunca é enviado ao validador antigo como AuthorizationState.
+
+processOpening recebe somente preços conhecidos BTC/ETH e pedidos explícitos de saída; prioridades: proteções/gaps, saídas estratégicas, entradas em ordem D2. processClosedCandle usa OHLCV5min fechado e coerente com a abertura conhecida. Stop2%/take4% fixos em precisão racional sobre entrada executada; stop primeiro na ambiguidade intrabar, gaps conservadores. Sem execução retroativa, uso de gerador.next() para abertura, partial fill ou reentrada na fronteira de saída. ExitRequest não calcula gatilho estratégico nem converte D1 EXIT_EVALUATION_PENDING em ordem.
+
+Contabilidade bigint/canônica8: slippage0,05% e taxa0,10% uma vez por execução; margem1% de reserva não é custo. Fill consome C da reserva R e devolve somente R−C; cancelamento/expiração libera R uma vez. Patrimônio=disponível+reservado+marcas conhecidas; PnL realizado/não realizado assinado e taxas reconciliados. Caixa/exposição/risco/perda diária BTC/ETH compartilhados; revalidação exclui a própria reserva, preserva limites e considera custos conhecidos. Base diária UTC é atualizada no fechamento00UTC.
+
+TDD: quatro suítes RED antes dos módulos, GREEN; regressão de reentrada intrabar reproduzida e corrigida antes do GREEN final.53 testes novos focados PASS; npm run test:coverage476 testes/35 suítes PASS preservando423 anteriores,100% das linhas novas e99,41% global. npm run build PASS. Referências independentes: Q10/abertura100 gera custo1001,50050000, equity9998,49950000; saída estratégica100 gera PnL−3,00000000. Testes incluem igualdade/um tick na reserva, excesso/excedente, estados/dia, custos, limites financeiros reutilizados, gaps/stop/take, ordenação, integração BTC/ETH multicíclo, expiração, corrupção, JSON e imutabilidade. git diff --check e allowlist conferidos ao concluir.
+
+Limitações: sem persistência, ledger oficial, recuperação após reinício, concorrência entre processos ou runtime integrado. Bootstrap não inventa posições/compromissos de uma carteira existente; exige estado inicial plano e coerente. ExitRequest vem de chamador explícito; geração automática dos gatilhos/estratégias de saída segue pendente. Validação percorre histórico em memória; escala/recuperação ficam para evolução própria. REQ-040/042 persistentes e REQ-100 empírico permanecem pendentes. D5 não iniciado; D4 não publicado e sem operação real ou comprovação de rentabilidade.
+
+## MVP-001-D3.2 — registro histórico
 BOT-CRYPTO-MVP-001-D3.2 — IMPLEMENTATION / TDD.
 
 Preflight: master/74d66c80693f60f5ed656d3fa432f6b96b0dfe15, worktree/staging limpos, Node v24.18.0/npm11.16.0. D3.1 publicado nesse SHA, conforme tarefa; fórmulas e contratos anteriores preservados. Criados somente authorization-types.ts, authorize.ts, reservations.ts e três testes budget autorizados. index.ts e os três documentos autorizados atualizados. D3.2 não publicado; sem staging/commit/push.
