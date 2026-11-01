@@ -1851,3 +1851,34 @@ DEC-050/053/056/061/064/065; REQ-082/092/095/098. Arquitetura, checkpoint e road
 
 SUBSTITUI:
 Não se aplica; estende DEC-065 com autorização explícita, preservando o contrato versão1.
+
+## DEC-067
+ID: DEC-067
+DATA: 2026-11-01
+TÍTULO: PERF-002 — replay sequencial privado e checkpoints verificados em fluxo
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-RUNTIME-003-PERF-002 autorizou otimizar a reconstrução sem modificar contratos financeiros, hashes, schema ou durabilidade. Baseline master/3c8021b45ac237bb953463c0d47811a5ca4b2b13 (SOURCE-001 publicado). Trabalho parcial local RUNTIME-003 preservado; esta decisão técnica não aprova o E2E integral.
+
+DECISÃO:
+- Cada reconstrução D5 recebe um escopo síncrono associado ao token privado da transação BEGIN IMMEDIATE. O escopo é revogado em finally; iteradores rejeitam uso em outra transação e finalizam o cursor nativo. Não há cache global, entre transações ou entre processos.
+- A sessão financeira parte somente do snapshot inicial validado pelo genesis D5. Percorre os comandos históricos uma vez, exige a mesma forma canônica aceita pelo executor publicado e usa a mesma função privada de transição. Não recebe snapshots arbitrários como prefixos comprovados. Validadores públicos e transições financeiras anteriores permanecem intactos; os adaptadores internos não são exportados pelos índices públicos.
+- A sessão de mercado mantém uma fonte seeded-generator/1 ou fixture-market/1, consumindo cada OPEN/CLOSE confirmado em ordem. Confere origem, manifesto/hash, relógio/fase, histórico, rodízio e evidências runtime1/2 em cada operação. Snapshot final continua imutável e PAUSED; legado não recebe runtime inventado. EOF e rejeição de fontes divergentes permanecem vigentes.
+- Recuperação mantém a conferência integral de operações, payloads, hashes, eventos, postings, recibos e controles. Checkpoints são comparados individualmente com cada prefixo derivado, incluindo sequência/revisão/hash/cursor/schema/estado; ausências, extras ou adulterações produzem checkpointIssue. Divergência de checkpoint não interrompe a verificação posterior do ledger: preserva ENTRY_SUSPENDED para checkpoint derivado inconsistente e MANUAL_REVIEW_REQUIRED para falha de integridade.
+- Sessões e iteradores são encerrados em finally. Nenhum estado especulativo sai da API durável antes do COMMIT. WAL/FULL/FK, lock, revisão otimista, idempotência, resposta perdida, rollback e recuperação independente são mantidos. Não se confia em checkpoints como substitutos do histórico.
+- Não altera fórmulas, arredondamentos bigint, autorização, risco, stop/take, scores ou elegibilidade. As sete reconstruções D5 por ciclo e as releituras pós-commit permanecem nesta entrega; eliminou-se o replay aninhado dentro de cada passagem, não toda cópia ou validação externa.
+
+EVIDÊNCIAS:
+RED por APIs de sessão/iteração ausentes. GREEN:657 PASS/47 suítes na worktree local,639 anteriores preservados e18 testes novos;5 TODO do E2E parcial mantidos. Cobertura diferencial79/79 (100%); global99,49%; build PASS. Regressão inclui crash real, resposta perdida, rollback e concorrência entre processos. Oráculo financeiro adicional baseline/otimizado confirmou cancelamento idempotente, reserva RELEASED, posição SETTLED, saída por gap e PnL -202.70010000/patrimônio9797.29990000, com estado e tabelas idênticos (SHA256 96f5c358544d45522a1e63cea855cbb8bed3bfeb7886f86159e282c2e091d914).
+Benchmarks pareados, três processos por variante/cenário, sem profiler, Node24.18.0/SQLite3.53.1: mediana ciclo15 seeded4347,7483ms →520,6670ms (-88,02%); ciclo4 fixture com1802 lotes5893,4374ms →1424,9666ms (-75,82%). Todas as execuções pareadas tiveram hashes finais iguais, incluindo snapshots, operações, eventos, postings, recibos, checkpoints e controles. Pico de RSS mediano: seeded267,78→238,23MiB; fixture302,83→317,14MiB. Maior aumento pareado5,77%, abaixo do limite experimental20%.
+Limites declarados:45s para avanço, supervisor48s incluindo inicialização/retomada, RSS512MiB, heap V8384MiB e banco/WAL/SHM256MiB. Ensaios crescentes:16 completos (4,22s totais),32 completos (25,29s); alvo64 interrompido após40 ciclos confirmados (46,75s totais, incluindo último ciclo/retomada, dentro do supervisor48s), TIME_LIMIT, RSS311,98MiB e banco5591040bytes.128 e1800 não executados. O tempo é verificado entre ciclos; o supervisor impõe o teto externo.
+
+LIMITAÇÕES:
+Metas pareadas locais aprovadas experimentalmente; não há SLA nem aprovação de escala integral. Persistem cópias/hash de estados crescentes, verificações externas à sessão, varreduras SQLite e armazenamento cumulativo de checkpoints. O worker diagnóstico inclui coleta final de tabelas para fingerprint, separada da leitura sequencial de produção; RSS mede o processo completo. RUNTIME-003 permanece parcial/bloqueado para aceite integral e requer novo gate de desempenho antes do aquecimento persistido1800 e dos cenários E2E. Aprovação independente/publicação de PERF-002 ainda pendentes.
+
+REFERÊNCIAS:
+DEC-064/065/066; nenhuma substituição de decisão financeira ou alteração de requisito canônico.
+
+SUBSTITUI:
+Não se aplica; detalha a otimização técnica expressamente autorizada.

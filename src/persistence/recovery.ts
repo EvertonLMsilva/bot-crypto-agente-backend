@@ -1,8 +1,9 @@
 import { SqliteStore, Row } from './sqlite-store';
 import { Control, Cursor, GenesisInput, LedgerEvent, OperationPayload, Posting, Receipt, RuntimeSnapshot } from './types';
-import { reconstructRuntime, validateRuntimeOperation } from './runtime-evidence';
-import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, immutable, parseCanonical, requireBudget, same, ZERO_HASH } from './ledger';
+import { createRuntimeReplay } from './runtime-evidence';
+import { advanceCursor, buildLedger, canonical, genesisState, hash, immutable, parseCanonical, requireBudget, same, ZERO_HASH } from './ledger';
 import { ExecutionState } from '../operations';
+import { createExecutionReplay } from '../operations/execution';
 export function eventRow(sim:string,e:LedgerEvent):Row{return {simulation_id:sim,seq:e.seq,event_id:e.eventId,operation_id:e.operationId,ordinal:e.ordinal,kind:e.kind,
   as_of:e.asOf,phase:e.phase,payload:e.payload,previous_hash:e.previousHash,hash:e.hash,schema_version:'1'};}
 export function postingRow(sim:string,p:Posting):Row{return {simulation_id:sim,event_seq:p.eventSeq,ordinal:p.ordinal,account:p.account,amount:p.amount};}
@@ -30,14 +31,21 @@ export interface Confirmed {
   readonly checkpointIssue:boolean;readonly control:Control;
 }
 export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
+  return store.withReplay(checkActive=>{
   requireBudget(store.get('PRAGMA integrity_check').integrity_check==='ok' && store.all('PRAGMA foreign_key_check').length===0,'SQLite integrity/references failed');
   const simulation=store.get('SELECT * FROM simulations WHERE id=?',[simulationId]);
   requireBudget(hash(parseCanonical(simulation.genesis!))===simulation.genesis_hash,'Corrupted genesis');
   const genesis=parseCanonical<GenesisInput>(simulation.genesis!);requireBudget(genesis.simulationId===simulationId,'Genesis identity mismatch');
   let {state,cursor}=genesisState(genesis),headSeq='0',headHash=ZERO_HASH,rev='0';
+  const financial=createExecutionReplay(genesis.initial,checkActive);
+  let market:ReturnType<typeof createRuntimeReplay>|undefined,checkpoints:IterableIterator<Row>|undefined;
+  try{
+  market=createRuntimeReplay(genesis,checkActive);
+  checkpoints=store.iterate('SELECT * FROM checkpoints WHERE simulation_id=? ORDER BY event_seq',[simulationId]);
+  let checkpointIssue=false;
   const operations=store.all('SELECT * FROM operations WHERE simulation_id=? ORDER BY revision',[simulationId]);
   requireBudget(operations.length>0,'Missing confirmed genesis operation');
-  const events:Row[]=[],postings:Row[]=[],checkpoints:Row[]=[],receipts=new Map<string,{r:Receipt;h:string}>();
+  const events:Row[]=[],postings:Row[]=[],receipts=new Map<string,{r:Receipt;h:string}>();
   for(const [i,op] of operations.entries()){
     requireBudget(op.revision===String(i) && op.payload_hash===hash(parseCanonical(op.payload!)),'Operation revision/payload corruption');
     let before:ExecutionState|null=null,p:OperationPayload|null=null;
@@ -45,22 +53,27 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
     else{
       before=state;p=parseCanonical<OperationPayload>(op.payload!);
       requireBudget(p.command.id===op.command_id,'Operation/command identity mismatch');
-      state=execute(state,p);cursor=advanceCursor(cursor,p,state);
-      validateRuntimeOperation(genesis,state,p,cursor);
+      state=financial.append(p.command);cursor=advanceCursor(cursor,p,state);
+      market.append(p,state,cursor);
     }
     const built=buildLedger(simulationId,op.operation_id!,String(i),before,state,cursor,headSeq,headHash,i===0?genesis:undefined);
     requireBudget(canonical(built.receipt)===op.receipt,'Confirmed receipt differs from replay');
     events.push(...built.events.map(e=>eventRow(simulationId,e)));postings.push(...built.postings.map(p=>postingRow(simulationId,p)));
     headSeq=built.receipt.seqEnd;headHash=built.events.at(-1)!.hash;rev=String(i);receipts.set(rev,{r:built.receipt,h:headHash});
-    if(i===0 || p?.command.kind==='CLOSE')checkpoints.push(checkpointRow(simulationId,built.receipt,state,headHash));
+    if(i===0 || p?.command.kind==='CLOSE'){
+      const row=checkpoints.next();if(row.done || !same(checkpointRow(simulationId,built.receipt,state,headHash),row.value))checkpointIssue=true;
+    }
   }
+  while(!checkpoints.next().done)checkpointIssue=true;
   requireBudget(same(events,store.all('SELECT * FROM events WHERE simulation_id=? ORDER BY seq',[simulationId])),'Missing, duplicated, reordered or corrupted ledger event');
   requireBudget(same(postings,store.all('SELECT * FROM postings WHERE simulation_id=? ORDER BY event_seq,ordinal',[simulationId])),'Inconsistent financial postings');
   const history=controls(store,simulationId);
   for(const c of history){const pair=receipts.get(c.revision);requireBudget(pair && c.headSeq===pair.r.seqEnd && c.headHash===pair.h
     && c.stateHash===pair.r.stateHash && same(c.cursor,pair.r.cursor),'Runtime head/cursor differs from confirmed history');}
   const control=history.at(-1)!;requireBudget(control.revision===rev && control.headHash===headHash,'Unconfirmed/obsolete runtime head');
-  const runtime=reconstructRuntime(genesis,state,cursor);
+  const runtime=market.snapshot(state,cursor);
   return immutable({genesis,state,cursor,revision:rev,headSeq,headHash,control,...(runtime?{runtime}:{}),
-    checkpointIssue:!same(checkpoints,store.all('SELECT * FROM checkpoints WHERE simulation_id=? ORDER BY event_seq',[simulationId]))});
+    checkpointIssue});
+  }finally{try{checkpoints?.return?.();}finally{market?.close();financial.close();}}
+  });
 }

@@ -165,3 +165,23 @@ export function projectExecutionBudget(s: ExecutionState): BudgetSnapshot { retu
 export function cancelActiveReservation(s: ExecutionState, reservationId: string, reason: string, asOf: string): ExecutionState {
   return dispatch(s, { id: identity('CANCEL', reservationId), kind: 'CANCEL', reservationId, reason, asOf: budgetCycleTime(asOf) });
 }
+
+/** Internal sequential verifier. No supplied snapshot can become a proven prefix. */
+export function createExecutionReplay(initial:BudgetSnapshot,checkActive:()=>void) {
+  checkActive();let current:ExecutionState|null=initialExecutionState(initial);
+  const check=()=>{checkActive();requireBudget(current,'Execution replay is closed');};
+  const close=()=>{current=null;};
+  return Object.freeze({close,snapshot:():ExecutionState=>{check();return current!;},append:(input:ExecutionCommand):ExecutionState=>{
+    check();
+    try{
+      const c=immutable(input);requireBudget(c && typeof c==='object','D4 command required');let command:ExecutionCommand;
+      if(c.kind==='AUTHORIZE')command={id:identity('AUTHORIZE',c.authorization.state.asOf),kind:'AUTHORIZE',authorization:c.authorization};
+      else if(c.kind==='OPEN')command={id:identity('OPEN',budgetCycleTime(c.asOf)),kind:'OPEN',asOf:budgetCycleTime(c.asOf),
+        openings:[...c.openings].sort((a,b)=>a.asset<b.asset?-1:1),exits:[...c.exits].sort((a,b)=>a.id<b.id?-1:1)};
+      else if(c.kind==='CLOSE')command={id:identity('CLOSE',budgetCycleTime(c.asOf)),kind:'CLOSE',asOf:budgetCycleTime(c.asOf),candles:[...c.candles].sort((a,b)=>a.asset<b.asset?-1:1)};
+      else {requireBudget(c.kind==='CANCEL','Unsupported D4 command');command={id:identity('CANCEL',c.reservationId),kind:'CANCEL',asOf:budgetCycleTime(c.asOf),reservationId:c.reservationId,reason:c.reason};}
+      requireBudget(same(command,c),'Noncanonical replay command');
+      current=apply(current!,command);return current;
+    }catch(e){close();throw e;}
+  }});
+}

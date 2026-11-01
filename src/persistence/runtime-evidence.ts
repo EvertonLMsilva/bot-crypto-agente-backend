@@ -118,3 +118,51 @@ export function validateRuntimeOperation(g:GenesisInput,state:ExecutionState,p:O
   }
   requireBudget(same(p.evidence.runtime,createRuntimeEvidence(g,state,cursor)),'Missing/divergent runtime evidence');
 }
+
+/** Transaction-local market verifier: each confirmed command is consumed once. */
+export function createRuntimeReplay(g:GenesisInput,checkActive:()=>void) {
+  checkActive();const origin=immutable(g);validateRuntimeGenesis(origin);
+  const c=Object.hasOwn(origin.configuration,'runtime')?validateRuntimeConfiguration(origin.configuration.runtime!):null;
+  const clock=c?new SimulationClock(c.startTime):null,source=c?createMarketSource(clock!,c.provider):null;
+  const configHash=c?digest(c):null,history:Record<Asset,Candle[]>={BTC:[],ETH:[]};
+  let phase:ExecutionState['phase']='BEFORE_OPEN',processed=0,closed=false;
+  const check=()=>{checkActive();requireBudget(!closed,'Runtime replay is closed');};
+  const close=()=>{closed=true;};
+  function cursorCheck(state:ExecutionState,cursor:Cursor):void {
+    requireBudget(same(clock!.snapshot(),cursor.clock) && cursor.generator.confirmedSteps===clock!.snapshot().steps
+      && cursor.generator.seed===c!.provider.seed && cursor.generator.version===c!.provider.version
+      && cursor.asOf===clock!.snapshot().currentTime && cursor.phase===phase && state.phase===phase && state.asOf===cursor.asOf,'Impossible runtime cursor/phase');
+  }
+  function openingBoundary():{exhausted:boolean;openings:RuntimeSnapshot['openings']} {
+    try{return {exhausted:false,openings:source!.currentOpenings()};}catch(e){
+      if(!(e instanceof SourceExhaustedError) || c!.version!=='2' || phase!=='BEFORE_OPEN')throw e;
+      requireBudget(clock!.snapshot().steps===c!.provider.manifest.batches.length,'Unexpected fixture exhaustion');return {exhausted:true,openings:[]};
+    }
+  }
+  function evidence(cursor:Cursor):RuntimeEvidence {
+    const base={simulationId:origin.simulationId,configHash:configHash!,asOf:cursor.asOf,phase,confirmedSteps:clock!.snapshot().steps,
+      historyHash:digest(history),coordinatorState:cursor.coordinatorState};
+    return c!.version==='1'?immutable({...base,version:'1',provider:{id:c!.provider.id,version:c!.provider.version}}):
+      immutable({...base,version:'2',provider:{id:'fixture-market',version:'1',identity:c!.provider.identity,manifestHash:c!.provider.manifest.hash}});
+  }
+  return Object.freeze({close,append:(p:OperationPayload,state:ExecutionState,cursor:Cursor):void=>{
+    check();try{
+      if(!c){requireBudget(!Object.hasOwn(p.evidence,'runtime'),'Legacy D5 has no runtime origin');return;}
+      const command=p.command;
+      requireBudget(state.commands.length===processed+1 && same(state.commands.at(-1),command),'Nonsequential runtime replay');
+      if(command.kind==='OPEN'){
+        requireBudget(phase==='BEFORE_OPEN' && same(command.openings,source!.currentOpenings()),'Runtime opening differs from known provider boundary');phase='AFTER_OPEN';
+      }else if(command.kind==='CLOSE'){
+        requireBudget(phase==='AFTER_OPEN','Runtime close without confirmed opening');const batch=source!.next();
+        requireBudget(same(command.candles,batch),'Reproduced confirmed candle differs from provider');for(const candle of batch)history[candle.asset].push(candle);phase='BEFORE_OPEN';
+      }else {requireBudget(phase==='BEFORE_OPEN','Runtime authorization/cancellation outside boundary');if(command.kind==='AUTHORIZE')source!.currentOpenings();}
+      processed++;cursorCheck(state,cursor);openingBoundary();
+      requireBudget(same(p.evidence.runtime,evidence(cursor)),'Missing/divergent runtime evidence');
+    }catch(e){close();throw e;}
+  },snapshot:(state:ExecutionState,cursor:Cursor):RuntimeSnapshot|undefined=>{
+    check();if(!c)return undefined;cursorCheck(state,cursor);
+    requireBudget(processed===state.commands.length,'Incomplete runtime replay');const boundary=openingBoundary();
+    const base={...evidence(cursor),mode:'PAUSED' as const,authorizedAt:cursor.authorizedAt,history,warmup:warmupProgress(history,c.startTime),openings:boundary.openings};
+    return (c.version==='1'?immutable({...base,version:'1',configuration:c}):immutable({...base,version:'2',configuration:c,exhausted:boundary.exhausted})) as RuntimeSnapshot;
+  }});
+}

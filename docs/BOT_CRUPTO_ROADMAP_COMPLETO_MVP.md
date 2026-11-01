@@ -375,3 +375,15 @@ Evidências de SOURCE-001:42 testes novos;626 PASS/46 suítes,584 anteriores pre
 O bloqueio anterior por ausência de uma fonte pública de fixtures foi resolvido nesta entrega isolada. RUNTIME-003 permanece PARCIAL / BLOQUEADO PARA ACEITE INTEGRAL; gate de desempenho/replay ainda PENDENTE. Aquecimento operacional150h, negociação persistida, proteções/saídas/capital e equivalência integral contínua versus reiniciada ainda dependem dos cenários E2E não demonstrados. Não se reduzem scores, aquecimento ou verificações D5 para acelerá-los.
 
 Mantidos6 fases,67 tópicos e11/11 incrementos MVP-001 publicados; RUNTIME-001/002 publicados, RUNTIME-002 no SHA ffc2eecfbcf3ef7268a9cd870d6500f6fbbbcb65. Nenhum D6 ou novo tópico oficial criado. Este checkpoint atualiza a situação da extensão de fonte; os registros e contagens antigos permanecem históricos. Seis cenários oficiais, REQ-100 empírico, aprendizado e escritório3D continuam pendentes; MVP completo não concluído.
+
+## Checkpoint PERF-002 — desempenho de replay e escala ainda pendente
+
+BOT-CRYPTO-RUNTIME-003-PERF-002: IMPLEMENTADO LOCALMENTE / NÃO PUBLICADO; revisão independente pendente. Sessão privada de replay por transação, uma passagem financeira/causal por reconstrução e checkpoints comparados sequencialmente (DEC-067). Sem cache entre transações, bypass, migração ou alteração financeira. Histórico/hashes/recibos completos, rollback, concorrência e recuperação preservados.
+
+Evidências locais:657 PASS/47 suítes,639 anteriores preservados,18 novos e5 TODO preexistentes; cobertura diferencial100% (79/79), global99,49%, build PASS. Inclui testes reais de crash e concorrência. Totais incluem o E2E parcial local e não representam aprovação integral do RUNTIME-003. Oráculo adicional com cancelamento/posição/gap confirmou estado e ledger iguais ao baseline publicado, incluindo PnL negativo.
+
+Metas experimentais pareadas PASS: três processos por variante/cenário, mesma máquina, Node24.18.0/SQLite3.53.1, sem profiler. Mediana seeded ciclo15:4347,75→520,67ms (-88,02%); fixture1802 lotes/ciclo4:5893,44→1424,97ms (-75,82%). Hashes finais iguais nos pares; maior aumento RSS5,77% (limite20%). Não é SLA nem comprovação de1800 ciclos.
+
+Medições crescentes:16 e32 completos; alvo64 interrompido após40 ciclos por orçamento de tempo;128/1800 não executados. Limites:45s de avanço entre fronteiras, supervisor48s incluindo inicialização/retomada, RSS512MiB e banco/WAL/SHM256MiB. Custos residuais de sete reconstruções por ciclo, cópia/hash e checkpoints persistidos exigem novo gate. RUNTIME-003 permanece PARCIAL / ACEITE INTEGRAL BLOQUEADO; aquecimento operacional150h e negociação E2E integral continuam sem demonstração.
+
+Mantidos6 fases,67 tópicos, MVP-00111/11 publicado, RUNTIME-001/002 publicados e SOURCE-001 publicado no SHA3c8021b45ac237bb953463c0d47811a5ca4b2b13. Nenhum D6, novo tópico oficial ou conclusão antecipada do MVP completo. Conteúdo parcial anterior preservado integralmente.
