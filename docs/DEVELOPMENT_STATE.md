@@ -1,10 +1,10 @@
 # Checkpoint operacional
 
-LAST_UPDATED: 2026-10-31
+LAST_UPDATED: 2026-11-01
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: DURABLE_LOCAL_FINANCIAL_SIMULATION
-PHASE: MVP-001-D5 — SQLite transacional, ledger, idempotência e recuperação
+CURRENT_PHASE: PUBLISHED_COMPONENTS_OPERATIONAL_INTEGRATION_PENDING
+PHASE: MVP-001 — 11 incrementos publicados; integração operacional pendente
 MVP: FOUNDATION_THROUGH_D5_IMPLEMENTED; FULL_RUNTIME_LEARNING_FRONTEND_AND_EMPIRICAL_VALIDATION_PENDING
 IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_D4_AND_D5_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
@@ -58,7 +58,7 @@ SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D5
 SIMULATION: LOCAL_SPOT_EXECUTION_TEST_FIXTURES; NO_REAL_OPERATIONS; FULL_SCENARIO_RUNTIME_PENDING
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: INDEPENDENT_D5_REVIEW_AND_PUBLICATION_TASK; NO_AUTOMATIC_NEXT_PHASE
+NEXT: RECOMMENDED_DETERMINISTIC_BACKEND_INTEGRATION_CONTRACT_GATE; NOT_AN_APPROVED_INCREMENT; NO_AUTOMATIC_START
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
@@ -76,6 +76,19 @@ WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-CLOSURE-DOC-001 — DOCUMENTATION_ONLY.
+
+D5 publicado no SHA bd1159c7988f3d5332069b736578adcc49fc0f0d; sequência A–D5: 11/11 incrementos publicados. Checkpoint documental distingue publicação, contratos implementados e comportamento validado.
+
+Contratos A–D5 implementados e publicados; integração operacional ponta a ponta: **PENDENTE**. src/main.ts executa apenas smoke do gerador. Integrações D2–D5 existentes são parciais; testes E2E completos ainda ausentes. Permanecem pendentes de integração: inicialização unificada, aquecimento de histórico, contexto e políticas operacionais, ordenação causal de abertura/fechamento, saídas estratégicas automáticas e retomada coordenada após reinício.
+
+Evidências da entrega D5: 517 PASS / 40 suítes; crash e concorrência com processos reais; cobertura persistência 99,15%, global 99,37%; build PASS. Validam o escopo implementado, sem aprovação E2E de todo o backend. Nenhum teste/build repetido nesta tarefa documental.
+
+Seis cenários oficiais ainda não entregues; requisitos pendentes, aprendizado controlado, escritório 3D e REQ-100 empírico preservados. Replay síncrono cresce com histórico; durabilidade depende do armazenamento. Aprovação de requisitos não equivale a implementação ou validação operacional. MVP completo não concluído.
+
+Próxima frente recomendada: **INTEGRAÇÃO OPERACIONAL DETERMINÍSTICA DO BACKEND**, sem constituir incremento aprovado. Gate posterior deverá definir runtime unificado, inicialização/aquecimento, processamento causal, contexto/políticas, saídas estratégicas, retomada coordenada e E2E multicíclo com reinício. Nenhum novo código oficial de incremento é criado por este checkpoint.
+
+## MVP-001-D5 — registro histórico da implementação
 BOT-CRYPTO-MVP-001-D5 — IMPLEMENTATION / TDD.
 
 STATUS: DONE, aguardando revisão/commit. Preflight backend/master/472bc0a5bccd019e88df21386859cf7ab2375b65, worktree/staging limpos; Node24.18.0/node:sqlite/SQLite3.53.1 disponíveis. D4 publicado nesse SHA conforme tarefa. Sem dependência nova. Criados sete módulos persistence e seis arquivos de testes (incluindo crash-worker); modificados somente quatro arquivos D4 autorizados e cinco documentos, total22. D1/D2/D3.1/D3.2, fórmulas D4, relógio/gerador e frontend preservados.

@@ -1,8 +1,8 @@
 # 💹 BOT CRUPTO — Roadmap completo do MVP
 
-> **Atualizado em:** 31/10/2026
+> **Atualizado em:** 01/11/2026
 > **Projeto:** BOT CRUPTO — Backend, agentes, aprendizado, frontend 3D e validação integrada
-> **Referência da análise:** documentação do repositório `EvertonLMsilva/bot-crypto-agente-backend`, branch `master`, D4 publicado no commit `472bc0a5bccd019e88df21386859cf7ab2375b65`; D5 implementado localmente, aguardando revisão/commit.
+> **Referência da análise:** documentação do repositório `EvertonLMsilva/bot-crypto-agente-backend`, branch `master`, D5 publicado no commit `bd1159c7988f3d5332069b736578adcc49fc0f0d`; 11/11 incrementos publicados, integração operacional ponta a ponta pendente.
 
 Este documento cobre o **MVP completo do BOT CRUPTO**, incluindo backend, cinco agentes de IA, aprendizado autônomo controlado, escritório virtual 3D, simulação financeira e validação.
 
@@ -15,7 +15,7 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | Fase | Área | Situação |
 |---|---|---|
 | 0 | Planejamento e arquitetura | Base documental aprovada; pendências residuais |
-| 1 | Fundação e núcleo operacional | 10 publicados; D5 implementado, aguardando revisão/commit; MVP completo ainda pendente |
+| 1 | Fundação e núcleo operacional | 11/11 incrementos publicados; integração operacional e MVP completo ainda pendentes |
 | 2 | Escritório virtual 3D | Não iniciado |
 | 3 | Inteligência e cinco agentes especializados | Parcial — funções técnicas implementadas |
 | 4 | Orçamento, operações e aprendizado | Parcial — D4 e persistência financeira D5 locais implementados; runtime completo e aprendizado pendentes |
@@ -51,11 +51,11 @@ Os subcódigos `0.1`, `2.1`, `3.1`, `4.1` e `5.1` a seguir são uma **organizaç
 | D3.1 | Cálculos financeiros e avaliação de risco | **PUBLICADO — 74d66c80693f60f5ed656d3fa432f6b96b0dfe15** |
 | D3.2 | Autorizações e reservas | **PUBLICADO — 40b2c893d7955c9ca58ab53c438379c6815797d2** |
 | D4 | Execução simulada e proteções | **PUBLICADO — 472bc0a5bccd019e88df21386859cf7ab2375b65** |
-| D5 | Persistência, ledger e recuperação | **IMPLEMENTADO — AGUARDANDO REVISÃO/COMMIT** |
+| D5 | Persistência, ledger e recuperação | **PUBLICADO — bd1159c7988f3d5332069b736578adcc49fc0f0d** |
 
-**Progresso da sequência MVP-001 numerada:** **10 de 11 incrementos publicados (90,9%)**. Isso mede somente os incrementos listados, **não** o percentual de funcionalidades do MVP completo.
+**Progresso da sequência MVP-001 numerada:** **11 de 11 incrementos publicados (100%)**. Isso mede somente os incrementos listados, **não** o percentual de funcionalidades do MVP completo.
 
-Distribuição dos **11 incrementos**: **10 publicados** (A até D4), **1 implementado e não publicado** (D5) e **0 ainda não implementados nesta sequência**. D5 não será considerado publicado antes da confirmação de commit/push. Isso não encerra as fases posteriores do MVP completo.
+Distribuição dos **11 incrementos**: **11 publicados** (A até D5), **0 implementados e não publicados** e **0 ainda não implementados nesta sequência**. D5 publicado no SHA `bd1159c7988f3d5332069b736578adcc49fc0f0d`. Isso não encerra as fases posteriores do MVP completo.
 
 ### MVP-001-D3.1 — histórico da aprovação técnica e publicação
 
@@ -159,7 +159,7 @@ Limitações do componente D4: funções locais em memória, sem corretora/rede 
 
 ### MVP-001-D5 — persistência transacional, ledger e recuperação
 
-**IMPLEMENTADO — AGUARDANDO REVISÃO/COMMIT**, ainda não publicado. DEC-064 registra as escolhas técnicas expressamente adotadas pela tarefa. SQLite local via node:sqlite, sem ORM/dependências novas; Node24.18.0 e SQLite3.53.1 verificados. FK/WAL/FULL, timeout explícito limitado, extensões desabilitadas, SQL parametrizado e BEGIN IMMEDIATE. Schema1 versionado, migração inicial atômica, tabelas STRICT, PK/FK/UNIQUE e histórico protegido contra UPDATE/DELETE pelas APIs operacionais.
+**PUBLICADO — bd1159c7988f3d5332069b736578adcc49fc0f0d**. Situação anterior preservada como histórico: IMPLEMENTADO — AGUARDANDO REVISÃO/COMMIT. DEC-064 registra as escolhas técnicas expressamente adotadas pela tarefa. SQLite local via node:sqlite, sem ORM/dependências novas; Node24.18.0 e SQLite3.53.1 verificados. FK/WAL/FULL, timeout explícito limitado, extensões desabilitadas, SQL parametrizado e BEGIN IMMEDIATE. Schema1 versionado, migração inicial atômica, tabelas STRICT, PK/FK/UNIQUE e histórico protegido contra UPDATE/DELETE pelas APIs operacionais.
 
 DurableExecution expõe createSimulation, commitOperation, loadState, recover, close e suspendEntries. Genesis exige capital/configuração/versões/identidades explícitos; banco ausente nunca inventa saldo. Uma operação D4 inteira confirma eventos, lançamentos, recibo, revisão/cursor e checkpoint aplicável na mesma transação. Idempotência durável usa simulação/operationId e payload canônico; consulta recibo antes de negar revisão antiga. Mesmo ID divergente, revisão obsoleta de operação nova e reutilização de comando falham sem duplicar capital.
 
@@ -185,6 +185,16 @@ Extensão D4 pontual: CANCEL/cancelActiveReservation libera ACTIVE uma vez, com 
 Testes também cobrem rollback em quatro pontos, resposta perdida, reabertura real, liquidação/saída/cancelamento únicos, checkpoints/corrupção/lacunas/duplicatas, dinheiro acima de2^53, PnL negativo, virada UTC, abertura sem fechamento e proteção preservada em suspensão. Todos os bancos de teste são temporários fora do repositório. Não são testes de perda física de energia nem prova de rentabilidade.
 
 Limitações: durabilidade depende de disco/VFS/flush/locks locais; sem garantia absoluta contra hardware defeituoso ou edição administrativa. API síncrona e replay completo crescem com o histórico, sem SLA/compactação. Sem backup, migração para schema futuro, compensação financeira arbitrária ou restauração direta do PRNG privado. Runtime autônomo, gatilhos automáticos de saída, aprendizado, frontend3D e validação empírica continuam pendentes. Sem corretoras, dinheiro real ou dados financeiros externos. Nenhuma fase posterior é iniciada automaticamente e o MVP completo não está finalizado.
+
+### Checkpoint de encerramento documental da sequência MVP-001
+
+Contratos A–D5 implementados e publicados; integração operacional ponta a ponta: **PENDENTE**. src/main.ts executa apenas smoke do gerador. Integrações D2–D5 existentes são parciais; testes E2E completos ainda ausentes. Permanecem pendentes de integração: inicialização unificada, aquecimento de histórico, contexto e políticas operacionais, ordenação causal de abertura/fechamento, saídas estratégicas automáticas e retomada coordenada após reinício.
+
+As evidências da entrega D5 — 517 PASS / 40 suítes, crash e concorrência com processos reais, cobertura de persistência 99,15%, global 99,37% e build PASS — validam o escopo implementado; não representam aprovação E2E de todo o backend. Testes/build não foram repetidos nesta atualização documental.
+
+Publicação dos 11 incrementos não conclui o MVP completo nem converte requisitos aprovados em comportamentos operacionalmente validados. Seis cenários oficiais ainda não entregues, aprendizado controlado, escritório 3D e REQ-100 empírico permanecem pendentes. Limitações de replay síncrono e durabilidade condicionada ao armazenamento permanecem vigentes.
+
+Próxima frente recomendada: **INTEGRAÇÃO OPERACIONAL DETERMINÍSTICA DO BACKEND**, sem constituir incremento aprovado. Gate posterior deverá definir runtime unificado, inicialização/aquecimento, processamento causal, contexto/políticas, saídas estratégicas, retomada coordenada e E2E multicíclo com reinício. Nenhum novo código oficial de incremento é criado por este checkpoint.
 
 ## Fase 2 — Escritório virtual 3D
 
@@ -213,7 +223,7 @@ A arquitetura aprovada prevê **exatamente cinco agentes lógicos**: Analista Ce
 | 3.4 | Especialista BTC — execução autônoma do ciclo de análise | Matemática pronta; runtime pendente |
 | 3.5 | Especialista ETH — análise e memória independentes | Matemática pronta; runtime pendente |
 | 3.6 | Coordenador — receber decisões e encaminhar oportunidades | Ordenação D2 pronta; integração pendente |
-| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Autorização pura e reservas em memória D3.2; runtime/persistência pendentes |
+| 3.7 | Gestor de Orçamento — receber pedidos e aplicar limites | Autorização pura D3.2 e persistência D5 publicadas; integração do runtime pendente |
 | 3.8 | Políticas e estratégias versionadas por agente | Parcial |
 | 3.9 | Estados operacionais e comunicação entre agentes | Pendente |
 | 3.10 | Ativação controlada do componente histórico H após validação | Pendente |
