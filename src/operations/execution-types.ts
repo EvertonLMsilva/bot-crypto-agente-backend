@@ -37,6 +37,7 @@ export interface ExecutionAudit {
   readonly before: BudgetSnapshot; readonly after: BudgetSnapshot; readonly fillId: string | null;
 }
 export type ExecutionCommand =
+  | { readonly id: string; readonly kind: 'CANCEL'; readonly asOf: string; readonly reservationId: string; readonly reason: string }
   | { readonly id: string; readonly kind: 'AUTHORIZE'; readonly authorization: AuthorizationResult }
   | { readonly id: string; readonly kind: 'OPEN'; readonly asOf: string; readonly openings: readonly OpeningEvent[]; readonly exits: readonly ExitRequest[] }
   | { readonly id: string; readonly kind: 'CLOSE'; readonly asOf: string; readonly candles: readonly Candle[] };

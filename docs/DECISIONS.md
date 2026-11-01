@@ -1762,3 +1762,36 @@ BOT-CRYPTO-MVP-001-A; REQ-020, REQ-057, REQ-059, REQ-080, REQ-081, REQ-095; DEC-
 
 SUBSTITUI:
 Não se aplica; registra aprovação ARCH-001 recebida nesta tarefa e concretiza somente o incremento autorizado. Propostas históricas tecnológicas permanecem preservadas como histórico, com aprovação atual limitada aos termos acima.
+
+## DEC-064
+ID: DEC-064
+DATA: 2026-10-31
+TÍTULO: MVP-001-D5 — persistência financeira local transacional e recuperação
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-MVP-001-D5 autoriza expressamente os contratos do D5-CONTRACT-GATE, SQLite nativo e a extensão pontual de cancelamento D4. Baseline master/472bc0a5bccd019e88df21386859cf7ab2375b65. Não altera regras financeiras, critérios LEARN ou decisões históricas.
+
+DECISÃO:
+- SQLite local em disco via node:sqlite/DatabaseSync, sem ORM/dependência nova. Ambiente verificado Node24.18.0, SQLite3.53.1; package engines24/npm11 preservado. Caminho absoluto e criação explícitos; banco ausente não cria capital. busyTimeoutMs obrigatório entre0 e5000ms (2000ms nos testes).
+- Conexão exige foreign_keys=ON, journal_mode=WAL, synchronous=FULL e extensões desabilitadas, com leitura dos pragmas para confirmar aplicação. Queries de dados parametrizadas. Escritores adquirem BEGIN IMMEDIATE; revisão otimista e cursor lógico complementam a serialização SQLite, sem mutex como garantia durável.
+- Schema1 em tabelas STRICT: simulations, operations, events, postings, checkpoints, runtime_control, schema_migrations. PK/FK/UNIQUE, incluindo simulação/operação e simulação/comando. Migração inicial transacional, user_version1 e checksum SHA256 do DDL; versão futura/checksum incompatível falha explicitamente. Triggers proíbem UPDATE/DELETE do histórico pelas APIs normais. Não há API de compensação financeira arbitrária nesta entrega.
+- Genesis exige identidade, snapshot financeiro válido, engineVersion D4-472bc0a5-D5-cancel-v1, preferência D2 e metadados de relógio/gerador explícitos. Configuração e genesis são parte do histórico confirmado, nunca inferidos de saldo padrão ou checkpoint isolado.
+- Cada operação D4 inteira grava recibo, eventos, lançamentos, head/cursor e checkpoint aplicável na mesma transação. Só retorna após COMMIT. Rollback elimina preparações parciais; resposta perdida após COMMIT é resolvida por simulação/operationId e payload canônico, antes da comparação de revisão antiga. Payload divergente e nova operação com revisão obsoleta falham.
+- Ledger usa sequência por simulação e IDs derivados de simulação/operação/ordinal; IDs D4 permanecem referências, sem presumir unicidade global. Hashes SHA256 encadeiam conteúdo canônico e origem anterior. Valores financeiros TEXT canônico8 e aritmética bigint; nenhum REAL ou soma decimal SQLite. Eventos de negócio D4 e evento de reconciliação são distintos dos lançamentos balanceados de caixa disponível/reservado, posições marcadas e contrapartidas de capital/PnL. Taxas já contidas no custo/PnL não recebem segundo débito.
+- Snapshot de fechamento é derivado do prefixo confirmado, com sequência/hash/revisão/schema e cursor. Recuperação reconstrói pelo D4 e compara exatamente eventos, lançamentos, recibos, estado, checkpoints e controles; nunca substitui o ledger por checkpoint inconsistente. Cauda confirmada, inclusive abertura sem fechamento, é preservada.
+- Controle de saúde é separado do estado financeiro inicial D4. Abrir processo registra RECOVERING e bloqueia novas entradas. Ledger/recibos/lançamentos/head inconsistentes geram MANUAL_REVIEW_REQUIRED; checkpoint divergente com ledger íntegro gera ENTRY_SUSPENDED. RUNNING só após replay/reconciliação completos. Suspensão explícita permanece até recover com retomada expressa e nova validação. Se o bloqueio não puder ser gravado, o processo permanece bloqueado localmente.
+- D5 persiste a evidência D2 e rodízio, UTC/fase, fechamento/abertura e seed/versão/passos confirmados fornecidos pelo chamador. Abertura exige etapa de autorização selada, inclusive lote sem entradas. Não reordena BTC/ETH, gera mercado futuro ou expira pelo tempo real de desligamento.
+- Extensão D4 autorizada: comando CANCEL/cancelActiveReservation, ID determinístico por reserva, motivo e fronteira explícitos, somente ACTIVE em BEFORE_OPEN. Libera uma vez, sem relógio artificial, alteração de posição executada ou mudança de fill/stop/take/PnL. ENTRY_SUSPENDED permite cancelamento e proteção/saída sobre estado reconciliado; não permite nova entrada nem abertura com reserva ACTIVE ainda pendente.
+
+JUSTIFICATIVA:
+Concretizar DEC-025/061 com mecanismos duráveis locais, preservando o executor financeiro publicado e as evidências originais. Estado confirmado vem do histórico completo; controles e checkpoints não autorizam reconstrução fictícia.
+
+IMPACTOS:
+API DurableExecution: createSimulation, commitOperation, loadState, recover, close e suspendEntries.517 testes/40 suítes PASS,476 anteriores preservados,41 novos incluindo a extensão D4; testes reais de processo/crash/concorrência. Linhas persistência99,15%, extensão D4 coberta100%, global99,37%; build PASS. Não certifica hardware nem operação real. WAL/FULL depende de disco/VFS/flush/locks corretos; sem garantia absoluta contra falha física, edição administrativa do banco ou perda de todos os dados. Validação percorre histórico e usa API síncrona: sem SLA/otimização de grande escala. Runtime autônomo, fontes reais, aprendizado, interface3D e REQ-100 empírico continuam pendentes.
+
+REFERÊNCIAS:
+DEC-025,029,054,056,059,060,061,063; REQ-040/042/043/056/069/070/096/098. Documentação: https://nodejs.org/download/release/v24.18.0/docs/api/sqlite.html ; https://sqlite.org/lang_transaction.html ; https://www.sqlite.org/pragma.html#pragma_synchronous .
+
+SUBSTITUI:
+Não se aplica; detalha implementação técnica autorizada sem substituir decisões aprovadas.

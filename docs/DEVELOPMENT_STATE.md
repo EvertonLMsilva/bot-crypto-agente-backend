@@ -3,10 +3,10 @@
 LAST_UPDATED: 2026-10-31
 PROJECT: BOT CRUPTO
 DIRECTORY: D:\04-Projetos\30-bot-crypto-agence\backend
-CURRENT_PHASE: LOCAL_SIMULATED_SPOT_EXECUTION
-PHASE: MVP-001-D4 — execução spot simulada e proteções em memória
-MVP: FOUNDATION_THROUGH_D4_LOCAL_EXECUTION_IMPLEMENTED; DURABILITY_AND_RUNTIME_INTEGRATION_PENDING
-IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_AND_D4_IMPLEMENTED_ONLY
+CURRENT_PHASE: DURABLE_LOCAL_FINANCIAL_SIMULATION
+PHASE: MVP-001-D5 — SQLite transacional, ledger, idempotência e recuperação
+MVP: FOUNDATION_THROUGH_D5_IMPLEMENTED; FULL_RUNTIME_LEARNING_FRONTEND_AND_EMPIRICAL_VALIDATION_PENDING
+IMPLEMENTATION: MVP_001_A_B_C1_C2_C3_D1_D2_D3_1_D3_2_D4_AND_D5_IMPLEMENTED_ONLY
 CENTRALIZED_BUDGET: APPROVED
 BUDGET_POLICY: APPROVED
 FINANCIAL_POLICY: APPROVED
@@ -47,34 +47,52 @@ ARCHITECTURE: MINIMAL_APPROVED_DEC_063; FOUNDATION_INDICATORS_HOURLY_TECHNICAL_A
 MARKET_DATA: SIMULATED_FIRST
 CENTRAL_INTELLIGENCE: CONCEPT_APPROVED
 SPECIALIST_AGENTS: CONCEPT_APPROVED
-COORDINATOR: PURE_BATCH_ORDERING_IMPLEMENTED; AUTONOMOUS_QUEUE_AND_PERSISTENCE_NOT_IMPLEMENTED
+COORDINATOR: PURE_BATCH_ORDERING_AND_D5_ROTATION_EVIDENCE_PERSISTENCE_IMPLEMENTED; AUTONOMOUS_QUEUE_PENDING
 LEARNING: CONTROLLED_AUTONOMOUS_APPROVED
 PROMOTION_GATES: INITIAL_PARAMETERS_APPROVED
 TRADING_POLICY: MVP_FUNCTIONAL_SPEC_APPROVED; TECHNICAL_IMPLEMENTATION_PENDING
-TESTS: PASS_476_TESTS_35_SUITES; 53_NEW_AND_423_PRESERVED
-COVERAGE_LINES: 100_PERCENT_NEW_D4_EXECUTION; 99.41_PERCENT_GLOBAL
+TESTS: PASS_517_TESTS_40_SUITES; 41_NEW_AND_476_PRESERVED
+COVERAGE_LINES: 99.15_PERCENT_PERSISTENCE; 100_PERCENT_D4_EXTENSION; 99.37_PERCENT_GLOBAL
 BUILD: PASS
-SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D4
+SMOKE: MVP_001_A_HISTORICAL_PASS; NOT_RERUN_MVP_001_D5
 SIMULATION: LOCAL_SPOT_EXECUTION_TEST_FIXTURES; NO_REAL_OPERATIONS; FULL_SCENARIO_RUNTIME_PENDING
 NODE_VERSION: v24.18.0
 NPM_VERSION: 11.16.0
-NEXT: D5_REQUIRES_EXPLICIT_TASK; NO_AUTOMATIC_START
+NEXT: INDEPENDENT_D5_REVIEW_AND_PUBLICATION_TASK; NO_AUTOMATIC_NEXT_PHASE
 ARCH_001: APPROVED_DEC_063
 REQ_093_100: APPROVED_SPEC; REQ_095_MATH_AND_C3_COMPOSITION_IMPLEMENTED; OPERATIONAL_REMAINDER_PENDING
 REQ_091_095: INDICATOR_MATH_AND_HOURLY_TIMEFRAME_IMPLEMENTED; REMAINING_DEPENDENTS_PENDING
-REQ_061_080: ENTRY_PROPOSAL_WAIT_AND_LOCAL_ENTRY_AUTHORIZATION_IMPLEMENTED; DURABLE_FINANCIAL_INTEGRATION_PENDING
+REQ_061_080: ENTRY_PROPOSAL_WAIT_AND_DURABLE_LOCAL_EXECUTION_IMPLEMENTED; FULL_RUNTIME_INTEGRATION_PENDING
 REQ_083_085: THREE_TECHNICAL_FAMILIES_EXACT_TRIGGERS_AND_T_IMPLEMENTED; C2_NUMBER_T_DIAGNOSTIC_ONLY; NO_ORDERS
 SIGNAL_COMPOSITION_C3: EXACT_T_R_C_A_H0_S_AND_PURE_SELECTION_IMPLEMENTED; D1_WRAPS_PROPOSAL_WITHOUT_ORDERS
 OPERATIONS_D1: POSITION_VIEW_GUARD_ENTRY_CANDIDATE_WAIT_AND_MEMORY_AUDIT_IMPLEMENTED; EXIT_EVALUATION_PENDING_FOR_OPEN
 COORDINATION_D2: VALIDATED_D1_BATCH_PRIORITY_DUPLICATES_AND_EXPLICIT_ROTATION_IMPLEMENTED; NO_FINANCIAL_EFFECTS
 BUDGET_D3_1: EXACT_FIXED8_QUOTE_AND_LIMITS_IMPLEMENTED; NOT_AUTHORIZED_NOT_RESERVED_NOT_EXECUTED
 BUDGET_D3_2: LOCAL_SEQUENTIAL_AUTHORIZATION_RESERVATIONS_AND_RELEASE_IMPLEMENTED; NOT_EXECUTED_NOT_PERSISTED
-REQ_096: EXACT_ADVISORY_QUOTE_AND_LOCAL_RESERVATION_ARITHMETIC_IMPLEMENTED; OFFICIAL_ACCOUNTING_LEDGER_AND_RECOVERY_PENDING
-EXECUTION_D4: LOCAL_FULL_FILLS_SETTLEMENT_FIXED_PROTECTIONS_AND_FINANCIAL_ACCOUNTING_IMPLEMENTED; NOT_PERSISTED
+REQ_096: EXACT_ARITHMETIC_AND_LOCAL_DURABLE_LEDGER_IMPLEMENTED; FULL_RUNTIME_VALIDATION_PENDING
+EXECUTION_D4: LOCAL_FULL_FILLS_SETTLEMENT_FIXED_PROTECTIONS_AND_FINANCIAL_ACCOUNTING_IMPLEMENTED; D5_DURABLE_WRAPPER_AVAILABLE
+PERSISTENCE_D5: SQLITE_SCHEMA_1_WAL_FULL_FK_IMMEDIATE_TRANSACTIONS_REPLAY_AND_FAIL_CLOSED_IMPLEMENTED
 WARMUP: INFORMATIONAL_150_CONTINUOUS_VALID_HOURS; NOT_OPERATIONAL_AUTHORIZATION
 REQ_100_EVIDENCE: NOT_EXECUTED/PENDING_VERIFICATION
 
 ## Última tarefa
+BOT-CRYPTO-MVP-001-D5 — IMPLEMENTATION / TDD.
+
+STATUS: DONE, aguardando revisão/commit. Preflight backend/master/472bc0a5bccd019e88df21386859cf7ab2375b65, worktree/staging limpos; Node24.18.0/node:sqlite/SQLite3.53.1 disponíveis. D4 publicado nesse SHA conforme tarefa. Sem dependência nova. Criados sete módulos persistence e seis arquivos de testes (incluindo crash-worker); modificados somente quatro arquivos D4 autorizados e cinco documentos, total22. D1/D2/D3.1/D3.2, fórmulas D4, relógio/gerador e frontend preservados.
+
+DEC-064 registra decisões técnicas adotadas expressamente: SQLite local sem ORM, path/create explícitos, FK/WAL/FULL, timeout obrigatório limitado, extensões desabilitadas, SQL parametrizado, BEGIN IMMEDIATE e revisão otimista. Schema1 STRICT/versionado com sete tabelas, unicidade por simulação/operação/comando, hash SHA256 e triggers append-only. Valores financeiros TEXT canônico e bigint, sem REAL ou soma decimal SQL.
+
+DurableExecution expõe createSimulation/commitOperation/loadState/recover/close e suspendEntries. Genesis tem capital/configuração/versões explícitos. Cada operação D4 grava em uma transação eventos, lançamentos balanceados, recibo, revisão/cursor e checkpoint aplicável. Replay de ID/payload confirmado retorna o recibo mesmo com revisão antiga; divergência e nova revisão obsoleta falham. Identidades D4 permanecem referenciadas; IDs do ledger derivam de simulação/operação/ordinal. Caixa, reservas, posições, marcas, taxas, patrimônio e PnL são reconciliados pelo executor publicado.
+
+Processo abre em RECOVERING; valida ledger, recibos, lançamentos, head, cursor e checkpoints antes de RUNNING. Ledger inconsistente gera MANUAL_REVIEW_REQUIRED; checkpoint divergente com ledger íntegro gera ENTRY_SUSPENDED. Nenhum checkpoint substitui histórico confirmado. Bloqueio local permanece se não puder ser persistido. Rodízio D2, fases UTC e metadata de seed/versão/passos do gerador são preservados; não há avanço real/futuro, preenchimento de preços faltantes ou expiração pelo tempo real de desligamento.
+
+Extensão D4 restrita a CANCEL/cancelActiveReservation: ACTIVE→RELEASED, motivo/fronteira/ID explícitos, crédito único e sem alterar posição executada ou relógio. Permite cancelar reservas de entrada antes de processar proteções em ENTRY_SUSPENDED. Repetição idêntica não duplica liberação; SETTLED e payload divergente são rejeitados.
+
+Evidências reais: RED de cinco suítes por persistence ausente e RED específico do cancelamento D4; GREEN517 testes/40 suítes,476 anteriores preservados e41 novos. Focados55 PASS em seis suítes. npm run test:coverage PASS; linhas persistence99,15%, extensão D4 coberta100%, global99,37%, gate diferencial95% atendido. npm run build PASS. Crash real de processos antes/depois do COMMIT, resposta perdida, reabertura e dois testes concorrentes em processos distintos passaram. Também testados rollback em quatro pontos, corrupção/hash/lacuna/duplicata/lançamento/checkpoint, migração inicial/futura rejeitada, dinheiro além de2^53, PnL negativo, virada UTC e proteção preservada com entradas suspensas.
+
+Limitações: bancos temporários isolados fora do repositório; nenhum banco financeiro versionado. Testes de encerramento abrupto não são certificação de falha elétrica/hardware. Durabilidade depende do disco/VFS/flush/locks; hash não é autenticação externa. Validação/replay percorrem histórico e a API é síncrona, sem SLA/compactação. Sem backup, compensações arbitrárias, schema futuro, restauração direta do PRNG privado, runtime autônomo ou operações reais. REQ-100 empírico e fases posteriores continuam pendentes; D5 não publicado. Sem staging/commit/push ou início automático de outra fase.
+
+## MVP-001-D4 — registro histórico
 BOT-CRYPTO-MVP-001-D4 — IMPLEMENTATION / TDD.
 
 STATUS: DONE, aguardando revisão e commit. Preflight master/40b2c893d7955c9ca58ab53c438379c6815797d2, worktree/staging limpos, Node v24.18.0/npm11.16.0. D3.2 publicado nesse SHA conforme tarefa. Criados seis módulos operations e quatro testes autorizados; modificados somente operations/index.ts e três documentos. D1/D2/D3.1/D3.2, relógio, dependências e frontend preservados. Nenhum staging/commit/push.

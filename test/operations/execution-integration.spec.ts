@@ -4,6 +4,7 @@ import { BudgetSnapshot, ClosedPriceReference } from '../../src/budget/types';
 import { coordinateEntryBatch, CoordinationResult } from '../../src/coordination';
 import { DecisionEnvelope } from '../../src/operations/types';
 import { SignalAssessment } from '../../src/signals/types';
+import { cancelActiveReservation } from '../../src/operations';
 export const at='2026-01-01T01:00:00.000Z';
 export function batch(asset:'BTC'|'ETH'='BTC',asOf=at):CoordinationResult{
   const q=(n:number)=>({numerator:String(n),denominator:'1'}),policyId=`${asset}-P0`;
@@ -74,4 +75,12 @@ test('signed positive profit is reconciled without changing frozen protections',
  const s=processOpening(reserved(),openings(),[],at),r=processClosedCandle(s,candles('104.00000000','105.00000000','99.00000000'),next);
  expect(r.realizedPnl.startsWith('-')).toBe(false);expect(r.positions[0]!.stop).toEqual(s.positions[0]!.stop);expect(r.positions[0]!.take).toEqual(s.positions[0]!.take);
  expect(r.realizedPnl).toBe('37.45924026');expect(r.portfolio.equity).toBe('10037.45924026');
+});
+test('explicit cancellation is terminal, audited and releases exactly once without advancing time',()=>{
+ const s=reserved(),id=s.reservations[0]!.source.id,r=cancelActiveReservation(s,id,'ENTRY_SUSPENDED',at);
+ expect(r.portfolio.availableCash).toBe('10000.00000000');expect(r.reservations[0]!.status).toBe('RELEASED');expect(r.asOf).toBe(at);
+ expect(cancelActiveReservation(r,id,'ENTRY_SUSPENDED',at)).toEqual(r);
+ expect(()=>cancelActiveReservation(r,id,'OTHER_REASON',at)).toThrow(RangeError);
+ const filled=processOpening(s,openings(),[],at);expect(()=>cancelActiveReservation(filled,id,'ENTRY_SUSPENDED',at)).toThrow(RangeError);
+ expect(()=>cancelActiveReservation(s,id,'ENTRY_SUSPENDED',next)).toThrow(RangeError);
 });

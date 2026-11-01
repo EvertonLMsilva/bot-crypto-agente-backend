@@ -117,7 +117,12 @@ function closed(s: ExecutionState, command: Extract<ExecutionCommand, {kind: 'CL
 function apply(s: ExecutionState, command: ExecutionCommand): ExecutionState {
   requireBudget(!s.commands.some(c => c.id === command.id), 'Duplicate execution command');
   let next: ExecutionState;
-  if (command.kind === 'AUTHORIZE') {
+  if (command.kind === 'CANCEL') {
+    requireBudget(command.id === identity('CANCEL', command.reservationId) && budgetCycleTime(command.asOf) === s.asOf
+      && s.phase === 'BEFORE_OPEN' && typeof command.reason === 'string' && /^[A-Z][A-Z_]*$/.test(command.reason), 'Invalid cancellation identity/frontier/reason');
+    requireBudget(s.reservations.some(r => r.source.id === command.reservationId && r.status === 'ACTIVE'), 'Only the identified ACTIVE reservation may be cancelled');
+    next = release(s, command.reservationId, command.reason);
+  } else if (command.kind === 'AUTHORIZE') {
     requireBudget(command.id === identity('AUTHORIZE', command.authorization.state.asOf), 'Invalid authorization command identity');
     next = adoptAuthorizations(s, command.authorization);
   } else if (command.kind === 'OPEN') {
@@ -157,3 +162,6 @@ export function processClosedCandle(s: ExecutionState, candles: readonly Candle[
     candles: [...candles].sort((a, b) => a.asset < b.asset ? -1 : 1) });
 }
 export function projectExecutionBudget(s: ExecutionState): BudgetSnapshot { return budgetProjection(validateExecutionState(s)); }
+export function cancelActiveReservation(s: ExecutionState, reservationId: string, reason: string, asOf: string): ExecutionState {
+  return dispatch(s, { id: identity('CANCEL', reservationId), kind: 'CANCEL', reservationId, reason, asOf: budgetCycleTime(asOf) });
+}

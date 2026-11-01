@@ -256,3 +256,16 @@ REQ-093 a REQ-100 preservadas integralmente. A indicação residual OPS-003 exis
 Preservados DEC-016/LEARN-GATE, SIGNAL-001 a SIGNAL-005, DEC-020 a DEC-025/OPS-002, exposição20%/40%, risco1%/2%, perda diária3%, stop2%, take4%, taxa0,10%, slippage0,05%, S>=70 e V1/V2/V3. Alvo10% e margem de reserva1% não alteram limites nem autorizam execução acima deles. REQ-100 operacional/empírica NOT_EXECUTED/PENDING_VERIFICATION.
 
 Próxima etapa ARCH-001 — arquitetura mínima executável; após ela MVP-001 — implementação incremental. Detalhes LEARN e evidências serão tratados quando necessários; não iniciar outro ciclo de especificação sem bloqueio concreto. Contratos técnicos reservados a ARCH-001, sem escolher tecnologia aqui. IMPLEMENTATION: NOT_STARTED; TESTS / SIMULATION: NOT_EXECUTED.
+
+## Situação de implementação — MVP-001-D5 / DEC-064
+
+O parágrafo anterior é registro histórico da especificação. D5 implementa persistência financeira local da simulação sobre D4, sem alterar status de aprovação ou critérios das tabelas canônicas.
+
+| Requisitos relacionados | Entrega verificada D5 | Limites restantes |
+|---|---|---|
+| REQ-040/042 | SQLite transacional, eventos append-only, lançamentos exatos balanceados, recibos idempotentes e checkpoints derivados | Runtime completo, integração de todos os históricos de agentes e rotina operacional ainda pendentes |
+| REQ-043/047/068/069 | Identidades persistentes, liquidação/saída/cancelamento sem duplicação; cancelamento ACTIVE explícito no D4 | Nenhuma mudança em limites, cálculos financeiros ou validade; não autoriza operação real |
+| REQ-056/057/070 | Replay confirmado após reinício, cursor UTC/rodízio D2/metadata de gerador, reconciliação e estados fail-closed | Não fabrica mercado ausente nem implementa o runtime autônomo completo ou reconstrução de estados LEARN |
+| REQ-096/098 | TEXT canônico/bigint, transação por lote D4, fases e base diária verificadas | Persistência não altera arredondamentos, proteções ou decisões; sem evidência empírica REQ-100 |
+
+Evidências:517 testes/40 suítes PASS,476 anteriores e41 novos; crash real antes/depois do COMMIT, duas escritas concorrentes em processos separados, reabertura, recuperação de posições/proteções, corrupção e checkpoints. Cobertura das linhas de persistência99,15%, extensão D4 coberta100%, global99,37%; build PASS. Não equivalem a aceitação integral do MVP ou testes físicos de perda de energia. Requisitos pendentes e aprovações históricas preservados; D5 aguarda revisão/commit.
