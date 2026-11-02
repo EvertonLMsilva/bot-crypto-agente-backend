@@ -107,16 +107,22 @@ export function reconstructRuntime(g:GenesisInput,state:ExecutionState,cursor:Cu
 
 export function createRuntimeEvidence(g:GenesisInput,state:ExecutionState,cursor:Cursor):RuntimeEvidence {
   const snapshot=reconstructRuntime(g,state,cursor);requireBudget(snapshot,'Runtime configuration required');
+  return snapshotEvidence(snapshot);
+}
+
+function snapshotEvidence(snapshot:RuntimeSnapshot):RuntimeEvidence {
   const {version,simulationId,configHash,provider,asOf,phase,confirmedSteps,historyHash,coordinatorState}=snapshot;
   const evidence={version,simulationId,configHash,provider,asOf,phase,confirmedSteps,historyHash,coordinatorState};
   return immutable(evidence) as RuntimeEvidence;
 }
 
-export function validateRuntimeOperation(g:GenesisInput,state:ExecutionState,p:OperationPayload,cursor:Cursor):void {
+export function validateRuntimeOperation(g:GenesisInput,state:ExecutionState,p:OperationPayload,cursor:Cursor):RuntimeSnapshot|undefined {
   if(!Object.hasOwn(g.configuration,'runtime')){
     requireBudget(!Object.hasOwn(p.evidence,'runtime'),'Legacy D5 has no runtime origin');return;
   }
-  requireBudget(same(p.evidence.runtime,createRuntimeEvidence(g,state,cursor)),'Missing/divergent runtime evidence');
+  const snapshot=reconstructRuntime(g,state,cursor)!;
+  requireBudget(same(p.evidence.runtime,snapshotEvidence(snapshot)),'Missing/divergent runtime evidence');
+  return snapshot;
 }
 
 /** Transaction-local market verifier: each confirmed command is consumed once. */

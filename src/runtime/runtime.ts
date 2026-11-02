@@ -85,8 +85,11 @@ export class SimulationRuntime {
         clock:{startTime:config.startTime,currentTime:config.startTime,steps:0},generator:{version:config.provider.version,seed:config.provider.seed,confirmedSteps:0},runtime:config}};
     const payload:OperationPayload={command,evidence:{coordinator,clock,generator,runtime:createRuntimeEvidence(origin,next,cursor)}};
     const operationId='runtime-'+createHash('sha256').update(canonical([config.simulationId,command.id])).digest('hex');
-    const receipt=this.store.commitOperation({simulationId:config.simulationId,operationId,expectedRevision:before.control.revision,payload:canonical(payload)});
-    this.current=this.store.loadState(config.simulationId);
+    const result=this.store.commitOperationWithSnapshot({simulationId:config.simulationId,operationId,expectedRevision:before.control.revision,payload:canonical(payload)});
+    const receipt=result.receipt;
+    // An old receipt may lack a corresponding snapshot. Reconstruct safely;
+    // never attach a newer head to that receipt or continue from it silently.
+    this.current=result.snapshot??this.store.loadState(config.simulationId);
     requireBudget(this.current.control.revision===receipt.revision,'Concurrent runtime advancement beyond confirmed receipt');
   }
   advanceCycle(expectedRevision:string):OperationalSnapshot {

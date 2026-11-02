@@ -62,6 +62,13 @@ export interface Control {
   readonly stateHash: string; readonly cursor: Cursor; readonly reason: string;
 }
 export interface LoadedState { readonly state: ExecutionState; readonly control: Control; readonly runtime?:RuntimeSnapshot }
+/** A committed revision, never a promise that this is still the latest head.
+ * Old idempotent receipts retain their identity; snapshot is null when that
+ * revision cannot be certified by the current full reconstruction. */
+export interface CommitSnapshot {
+  readonly simulationId:string; readonly revision:string; readonly receipt:Receipt;
+  readonly disposition:'COMMITTED'|'REPLAY'; readonly snapshot:LoadedState|null;
+}
 export interface StoreOptions { readonly create?: boolean; readonly busyTimeoutMs: number; readonly fault?: (point: string) => void }
 export interface LedgerEvent {
   readonly seq: string; readonly eventId: string; readonly operationId: string; readonly ordinal: string;

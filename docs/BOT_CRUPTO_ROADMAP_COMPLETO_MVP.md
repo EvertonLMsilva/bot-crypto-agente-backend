@@ -387,3 +387,14 @@ Metas experimentais pareadas PASS: três processos por variante/cenário, mesma 
 Medições crescentes:16 e32 completos; alvo64 interrompido após40 ciclos por orçamento de tempo;128/1800 não executados. Limites:45s de avanço entre fronteiras, supervisor48s incluindo inicialização/retomada, RSS512MiB e banco/WAL/SHM256MiB. Custos residuais de sete reconstruções por ciclo, cópia/hash e checkpoints persistidos exigem novo gate. RUNTIME-003 permanece PARCIAL / ACEITE INTEGRAL BLOQUEADO; aquecimento operacional150h e negociação E2E integral continuam sem demonstração.
 
 Mantidos6 fases,67 tópicos, MVP-00111/11 publicado, RUNTIME-001/002 publicados e SOURCE-001 publicado no SHA3c8021b45ac237bb953463c0d47811a5ca4b2b13. Nenhum D6, novo tópico oficial ou conclusão antecipada do MVP completo. Conteúdo parcial anterior preservado integralmente.
+
+
+## Checkpoint PERF-003 — snapshots confirmados e gate experimental
+
+PERF-003 IMPLEMENTADO LOCALMENTE / NÃO PUBLICADO (DEC-068). API aditiva de recibo/snapshot imutável após COMMIT; revisão do recibo separada do head atual, replay antigo com snapshot=null e reconstrução segura. Histórico, saúde e revisão continuam validados sob cada novo lock. Ciclo normal reduzido de sete para quatro reconstruções D5, sem implementar a segunda proposta D4 ou alterar finanças/schema/provedores.
+
+Validação:681 PASS/48 suítes e5 TODO preexistentes; cobertura diferencial100% (31/31), global99,49%; build PASS. Teste de concorrência adaptado à nova fronteira, mais caso de recibo2/head3 sem associação indevida; crash real, rollback, resposta perdida e processos concorrentes preservados. Equivalência financeira/ledger exata com baseline, inclusive cancelamento/posição e perda por gap. Os totais incluem o E2E parcial preexistente e não aprovam RUNTIME-003 integral.
+
+Benchmark pareado sem instrumentação, três processos por variante/cenário, Node24.18.0/SQLite3.53.1: ciclo32 mediano2061,46→1420,00ms (-31,12%), gate≥25% PASS. RSS mediano301,28→277,80MiB; maior aumento pareado de todos os cenários1,10% (limite20%). Fingerprints finais iguais.16/32 completos;64 parou por tempo após47 ciclos,51,01s totais sob supervisor60s, RSS335,41MiB e recuperação PAUSED íntegra.128/1800 não executados. Métricas completas/limites/reprodução em DEVELOPMENT_STATE.md.
+
+RUNTIME-003 continua PARCIAL / ACEITE INTEGRAL BLOQUEADO. Persistem custos crescentes de reconstrução/cópia/hash/checkpoints e escala integral não demonstrada. Seis fases,67 tópicos e situação das entregas publicadas inalterados; nenhum aprendizado, REQ-100 empírico ou frontend3D entregue. Trabalho local anterior dos documentos e test/runtime/runtime-e2e.spec.ts preservado. Sem staging/commit/push/merge.

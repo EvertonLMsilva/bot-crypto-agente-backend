@@ -1,7 +1,7 @@
 import { SqliteStore } from './sqlite-store';
 import { appendControl, checkpointRow, Confirmed, controls, eventRow, postingRow, reconstruct } from './recovery';
-import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, identifier, immutable, parseCanonical, requireBudget, revision, ZERO_HASH } from './ledger';
-import { Control, GenesisInput, LoadedState, OperationInput, OperationPayload, Receipt, StoreOptions } from './types';
+import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, identifier, immutable, parseCanonical, requireBudget, revision, same, ZERO_HASH } from './ledger';
+import { CommitSnapshot, Control, GenesisInput, LoadedState, OperationInput, OperationPayload, Receipt, RuntimeSnapshot, StoreOptions } from './types';
 import { validateRuntimeOperation } from './runtime-evidence';
 class IntegrityFailure extends RangeError {}
 class CheckpointFailure extends RangeError {}
@@ -65,13 +65,22 @@ export class DurableExecution {
       return immutable(built.receipt);
     });
   }
-  commitOperation(input:OperationInput):Receipt {
+  commitOperation(input:OperationInput):Receipt {return this.commitOperationWithSnapshot(input).receipt;}
+  /** Prepare under the writer lock, publish only once transaction() commits.
+   * No financial snapshot is accepted as proof for a subsequent transaction. */
+  commitOperationWithSnapshot(input:OperationInput):CommitSnapshot {
     identifier(input.operationId);revision(input.expectedRevision);
     const p=parseCanonical<OperationPayload>(input.payload),id=input.simulationId;
-    const receipt=this.guarded(id,()=>{
+    const result=this.guarded<CommitSnapshot>(id,()=>{
       const existing=this.store.all('SELECT * FROM operations WHERE simulation_id=? AND operation_id=?',[id,input.operationId])[0];
       const confirmed=this.checked(id);
-      if(existing){requireBudget(existing.payload===input.payload,'Divergent payload for durable operation identity');return immutable(parseCanonical<Receipt>(existing.receipt!));}
+      if(existing){
+        requireBudget(existing.payload===input.payload,'Divergent payload for durable operation identity');
+        const receipt=parseCanonical<Receipt>(existing.receipt!);
+        const snapshot=receipt.revision===confirmed.revision && !confirmed.checkpointIssue
+          ?{state:confirmed.state,control:confirmed.control,...(confirmed.runtime?{runtime:confirmed.runtime}:{})}:null;
+        return immutable({simulationId:id,revision:receipt.revision,receipt,disposition:'REPLAY',snapshot});
+      }
       requireBudget(confirmed.revision===input.expectedRevision,'CONFLICT: obsolete expected revision');
       const status=confirmed.control.status;
       if(confirmed.checkpointIssue && status==='RUNNING')throw new CheckpointFailure('ENTRY_SUSPENDED: checkpoint differs from confirmed ledger');
@@ -81,10 +90,10 @@ export class DurableExecution {
         requireBudget(p.command.kind!=='AUTHORIZE' || p.command.authorization.decisions.every(d=>d.status==='REJECTED'),'New entry authorization suspended');
         requireBudget(p.command.kind!=='OPEN' || !confirmed.state.reservations.some(r=>r.status==='ACTIVE'),'Cancel active entry holds before processing suspended opening');
       }
-      let state:LoadedState['state'],cursor:Control['cursor'];
+      let state:LoadedState['state'],cursor:Control['cursor'],runtime:RuntimeSnapshot|undefined;
       try{
         state=execute(confirmed.state,p);cursor=advanceCursor(confirmed.cursor,p,state);
-        validateRuntimeOperation(confirmed.genesis,state,p,cursor);
+        runtime=validateRuntimeOperation(confirmed.genesis,state,p,cursor);
       }catch(e){
         if(Object.hasOwn(confirmed.genesis.configuration,'runtime') || p.evidence && Object.hasOwn(p.evidence,'runtime'))throw new IntegrityFailure(`RUNTIME_EVIDENCE:${String(e)}`);
         throw e;
@@ -92,10 +101,26 @@ export class DurableExecution {
       const rev=String(BigInt(confirmed.revision)+1n);
       const built=buildLedger(id,input.operationId,rev,confirmed.state,state,cursor,confirmed.headSeq,confirmed.headHash);
       this.save(id,input.operationId,p.command.id,input.payload,built,state,p.command.kind==='CLOSE');
-      appendControl(this.store,id,{status,revision:rev,headSeq:built.receipt.seqEnd,headHash:built.events.at(-1)!.hash,stateHash:built.receipt.stateHash,cursor,reason:'OPERATION_CONFIRMED'});
-      this.options.fault?.('before-commit');return immutable(built.receipt);
+      const control:Control={status,revision:rev,headSeq:built.receipt.seqEnd,headHash:built.events.at(-1)!.hash,stateHash:built.receipt.stateHash,cursor,reason:'OPERATION_CONFIRMED'};
+      appendControl(this.store,id,control);
+      // Check actual rows, not just the values offered to SQLite. Historical
+      // rows were independently replayed above under this same writer lock.
+      try{
+        requireBudget(same(this.store.get('SELECT * FROM operations WHERE simulation_id=? AND operation_id=?',[id,input.operationId]),
+          {simulation_id:id,operation_id:input.operationId,revision:rev,command_id:p.command.id,payload:input.payload,payload_hash:hash(p),receipt:canonical(built.receipt)}),'Persisted operation differs');
+        requireBudget(same(this.store.all('SELECT * FROM events WHERE simulation_id=? AND seq>=? ORDER BY seq',[id,BigInt(built.receipt.seqStart)]),
+          built.events.map(e=>eventRow(id,e))),'Persisted events differ');
+        requireBudget(same(this.store.all('SELECT * FROM postings WHERE simulation_id=? AND event_seq>=? ORDER BY event_seq,ordinal',[id,BigInt(built.receipt.seqStart)]),
+          built.postings.map(p=>postingRow(id,p))),'Persisted postings differ');
+        if(p.command.kind==='CLOSE')requireBudget(same(this.store.get('SELECT * FROM checkpoints WHERE simulation_id=? AND revision=?',[id,BigInt(rev)]),
+          checkpointRow(id,built.receipt,state,control.headHash)),'Persisted checkpoint differs');
+        requireBudget(same(controls(this.store,id).at(-1),control),'Persisted control differs');
+      }catch(e){throw new IntegrityFailure(`COMMIT_SNAPSHOT:${String(e)}`);}
+      const prepared=immutable({simulationId:id,revision:rev,receipt:built.receipt,disposition:'COMMITTED' as const,
+        snapshot:{state,control,...(runtime?{runtime}:{})}});
+      this.options.fault?.('before-commit');return prepared;
     });
-    this.options.fault?.('after-commit');return receipt;
+    this.options.fault?.('after-commit');return result;
   }
   loadState(id:string):LoadedState {
     return this.guarded(id,()=>{

@@ -123,19 +123,41 @@ test.each(['AUTHORIZED','OPEN'])('legacy %s without required history cannot bypa
 });
 test('a competing confirmed phase interrupts the cycle at its receipt instead of advancing another boundary',()=>{
  const d=open(),c=config(),r=new SimulationRuntime(d);r.create(c,{nextTieAsset:'BTC'});r.start();
- const originalLoad=d.loadState.bind(d);let interleaved=false;
- const spy=jest.spyOn(d,'loadState').mockImplementation(id=>{
-   let loaded=originalLoad(id);
-   if(!interleaved && loaded.control.revision==='1'){
+ const originalCommit=d.commitOperationWithSnapshot.bind(d);let interleaved=false;
+ const spy=jest.spyOn(d,'commitOperationWithSnapshot').mockImplementation(input=>{
+   const result=originalCommit(input),loaded=result.snapshot!;
+   if(!interleaved && result.revision==='1'){
      interleaved=true;const source=new SeededGenerator(new SimulationClock(c.startTime),c.provider),command={id:JSON.stringify(['OPEN',c.startTime]),kind:'OPEN' as const,asOf:c.startTime,openings:source.currentOpenings(),exits:[]};
      const next=processOpening(loaded.state,command.openings,[],command.asOf),cursor={...loaded.control.cursor,phase:'AFTER_OPEN' as const};
      const g:GenesisInput={simulationId:c.simulationId,operationId:'runtime-genesis',initial:initial(),configuration:{engineVersion:ENGINE_VERSION,coordinatorState:{nextTieAsset:'BTC'},clock:{startTime:c.startTime,currentTime:c.startTime,steps:0},generator:{version:'1',seed:c.provider.seed,confirmedSteps:0},runtime:c}};
      d.commitOperation({simulationId:c.simulationId,operationId:'competing-open',expectedRevision:'1',payload:canonical({command,evidence:{coordinator:null,clock:cursor.clock,generator:cursor.generator,runtime:createRuntimeEvidence(g,next,cursor)}})});
-     loaded=originalLoad(id);
+     expect(result.revision).toBe('1');expect(result.snapshot!.control.revision).toBe('1');
+     expect(d.loadState(c.simulationId).control.revision).toBe('2');
    }
-   return loaded;
+   return result;
  });
- try{expect(()=>r.advanceCycle('0')).toThrow('Concurrent runtime advancement');expect(r.snapshot().confirmed.state.phase).toBe('AFTER_OPEN');expect(r.snapshot().confirmed.control.revision).toBe('2');}
+ try{expect(()=>r.advanceCycle('0')).toThrow('CONFLICT: obsolete expected revision');expect(interleaved).toBe(true);expect(r.snapshot().confirmed.state.phase).toBe('AFTER_OPEN');expect(r.snapshot().confirmed.control.revision).toBe('2');}
  finally{spy.mockRestore();}
  const restored=r.resume(c.simulationId);r.start();expect(r.advanceCycle(restored.confirmed.control.revision).confirmed.state.commands.map(c=>c.kind)).toEqual(['AUTHORIZE','OPEN','CLOSE']);
+});
+
+
+test('an old replay receipt cannot be relabeled with a newer concurrent head',()=>{
+ const d=open(),c=config(),r=new SimulationRuntime(d);r.create(c,{nextTieAsset:'BTC'});r.start();
+ const original=d.commitOperationWithSnapshot.bind(d);let advanced=false,missing=false;
+ const spy=jest.spyOn(d,'commitOperationWithSnapshot').mockImplementation(input=>{
+   const result=original(input);
+   if(!advanced && result.revision==='1'){
+     advanced=true;const competing=new SimulationRuntime(d),resumed=competing.resume(c.simulationId);competing.start();
+     expect(competing.advanceCycle(resumed.confirmed.control.revision).confirmed.control.revision).toBe('3');
+     expect(result.snapshot!.control.revision).toBe('1');
+   }else if(result.disposition==='REPLAY'){
+     missing=true;expect(result.revision).toBe('2');expect(result.snapshot).toBeNull();
+   }
+   return result;
+ });
+ try{expect(()=>r.advanceCycle('0')).toThrow('Concurrent runtime advancement beyond confirmed receipt');expect(advanced && missing).toBe(true);
+   const recovered=r.snapshot();expect(recovered.mode).toBe('BLOCKED');expect(recovered.confirmed.control.revision).toBe('3');
+   expect(recovered.confirmed.state.commands.map(c=>c.kind)).toEqual(['AUTHORIZE','OPEN','CLOSE']);expect(recovered.confirmed.state.fills).toEqual([]);
+ }finally{spy.mockRestore();}
 });

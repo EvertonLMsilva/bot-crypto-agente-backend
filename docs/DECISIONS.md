@@ -1882,3 +1882,26 @@ DEC-064/065/066; nenhuma substituição de decisão financeira ou alteração de
 
 SUBSTITUI:
 Não se aplica; detalha a otimização técnica expressamente autorizada.
+
+
+## DEC-068
+ID: DEC-068
+DATA: 2026-11-01
+TÍTULO: PERF-003 — recibo durável com snapshot da revisão confirmada
+STATUS: APPROVED
+
+CONTEXTO:
+BOT-CRYPTO-RUNTIME-003-PERF-003-IMPLEMENT e IMPLEMENT-CONTINUE autorizam eliminar exclusivamente as três reconstruções D5 pós-COMMIT do ciclo normal. A continuação amplia a allowlist somente para adaptar test/runtime/runtime.spec.ts; não autoriza a segunda proposta D4 nem o E2E integral.
+
+DECISÃO:
+API aditiva commitOperationWithSnapshot preserva commitOperation/recibos/schema e prepara resultado imutável dentro da transação existente. Histórico e saúde são integralmente reconstruídos antes de cada nova escrita; revisão, execução financeira e causalidade seguem seus validadores anteriores. Linhas gravadas são conferidas antes do COMMIT; publicação somente após sucesso. Falhas descartam resultado especulativo e preservam rollback/fail-closed.
+Snapshot vincula identidade e revisão do recibo, sem certificar o head mais recente. Replay devolve recibo original e só associa snapshot quando a reconstrução comprova essa mesma revisão sem checkpointIssue; caso contrário, snapshot=null. Runtime usa reconstrução segura e rejeita divergência de revisão. Toda escrita posterior revalida independentemente sob novo lock. Sem cache, migração, mudança financeira ou bypass. Quatro reconstruções no ciclo normal; recuperação/exceções não têm essa contagem fixa.
+
+EVIDÊNCIAS:
+RED: APIs ausentes impediram compilar a nova suíte e o teste de concorrência adaptado. GREEN: testes de publicação/COMMIT, rollback, crash real, resposta perdida, replay/recibo anterior, adulteração histórica e de linhas recém-gravadas, revisões obsoletas e intercalamento de processos. O teste adaptado confirma OPEN concorrente e conflito real antes da próxima escrita; o cenário adicional rejeita associar recibo2 ao head3. Resultados quantitativos finais no checkpoint PERF-003 de DEVELOPMENT_STATE.md e no roadmap, sem duplicar medições aqui.
+
+REFERÊNCIAS:
+DEC-064/065/066/067. Invariantes financeiras e critérios funcionais permanecem integrais. A aprovação é do mecanismo técnico solicitado; desempenho é verificado experimentalmente e não constitui SLA, rentabilidade ou aceite integral RUNTIME-003.
+
+SUBSTITUI:
+Não se aplica. Detalha a otimização autorizada; os registros anteriores de sete reconstruções permanecem históricos.
