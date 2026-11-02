@@ -8,18 +8,17 @@ export type Row = Record<string,string>;
 export class SqliteStore {
   readonly db: DatabaseSync;
   private closed = false;
+  readonly schemaVersion:1|2;
   #transaction:object|null=null;
   constructor(readonly path: string, readonly options: StoreOptions) {
-    if (!isAbsolute(path) || (!existsSync(path) && options.create !== true)
+    if (options.create!==undefined && typeof options.create!=='boolean' || options.schemaVersion!==undefined && options.schemaVersion!==1 && options.schemaVersion!==2
+      || !isAbsolute(path) || (!existsSync(path) && options.create !== true)
       || !Number.isInteger(options.busyTimeoutMs) || options.busyTimeoutMs < 0 || options.busyTimeoutMs > 5000) throw new RangeError('Explicit local database path/create/timeout required');
     this.db = new DatabaseSync(path,{enableForeignKeyConstraints:true,allowExtension:false});
     try {
       this.db.enableLoadExtension(false);
-      this.db.exec(`PRAGMA busy_timeout=${options.busyTimeoutMs}; PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;`);
-      if (this.db.prepare('PRAGMA journal_mode').get()!.journal_mode !== 'wal'
-        || this.db.prepare('PRAGMA synchronous').get()!.synchronous !== 2
-        || this.db.prepare('PRAGMA foreign_keys').get()!.foreign_keys !== 1) throw new RangeError('Required SQLite pragmas unavailable');
-      migrate(this.db);
+      this.db.exec(`PRAGMA busy_timeout=${options.busyTimeoutMs}; PRAGMA foreign_keys=ON;`);
+      this.schemaVersion=migrate(this.db,options);
     } catch(e) { this.db.close();this.closed=true;throw e; }
   }
   all(sql: string, args: readonly SQLInputValue[] = []): Row[] {

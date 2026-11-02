@@ -30,7 +30,7 @@ test('absent database is never silently opened or seeded; explicit pragmas are a
 });
 test('schema future and migration checksum divergence reject before use',()=>{
  for(const mode of ['future','checksum']){const path=temp(),d=open(path);genesis(d);d.close();raw(path,db=>{
- if(mode==='future')db.exec('PRAGMA user_version=2');else db.exec("DROP TRIGGER schema_migrations_update;UPDATE schema_migrations SET checksum='bad'");});
+ if(mode==='future')db.exec('PRAGMA user_version=3');else db.exec("DROP TRIGGER schema_migrations_update;UPDATE schema_migrations SET checksum='bad'");});
  expect(()=>open(path,false)).toThrow(RangeError);}
 });
 test('initial migration failure rolls back DDL without partially creating financial tables',()=>{

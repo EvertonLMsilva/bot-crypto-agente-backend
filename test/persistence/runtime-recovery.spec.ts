@@ -112,12 +112,15 @@ test('nondefault seed and initial BTC/ETH prices survive immutable genesis recov
  const s=d.recover('sim');expect(s.runtime?.configuration.provider).toEqual(provider);expect(s.runtime?.openings.map(v=>v.price)).toEqual(Object.values(provider.initialPrices));
 });
 test('incompatible persisted provider version is diagnosed before recovery enables entries',()=>{
- const s=setup();s.d.close();raw(s.path,db=>{
+ const s=setup();s.d.close();let trigger='';raw(s.path,db=>{
+   trigger=String(db.prepare("SELECT sql FROM sqlite_schema WHERE name='simulations_update'").get()!.sql);
    db.exec('DROP TRIGGER simulations_update');const row=db.prepare('SELECT genesis FROM simulations').get()!;
    const g=JSON.parse(String(row.genesis));g.configuration.runtime.provider.version='future';
    const digest=require('node:crypto').createHash('sha256').update(canonical(g)).digest('hex');
    db.prepare('UPDATE simulations SET genesis=?,genesis_hash=?').run(canonical(g),digest);
  });
+ expect(()=>open(s.path,false)).toThrow('schema');
+ raw(s.path,db=>{db.exec(trigger);expect(db.prepare("SELECT sql FROM sqlite_schema WHERE name='simulations_update'").get()!.sql).toBe(trigger);});
  const d=open(s.path,false);expect(()=>d.recover('sim')).toThrow('Unsupported runtime provider');expect(()=>d.loadState('sim')).toThrow('locally blocked');
  expect(JSON.parse(String(rows(s.path,'runtime_control').at(-1)!.payload)).status).toBe('MANUAL_REVIEW_REQUIRED');
 });

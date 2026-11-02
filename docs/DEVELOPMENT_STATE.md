@@ -431,3 +431,28 @@ Escala:16/32 completos; tentativa64 interrompida por TIME_LIMIT após47 ciclos c
 Limitações: custo crescente das quatro reconstruções restantes, validação D4 externa, cópias/hashes e checkpoints cumulativos.64 não concluído; não há aprovação de escala integral ou SLA. Mantidos seis fases,67 tópicos, entregas publicadas, requisitos/gates e status funcionais. MVP-00111/11 publicado; aprendizado, REQ-100 empírico e frontend3D pendentes. Arquivos desta tarefa: quatro módulos de produção, teste runtime adaptado, quatro documentos e dois testes/workers novos (11 permitidos). Conferência final de escopo/hashes/prefixos e git diff --check: PASS; staging vazio, sem commit/push/merge.
 
 Artefatos locais reproduzíveis desta execução, fora do repositório: `C:\Users\evert\AppData\Local\Temp\bot-perf003-mfrlatwj` (benchmark-summary.json, bench-results.json, bench-64.json, financial-equivalence.json, coverage/coverage-final.json, logs e SQLite temporários). Não constituem dependência de produção. Reprodução via spawnPerformance com mode/16/32/64, timeMs50000, rssMB512, databaseMB256 e variante explicitamente escolhidos; usar diretório temporário novo por ensaio. Não iniciar128/1800 automaticamente.
+
+### Checkpoint posterior — BOT-CRYPTO-STORAGE-001-IMPLEMENT-CONTINUE
+
+Implementação local concluída em master, base 429f3e5f9fc5fb1d1ee62fe4968cd0101334c3c4, sem staging/commit/push. DEC-069 registra REF1/schema2 explícito, catálogo lógico e matriz de compatibilidade. Escopo: 18 arquivos autorizados; ledger financeiro, D4, runtime operacional/evidence, provedores e E2E parcial preservados. Os trechos locais anteriores dos três documentos compartilhados permanecem integralmente como prefixos.
+
+TDD: RED inicial reproduziu APIs ausentes e as duas fixtures que removiam triggers e tentavam reabrir schemas inválidos; 45 testes existentes continuaram passando. GREEN adaptou recovery.spec.ts/runtime-recovery.spec.ts para capturar e restaurar exatamente o SQL original, demonstrando rejeição antes da restauração e detecção da corrupção de controle/provedor após ela. Não foram enfraquecidas expectativas financeiras. O teste de versão futura agora usa user_version=3, pois V2 passou a ser suportado.
+
+Validação final: 50 suítes / 766 testes PASS / 5 TODO preexistentes; cobertura global de linhas 99,43% (2105/2117), diferencial de linhas executáveis adicionadas 97,97% (145/148, produção, incluindo os dois módulos novos). Build e typecheck PASS. git diff --check PASS. Staging vazio. A regressão local inclui o E2E parcial preexistente; seus TODOs não constituem aceite integral e o arquivo não pertence a esta entrega.
+
+Cobertos: três vetores positivos e três hashes negativos recalculados; formato estrito de 14 campos; checksums/bytes S1/S2 normativos; catálogo equivalente com auto_vacuum 0/1, rootpage diferente e ANALYZE; rejeição de triggers, colunas, constraints, índices, FKs, metadata e objetos extras adulterados. Processos reais exercitaram inicialização V1/V1, V2/V2 e disputa V1/V2 sob revalidação, rollback e crash nos quatro pontos de inicialização, OPEN/CLOSE antes/depois do COMMIT, erros após operation/events/postings, concorrência da mesma operação e operações distintas. Auditoria de linhas brutas, referências re-hashadas, referências ausentes/dangling/mistas e precedência de corrupção financeira posterior preservaram fail-closed.
+
+Equivalência exata: cenário AUTHORIZE/CANCEL/OPEN/CLOSE, reservas, posição aberta, gap e PnL negativo produziu digest idêntico para V1 publicado em HEAD, V1 atual e V2. Recibo antigo preservado, sem atribuição ao head atual. Runtime seeded-generator/1 e fixture, EOF e recuperação independente em PAUSED preservaram identidade V1/V2. Replay financeiro integral permanece obrigatório.
+
+Medições descritivas em processos separados (Node v24.18.0 / SQLite 3.53.1), apenas 16/32 ciclos seeded. Limites por processo: até 32 ciclos, orçamento 50s com supervisor 60s, heap 384 MiB, guarda RSS 512 MiB e banco+WAL+SHM 256 MiB. Todas completaram, recuperaram e produziram o mesmo digest financeiro por tamanho:
+
+| Ciclos | Versão | Conteúdo checkpoints (bytes) | Banco após fechamento (bytes) | Tempo total (s) | Recovery (ms) | Pico RSS (MiB) |
+|---|---|---:|---:|---:|---:|---:|
+| 16 | V1 | 749912 | 1265664 | 4,897 | 107,7 | 235,0 |
+| 16 | V2 | 9092 | 536576 | 5,031 | 126,6 | 236,6 |
+| 32 | V1 | 2875743 | 3801088 | 32,078 | 426,7 | 273,5 |
+| 32 | V2 | 17732 | 933888 | 30,800 | 426,9 | 298,8 |
+
+Métrica de conteúdo: V1 soma bytes UTF8 de checkpoints.state; V2 soma os 14 valores persistidos REF1. Não equivale ao tamanho físico total, apresentado separadamente. Pico banco+WAL+SHM observado: 7.762.552 bytes V1 e 4.775.440 bytes V2 em 32 ciclos. Uma amostra por variante/tamanho, com regressão concorrente no host: tempos não são benchmark estatístico nem SLA. REF1 reduz a duplicação derivada; CPU/replay D4 continuam crescentes. Nenhum ensaio de 64/128/1.800 ciclos foi executado por este worker.
+
+Limitações: RUNTIME-003 integral permanece parcial; nenhuma escala maior aprovada. V1 não é convertido automaticamente. Cadeia REF1 adulterada pode impedir a inserção do próximo checkpoint pelo trigger, preservando fail-closed; reparação auditável não está implementada. Próximo gate: revisão independente da implementação e plano explícito de recursos/armazenamento/recuperação antes de qualquer escala adicional. PERF-004/D4 permanece separado.

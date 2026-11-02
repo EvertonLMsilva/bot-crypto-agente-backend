@@ -39,6 +39,10 @@ test('loadState and commit persist a checkpoint suspension without trusting its 
  expect(JSON.parse(String(rows(path,'runtime_control').at(-1)!.payload)).status).toBe('ENTRY_SUSPENDED');}
 });
 test('startup with a corrupt control chain remains locally blocked and records manual review when possible',()=>{
- const path=temp(),d=open(path);genesis(d);d.close();raw(path,db=>db.exec("DROP TRIGGER runtime_control_update;UPDATE runtime_control SET hash='bad'"));
+ const path=temp(),d=open(path);genesis(d);d.close();let trigger='';
+ raw(path,db=>{trigger=String(db.prepare("SELECT sql FROM sqlite_schema WHERE name='runtime_control_update'").get()!.sql);
+  db.exec("DROP TRIGGER runtime_control_update;UPDATE runtime_control SET hash='bad'");});
+ expect(()=>open(path,false)).toThrow('schema');
+ raw(path,db=>{db.exec(trigger);expect(db.prepare("SELECT sql FROM sqlite_schema WHERE name='runtime_control_update'").get()!.sql).toBe(trigger);});
  const n=open(path,false);expect(()=>n.loadState('sim')).toThrow();expect(JSON.parse(String(rows(path,'runtime_control').at(-1)!.payload)).status).toBe('MANUAL_REVIEW_REQUIRED');
 });

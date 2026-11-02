@@ -1,4 +1,5 @@
 import { SqliteStore } from './sqlite-store';
+import { CheckpointRef, createCheckpointRef, checkpointRefRow, checkpointRefValues } from './checkpoint-ref';
 import { appendControl, checkpointRow, Confirmed, controls, eventRow, postingRow, reconstruct } from './recovery';
 import { advanceCursor, buildLedger, canonical, execute, genesisState, hash, identifier, immutable, parseCanonical, requireBudget, revision, same, ZERO_HASH } from './ledger';
 import { CommitSnapshot, Control, GenesisInput, LoadedState, OperationInput, OperationPayload, Receipt, RuntimeSnapshot, StoreOptions } from './types';
@@ -38,7 +39,7 @@ export class DurableExecution {
       throw e;
     }
   }
-  private save(id:string,operationId:string,commandId:string,payload:string,built:ReturnType<typeof buildLedger>,state:LoadedState['state'],checkpoint:boolean):void {
+  private save(id:string,operationId:string,commandId:string,payload:string,built:ReturnType<typeof buildLedger>,state:LoadedState['state'],checkpoint:boolean,origin?:GenesisInput,previous?:CheckpointRef):CheckpointRef|undefined {
     const r=built.receipt;
     this.store.run('INSERT INTO operations VALUES(?,?,?,?,?,?,?)',[id,operationId,BigInt(r.revision),commandId,payload,hash(parseCanonical(payload)),canonical(r)]);
     this.options.fault?.('after-operation');
@@ -47,8 +48,15 @@ export class DurableExecution {
     this.options.fault?.('after-events');
     for(const p of built.postings)this.store.run('INSERT INTO postings VALUES(?,?,?,?,?)',[id,BigInt(p.eventSeq),BigInt(p.ordinal),p.account,p.amount]);
     this.options.fault?.('after-postings');
-    if(checkpoint){const cp=checkpointRow(id,r,state,built.events.at(-1)!.hash);this.store.run('INSERT INTO checkpoints VALUES(?,?,?,?,?,?,?,?)',
-      [id,BigInt(cp.event_seq!),BigInt(cp.revision!),cp.prefix_hash!,cp.state!,cp.state_hash!,cp.cursor!,1]);}
+    if(checkpoint){
+      if(this.store.schemaVersion===1){const cp=checkpointRow(id,r,state,built.events.at(-1)!.hash);this.store.run('INSERT INTO checkpoints VALUES(?,?,?,?,?,?,?,?)',
+        [id,BigInt(cp.event_seq!),BigInt(cp.revision!),cp.prefix_hash!,cp.state!,cp.state_hash!,cp.cursor!,1]);}
+      else{
+        requireBudget(origin,'REF1 requires verified genesis');
+        const ref=createCheckpointRef(origin,r,state,r.cursor,built.events.at(-1)!.hash,previous?String(BigInt(previous.checkpointIndex)+1n):'0',previous?.hash??ZERO_HASH);
+        this.store.run('INSERT INTO checkpoint_refs VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',checkpointRefValues(ref));return ref;
+      }
+    }
   }
   createSimulation(input:GenesisInput):Receipt {
     const g=immutable(input),{state,cursor}=genesisState(g),id=g.simulationId,payload=canonical(g);
@@ -59,9 +67,10 @@ export class DurableExecution {
       this.store.run('INSERT INTO simulations VALUES(?,?,?)',[id,payload,hash(g)]);
       const built=buildLedger(id,g.operationId,'0',null,state,cursor,'0',ZERO_HASH,g);
       // Genesis is an explicit operation, not an implicit default on opening a file.
-      this.save(id,g.operationId,'GENESIS',payload,built,state,true);
+      this.save(id,g.operationId,'GENESIS',payload,built,state,true,g);
       appendControl(this.store,id,{status:'RUNNING',revision:'0',headSeq:built.receipt.seqEnd,headHash:built.events.at(-1)!.hash,
         stateHash:built.receipt.stateHash,cursor,reason:'EXPLICIT_GENESIS_VALIDATED'});
+      if(this.store.schemaVersion===2 && this.checked(id).checkpointIssue)throw new IntegrityFailure('COMMIT_REF1: genesis checkpoint mismatch');
       return immutable(built.receipt);
     });
   }
@@ -100,7 +109,7 @@ export class DurableExecution {
       }
       const rev=String(BigInt(confirmed.revision)+1n);
       const built=buildLedger(id,input.operationId,rev,confirmed.state,state,cursor,confirmed.headSeq,confirmed.headHash);
-      this.save(id,input.operationId,p.command.id,input.payload,built,state,p.command.kind==='CLOSE');
+      const ref=this.save(id,input.operationId,p.command.id,input.payload,built,state,p.command.kind==='CLOSE',confirmed.genesis,confirmed.checkpointRef);
       const control:Control={status,revision:rev,headSeq:built.receipt.seqEnd,headHash:built.events.at(-1)!.hash,stateHash:built.receipt.stateHash,cursor,reason:'OPERATION_CONFIRMED'};
       appendControl(this.store,id,control);
       // Check actual rows, not just the values offered to SQLite. Historical
@@ -112,8 +121,14 @@ export class DurableExecution {
           built.events.map(e=>eventRow(id,e))),'Persisted events differ');
         requireBudget(same(this.store.all('SELECT * FROM postings WHERE simulation_id=? AND event_seq>=? ORDER BY event_seq,ordinal',[id,BigInt(built.receipt.seqStart)]),
           built.postings.map(p=>postingRow(id,p))),'Persisted postings differ');
-        if(p.command.kind==='CLOSE')requireBudget(same(this.store.get('SELECT * FROM checkpoints WHERE simulation_id=? AND revision=?',[id,BigInt(rev)]),
-          checkpointRow(id,built.receipt,state,control.headHash)),'Persisted checkpoint differs');
+        if(this.store.schemaVersion===1){
+          if(p.command.kind==='CLOSE')requireBudget(same(this.store.get('SELECT * FROM checkpoints WHERE simulation_id=? AND revision=?',[id,BigInt(rev)]),
+            checkpointRow(id,built.receipt,state,control.headHash)),'Persisted checkpoint differs');
+        }else{
+          const from=ref?.checkpointIndex??String(BigInt(confirmed.checkpointRef!.checkpointIndex)+1n);
+          requireBudget(same(this.store.all('SELECT * FROM checkpoint_refs WHERE simulation_id=? AND checkpoint_index>=? ORDER BY checkpoint_index',[id,BigInt(from)]),ref?[checkpointRefRow(ref)]:[]),'Persisted REF1 differs');
+          requireBudget(this.store.get('SELECT count(*) n FROM checkpoints WHERE simulation_id=?',[id]).n==='0','Mixed checkpoint formats');
+        }
         requireBudget(same(controls(this.store,id).at(-1),control),'Persisted control differs');
       }catch(e){throw new IntegrityFailure(`COMMIT_SNAPSHOT:${String(e)}`);}
       const prepared=immutable({simulationId:id,revision:rev,receipt:built.receipt,disposition:'COMMITTED' as const,

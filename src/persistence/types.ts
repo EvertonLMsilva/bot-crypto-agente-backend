@@ -69,7 +69,7 @@ export interface CommitSnapshot {
   readonly simulationId:string; readonly revision:string; readonly receipt:Receipt;
   readonly disposition:'COMMITTED'|'REPLAY'; readonly snapshot:LoadedState|null;
 }
-export interface StoreOptions { readonly create?: boolean; readonly busyTimeoutMs: number; readonly fault?: (point: string) => void }
+export interface StoreOptions { readonly create?: boolean; readonly schemaVersion?:1|2; readonly busyTimeoutMs: number; readonly fault?: (point: string) => void }
 export interface LedgerEvent {
   readonly seq: string; readonly eventId: string; readonly operationId: string; readonly ordinal: string;
   readonly kind: string; readonly asOf: string; readonly phase: string; readonly payload: string;

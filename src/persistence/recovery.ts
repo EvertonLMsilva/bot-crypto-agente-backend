@@ -1,4 +1,5 @@
 import { SqliteStore, Row } from './sqlite-store';
+import { CheckpointRef, createCheckpointRef, parseCheckpointRefRow, checkpointRefRow } from './checkpoint-ref';
 import { Control, Cursor, GenesisInput, LedgerEvent, OperationPayload, Posting, Receipt, RuntimeSnapshot } from './types';
 import { createRuntimeReplay } from './runtime-evidence';
 import { advanceCursor, buildLedger, canonical, genesisState, hash, immutable, parseCanonical, requireBudget, same, ZERO_HASH } from './ledger';
@@ -28,11 +29,13 @@ export function controls(store:SqliteStore,simulationId:string):Control[] {
 export interface Confirmed {
   readonly genesis:GenesisInput;readonly runtime?:RuntimeSnapshot;
   readonly state:ExecutionState;readonly cursor:Cursor;readonly revision:string;readonly headSeq:string;readonly headHash:string;
-  readonly checkpointIssue:boolean;readonly control:Control;
+  readonly checkpointIssue:boolean;readonly control:Control;readonly checkpointRef?:CheckpointRef;
 }
 export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
   return store.withReplay(checkActive=>{
-  requireBudget(store.get('PRAGMA integrity_check').integrity_check==='ok' && store.all('PRAGMA foreign_key_check').length===0,'SQLite integrity/references failed');
+  requireBudget(store.get('PRAGMA integrity_check').integrity_check==='ok','SQLite integrity/references failed');
+  const foreignIssues=store.all('PRAGMA foreign_key_check');
+  requireBudget(foreignIssues.every(row=>store.schemaVersion===2 && ['checkpoint_refs','checkpoints'].includes(row.table!)),'SQLite integrity/references failed');
   const simulation=store.get('SELECT * FROM simulations WHERE id=?',[simulationId]);
   requireBudget(hash(parseCanonical(simulation.genesis!))===simulation.genesis_hash,'Corrupted genesis');
   const genesis=parseCanonical<GenesisInput>(simulation.genesis!);requireBudget(genesis.simulationId===simulationId,'Genesis identity mismatch');
@@ -41,8 +44,9 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
   let market:ReturnType<typeof createRuntimeReplay>|undefined,checkpoints:IterableIterator<Row>|undefined;
   try{
   market=createRuntimeReplay(genesis,checkActive);
-  checkpoints=store.iterate('SELECT * FROM checkpoints WHERE simulation_id=? ORDER BY event_seq',[simulationId]);
-  let checkpointIssue=false;
+  checkpoints=store.iterate(store.schemaVersion===1?'SELECT * FROM checkpoints WHERE simulation_id=? ORDER BY event_seq':'SELECT * FROM checkpoint_refs WHERE simulation_id=? ORDER BY checkpoint_index',[simulationId]);
+  let checkpointIssue=foreignIssues.length>0 || store.schemaVersion===2 && store.get('SELECT count(*) n FROM checkpoints WHERE simulation_id=?',[simulationId]).n!=='0';
+  let checkpointRef:CheckpointRef|undefined;
   const operations=store.all('SELECT * FROM operations WHERE simulation_id=? ORDER BY revision',[simulationId]);
   requireBudget(operations.length>0,'Missing confirmed genesis operation');
   const events:Row[]=[],postings:Row[]=[],receipts=new Map<string,{r:Receipt;h:string}>();
@@ -61,7 +65,14 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
     events.push(...built.events.map(e=>eventRow(simulationId,e)));postings.push(...built.postings.map(p=>postingRow(simulationId,p)));
     headSeq=built.receipt.seqEnd;headHash=built.events.at(-1)!.hash;rev=String(i);receipts.set(rev,{r:built.receipt,h:headHash});
     if(i===0 || p?.command.kind==='CLOSE'){
-      const row=checkpoints.next();if(row.done || !same(checkpointRow(simulationId,built.receipt,state,headHash),row.value))checkpointIssue=true;
+      const row=checkpoints.next();
+      if(store.schemaVersion===1){if(row.done || !same(checkpointRow(simulationId,built.receipt,state,headHash),row.value))checkpointIssue=true;}
+      else{
+        // Always derive the predecessor from verified history, even after a bad stored reference.
+        checkpointRef=createCheckpointRef(genesis,built.receipt,state,cursor,headHash,checkpointRef?String(BigInt(checkpointRef.checkpointIndex)+1n):'0',checkpointRef?.hash??ZERO_HASH);
+        try{if(row.done || !same(parseCheckpointRefRow(row.value),checkpointRef) || !same(row.value,checkpointRefRow(checkpointRef)))checkpointIssue=true;}
+        catch{checkpointIssue=true;}
+      }
     }
   }
   while(!checkpoints.next().done)checkpointIssue=true;
@@ -73,7 +84,7 @@ export function reconstruct(store:SqliteStore,simulationId:string):Confirmed {
   const control=history.at(-1)!;requireBudget(control.revision===rev && control.headHash===headHash,'Unconfirmed/obsolete runtime head');
   const runtime=market.snapshot(state,cursor);
   return immutable({genesis,state,cursor,revision:rev,headSeq,headHash,control,...(runtime?{runtime}:{}),
-    checkpointIssue});
+    checkpointIssue,...(checkpointRef?{checkpointRef}:{})});
   }finally{try{checkpoints?.return?.();}finally{market?.close();financial.close();}}
   });
 }

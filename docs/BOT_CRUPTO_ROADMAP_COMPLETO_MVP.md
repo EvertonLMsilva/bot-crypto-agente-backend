@@ -398,3 +398,10 @@ Validação:681 PASS/48 suítes e5 TODO preexistentes; cobertura diferencial100%
 Benchmark pareado sem instrumentação, três processos por variante/cenário, Node24.18.0/SQLite3.53.1: ciclo32 mediano2061,46→1420,00ms (-31,12%), gate≥25% PASS. RSS mediano301,28→277,80MiB; maior aumento pareado de todos os cenários1,10% (limite20%). Fingerprints finais iguais.16/32 completos;64 parou por tempo após47 ciclos,51,01s totais sob supervisor60s, RSS335,41MiB e recuperação PAUSED íntegra.128/1800 não executados. Métricas completas/limites/reprodução em DEVELOPMENT_STATE.md.
 
 RUNTIME-003 continua PARCIAL / ACEITE INTEGRAL BLOQUEADO. Persistem custos crescentes de reconstrução/cópia/hash/checkpoints e escala integral não demonstrada. Seis fases,67 tópicos e situação das entregas publicadas inalterados; nenhum aprendizado, REQ-100 empírico ou frontend3D entregue. Trabalho local anterior dos documentos e test/runtime/runtime-e2e.spec.ts preservado. Sem staging/commit/push/merge.
+
+### Checkpoint STORAGE-001 — REF1/schema2 implementados localmente
+
+- Representação compacta REF1 autorizada em DEC-069, exclusivamente em bancos V2 criados explicitamente; V1 permanece padrão e legível sem migração.
+- Ledger financeiro e replay integral preservados; catálogo lógico estrito, inicialização concorrente, rollback e recovery fazem parte do contrato implementado.
+- Ensaios de 16/32 ciclos e resultados de validação no checkpoint STORAGE-001 de DEVELOPMENT_STATE.md. Não aprovam escalabilidade integral nem concluem RUNTIME-003.
+- Próximo gate: revisão independente da implementação e ensaio de armazenamento/recuperação com limites explícitos antes de autorizar qualquer escala maior. PERF-004/D4 permanece separado. Nenhuma execução automática de 64/128/1.800 ciclos.

@@ -1905,3 +1905,19 @@ DEC-064/065/066/067. Invariantes financeiras e critérios funcionais permanecem 
 
 SUBSTITUI:
 Não se aplica. Detalha a otimização autorizada; os registros anteriores de sete reconstruções permanecem históricos.
+
+## DEC-069 — STORAGE-001: REF1 e criação explícita de schema2
+
+STATUS: APPROVED. Implementação local autorizada por BOT-CRYPTO-STORAGE-001-IMPLEMENT-CONTINUE; publicação e escalabilidade integral permanecem pendentes.
+
+Checkpoints compactos REF1 substituem apenas a representação derivada em bancos novos explicitamente criados com schemaVersion=2. O ledger D5, comandos, eventos, postings, recibos, serialização financeira e runtime evidence v1/v2 permanecem inalterados. Toda nova transação e recuperação reexecuta o histórico financeiro desde o genesis. REF1 não é prova externa de saldo.
+
+O contrato tem exatamente 14 campos canônicos, inteiros decimais limitados a int64 e hashes hexadecimais minúsculos. O hash próprio exclui hash do preimage e usa {domain:"BOT-CRYPTO:CHECKPOINT:REF1",reference}. GENESIS e cada CLOSE vinculam genesis, recibo, estado, cursor e evento terminal; o predecessor esperado é derivado do replay validado, jamais de uma referência adulterada.
+
+S1 permanece literalmente 3660 bytes / SHA256 fde82db3b013743bc84d05c77a4d1fece5824c9861e7c5fa0bf58b46a654a92b. S2 é S1 + extensão REF1 normativa, 7690 bytes / SHA256 55ef2c66e2e3c9cfacb5267d7ad5678dafa7a8e42f1e0b2361b6cb97206c5ea1. Não há migração automática nem reescrita de hashes existentes. Criação nova sem versão explícita continua V1; abertura existente autodetecta V1/V2, e versão explicitamente incompatível falha.
+
+O catálogo é reconhecido logicamente em transação, comparando SQL completo, STRICT, colunas, constraints, FKs e índices compostos em ordem semântica. rootpage, enumeração de index_list e identificador de grupo FK não são identidade lógica. Autoíndices são resolvidos pelo conteúdo; estatísticas ANALYZE só são opcionais se sua estrutura inteira corresponder à criada pelo SQLite de referência. Objetos adicionais, anexos e objetos temporários são rejeitados. Nenhum cache global.
+
+A inicialização fixa a versão pretendida antes do lock, revalida sob BEGIN IMMEDIATE e confirma DDL, metadata e user_version atomicamente. WAL/FULL/FK, rollback, idempotência e revisão otimista permanecem obrigatórios. Estrutura inválida bloqueia a abertura; corrupção financeira prevalece sobre divergência derivada de checkpoint. Checkpoint inválido com ledger válido suspende entradas; não autoriza reparação silenciosa ou salto de validação. Encadeamento REF1 adulterado pode impedir novas referências pelo trigger: fail-closed, sem procedimento de reparação nesta entrega.
+
+Evidências e limites desta implementação constam no checkpoint STORAGE-001 em DEVELOPMENT_STATE.md. PERF-004/D4 permanece proposta separada. RUNTIME-003 E2E continua parcial.

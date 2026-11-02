@@ -269,3 +269,7 @@ O parágrafo anterior é registro histórico da especificação. D5 implementa p
 | REQ-096/098 | TEXT canônico/bigint, transação por lote D4, fases e base diária verificadas | Persistência não altera arredondamentos, proteções ou decisões; sem evidência empírica REQ-100 |
 
 Evidências:517 testes/40 suítes PASS,476 anteriores e41 novos; crash real antes/depois do COMMIT, duas escritas concorrentes em processos separados, reabertura, recuperação de posições/proteções, corrupção e checkpoints. Cobertura das linhas de persistência99,15%, extensão D4 coberta100%, global99,37%; build PASS. Não equivalem a aceitação integral do MVP ou testes físicos de perda de energia. Requisitos pendentes e aprovações históricas preservados; D5 aguarda revisão/commit.
+
+### Entrega local STORAGE-001 — persistência compacta (DEC-069)
+
+Implementado REF1/schema2 explícito para novos bancos e reconhecimento lógico estrito do catálogo. D5 financeiro e seus hashes, eventos, postings, recibos, reservas, posições, PnL e runtime evidence v1/v2 não mudam. Validação integral desde o genesis permanece obrigatória; referência não prova saldo por si só. V1 histórico continua compatível, sem migração implícita. Criação concorrente revalida sob BEGIN IMMEDIATE; falhas de schema/dados permanecem fail-closed. Estado de RUNTIME-003 e aquecimento integral permanece parcial; ensaios pequenos não satisfazem o gate completo. Resultados executados registrados em DEVELOPMENT_STATE.md.
